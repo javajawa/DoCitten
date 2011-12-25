@@ -1,88 +1,77 @@
 package uk.co.harcourtprogramming.netcat;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.IrcException;
 
 public class NetCat extends PircBot implements Runnable
 {
-	public static void main(String [] args) throws IOException
+	public class Message
 	{
-		final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		private final String message;
+		private final String nick;
+		private final String channel;
+		private boolean dispose = false;
 
-		NetCat inst = new NetCat(args[0], args[1]);
-		new Thread(inst).start();
-
-		while ( true )
+		private Message(String message, String nick, String channel)
 		{
-			String s = in.readLine();
-			if ("quit".equalsIgnoreCase(s)) break;
-		}
-		inst.shutdown();
-	}
-
-	private class GoHomeService implements Runnable
-	{
-		final Thread t;
-		final Calendar c = Calendar.getInstance();
-
-		private GoHomeService()
-		{
-			NetCat.this.log.log(Level.INFO, "Starting the 'GoHomeService'");
-			t = new Thread(this);
-			t.setDaemon(true);
-			t.start();
+			this.message = message; // TODO: Remove escape codes
+			this.nick = nick;
+			this.channel = channel;
 		}
 
-		public synchronized void run()
+		public String getMessage()
 		{
-			NetCat.this.log.log(Level.INFO, "'GoHomeService' started");
-			while (true)
+			return this.message;
+		}
+
+		public String getChannel()
+		{
+			return this.channel;
+		}
+
+		public String getSender()
+		{
+			return this.nick;
+		}
+
+		public synchronized void reply(String message)
+		{
+			for (String s : message.split("\n"))
 			{
-				try
-				{
-					c.setTimeInMillis(System.currentTimeMillis());
-
-					if (c.get(Calendar.HOUR_OF_DAY) == 22)
-					{
-						switch (c.get(Calendar.MINUTE))
-						{
-							case 40:
-								NetCat.this.message(
-								  "Ladies and Gentlemen, your attention please: DoC Labs will be closing in 20 minutes");
-								t.sleep(60000);
-								break;
-							case 50:
-								NetCat.this.message(
-								  "Ladies and Gentlemen, your attention please: DoC Labs will be closing in 10 minutes\n" +
-								  "A wry, witty comment should go here!");
-								t.sleep(60000);
-								break;
-							case 55:
-								NetCat.this.message(
-								  "Ladies and Gentlemen, your attention please: DoC Labs will be closing in 5 minutes\n" +
-								  "Please save your work, log off, and try not to get locked in!");
-								t.sleep(60000);
-								break;
-						}
-					}
-					t.sleep(30000);
-				}
-				catch (InterruptedException ex)
-				{
-				}
+				NetCat.this.sendMessage(this.nick, s);
 			}
+		}
+
+		public synchronized void replyToAll(String message)
+		{
+			if (this.channel == null)
+			{
+				this.reply(message);
+				return;
+			}
+			for (String s : message.split("\n"))
+			{
+				NetCat.this.sendMessage(this.channel, s);
+			}
+		}
+
+		public void dispose()
+		{
+			this.dispose = true;
 		}
 	}
 
 	private final static Logger log = Logger.getLogger("NetCat");
 	private final String host;
 	private final String channel;
+	private final List<Service> srvs = new ArrayList<Service>();
+	private final List<MessageService> msrvs = new ArrayList<MessageService>();
+	private boolean dispose = false;
 
 	public NetCat(String host, String channel)
 	{
@@ -101,6 +90,21 @@ public class NetCat extends PircBot implements Runnable
 		this.setVerbose(false);
 	}
 
+	public void addService(Service s)
+	{
+		synchronized(srvs)
+		{
+			if (dispose) return;
+			log.log(Level.INFO, "Service Loaded: " + s.getClass().getSimpleName() + '@' + s.getId());
+			srvs.add(s);
+			if (s instanceof MessageService)
+			{
+				msrvs.add((MessageService)s);
+				log.log(Level.INFO, "Service " + s.getClass().getSimpleName() + '@' + s.getId() + " loaded as MessageService.");
+			}
+		}
+	}
+
 	public synchronized void run()
 	{
 		try
@@ -109,8 +113,7 @@ public class NetCat extends PircBot implements Runnable
 			this.connect(host);
 			log.log(Level.INFO, "Joining '" + channel + "'");
 			this.joinChannel(channel);
-			log.log(Level.INFO, "Loading services");
-			new GoHomeService();
+			log.log(Level.INFO, "Operations Running!");
 			this.wait();
 		}
 		catch (IOException ex)
@@ -124,6 +127,13 @@ public class NetCat extends PircBot implements Runnable
 		catch (InterruptedException ex)
 		{
 		}
+
+		// Shutdown procedure :)
+		synchronized(srvs)
+		{
+			dispose = true;
+			for (Service s : srvs) s.shutdown();
+		}
 		this.quitServer();
 		this.disconnect();
 		this.dispose();
@@ -131,29 +141,35 @@ public class NetCat extends PircBot implements Runnable
 
 	public void onMessage(String channel, String sender, String login, String hostname, String message)
 	{
-		final String lcmess = message.toLowerCase();
-		if (lcmess.contains("kitten") || lcmess.contains("kitteh") || lcmess.contains("cat"))
+		log.log(Level.INFO, "Message received from " + sender + '/' + channel);
+		final Message m = new Message(message, sender, channel);
+		synchronized(srvs)
 		{
-			sendKitten();
+			for (MessageService s : msrvs)
+			{
+				log.log(Level.INFO, "Message dispatched to " + s.getClass().getSimpleName() + '@' + s.getId());
+				try
+				{
+					s.handle(m);
+				}
+				catch (Throwable ex)
+				{
+					log.log(Level.SEVERE, "Error whilst passing message to " + s.getClass().getSimpleName() + '@' + s.getId(), ex);
+				}
+				if (m.dispose) break;
+			}
 		}
 	}
 
-	public void message(String message)
+	public void onPrivateMessage(String sender, String login, String hostname, String message)
 	{
-		for (String s : message.split("\n"))
-		{
-			this.sendMessage(this.channel, s);
-		}
+		onMessage(null, sender, login, hostname, message);
 	}
 
 	public synchronized void shutdown()
 	{
-		this.notifyAll();
+		this.notifyAll(); // run() waits to stop thread being killed; exits when notified
 	}
 
-	private void sendKitten()
-	{
-		this.sendMessage(channel, "This is a placeholder for a kitten link");
-	}
 }
 

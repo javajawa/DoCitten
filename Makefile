@@ -8,8 +8,8 @@ BUILD=build
 HOST=irc.esper.net
 CHANNEL=hpelizausers
 
-MAIN=uk.co.harcourtprogramming.netcat.NetCat
-FILES=$(wildcard src/uk/co/harcourtprogramming/netcat/*.java)
+MAIN=uk.co.harcourtprogramming.netcat.docitten.Main
+FILES=$(wildcard src/uk/co/harcourtprogramming/netcat/*.java) $(wildcard src/uk/co/harcourtprogramming/netcat/docitten/*.java)
 
 run:
 	$(JAVA) -cp $(CP):$(BUILD) $(MAIN) $(HOST) $(CHANNEL)
