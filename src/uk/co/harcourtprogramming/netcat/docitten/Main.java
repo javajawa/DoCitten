@@ -15,6 +15,7 @@ public class Main
 		new Thread(inst).start();
 
 		inst.addService(new KittenService());
+		inst.addService(new GoHomeService("#hpelizausers"));
 
 		while ( true )
 		{
