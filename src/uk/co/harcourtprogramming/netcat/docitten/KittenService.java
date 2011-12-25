@@ -19,7 +19,9 @@ public class KittenService extends MessageService
 			mess.contains("kitten") ||
 			mess.contains("cat") ||
 			mess.contains(" mew") ||
-			mess.contains("mew ")
+			mess.contains("mew ") ||
+			mess.equals("mew") ||
+			mess.contains("docitten")
 		)
 		{
 			m.replyToAll("mew =^.^=");
