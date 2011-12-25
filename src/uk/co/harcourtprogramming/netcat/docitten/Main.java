@@ -14,7 +14,6 @@ public class Main
 		NetCat inst = new NetCat(args[0], args[1]);
 		new Thread(inst).start();
 
-		inst.addService(new TestSrv());
 		inst.addService(new KittenService());
 
 		while ( true )
