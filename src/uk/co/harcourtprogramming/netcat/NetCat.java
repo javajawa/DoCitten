@@ -137,6 +137,12 @@ public class NetCat extends PircBot implements Runnable
 				msrvs.add((MessageService)s);
 				log.log(Level.INFO, "Service " + s.getClass().getSimpleName() + '@' + s.getId() + " loaded as MessageService.");
 			}
+			if (s instanceof ExternalService)
+			{
+				final ExternalService es = (ExternalService)s;
+				es.setInstance(this);
+				es.getThread().start();
+			}
 		}
 	}
 
