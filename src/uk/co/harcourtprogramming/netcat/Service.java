@@ -1,11 +1,15 @@
 package uk.co.harcourtprogramming.netcat;
 
+import java.util.Date;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
 import java.util.logging.Logger;
+import java.util.logging.LogRecord;
 import java.util.logging.Level;
 
 public abstract class Service
 {
-	private final static Logger log = Logger.getLogger("NetCat.Service");
 	private static int lastId = 0;
 
 	private static synchronized int id()
@@ -14,10 +18,33 @@ public abstract class Service
 	}
 
 	private final int id = id();
+	private final Logger log = Logger.getLogger("NetCat.Service." + id);
 
 	public Service()
 	{
-		// Nothing to see here. Move along, citizen!
+		final Handler h = new ConsoleHandler();
+		h.setFormatter(new Formatter()
+		{
+			public String format(LogRecord l)
+			{
+				StringBuilder b = new StringBuilder();
+				b.append('[');
+				b.append(new Date(l.getMillis()).toString());
+				b.append(':');
+				b.append(l.getLevel().getLocalizedName());
+				b.append("] Service ");
+				b.append(Service.this.getClass().getSimpleName());
+				b.append('@');
+				b.append(Service.this.getId());
+				b.append(" >> ");
+				b.append(formatMessage(l));
+				b.append('\n');
+
+				return b.toString();
+			}
+		});
+		log.addHandler(h);
+		log.setUseParentHandlers(false);
 	}
 
 	public void log(Level lvl, String msg, Exception ex)

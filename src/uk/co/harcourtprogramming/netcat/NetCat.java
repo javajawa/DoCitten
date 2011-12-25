@@ -1,8 +1,13 @@
 package uk.co.harcourtprogramming.netcat;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
 import java.util.logging.Logger;
+import java.util.logging.LogRecord;
 import java.util.logging.Level;
 import java.io.IOException;
 import org.jibble.pircbot.PircBot;
@@ -67,6 +72,36 @@ public class NetCat extends PircBot implements Runnable
 	}
 
 	private final static Logger log = Logger.getLogger("NetCat");
+	private final static Formatter form = new Formatter()
+	{
+		public String format(LogRecord l)
+		{
+			Calendar time = Calendar.getInstance();
+			time.setTimeInMillis(l.getMillis());
+
+			StringBuilder b = new StringBuilder();
+
+			b.append('[');
+			b.append(time.get(Calendar.HOUR_OF_DAY));
+			b.append(':');
+			b.append(time.get(Calendar.MINUTE));
+			b.append(' ');
+			b.append(l.getLevel().getLocalizedName());
+			b.append("] >> ");
+			b.append(formatMessage(l));
+			b.append('\n');
+
+			return b.toString();
+		}
+	};
+	static
+	{
+		Handler h = new ConsoleHandler();
+		h.setFormatter(form);
+		log.addHandler(h);
+		log.setUseParentHandlers(false);
+	}
+
 	private final String host;
 	private final String channel;
 	private final List<Service> srvs = new ArrayList<Service>();
