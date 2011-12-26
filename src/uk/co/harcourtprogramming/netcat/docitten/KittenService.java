@@ -20,6 +20,15 @@ public class KittenService extends MessageService
 	public void handle(Message m)
 	{
 		final String mess = m.getMessage();
+
+		if (m.isAction())
+		{
+			if (mess.trim().equalsIgnoreCase("scritches " + m.getMyNick()))
+			{
+				m.act("purrrrrrrs");
+			}
+		}
+
 		String reply = "";
 
 		Matcher kittenMatcher = kitten.matcher(mess);
