@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import java.util.logging.LogRecord;
 import java.util.logging.Level;
 import java.io.IOException;
+import org.jibble.pircbot.Colors;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.IrcException;
 
@@ -24,7 +25,7 @@ public class NetCat extends PircBot implements Runnable
 
 		private Message(String message, String nick, String channel)
 		{
-			this.message = message; // TODO: Remove escape codes
+			this.message = Colors.removeFormattingAndColors(message);
 			this.nick = nick;
 			this.channel = channel;
 		}
