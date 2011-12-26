@@ -27,6 +27,7 @@ public class Main
 		new Thread(inst).start();
 
 		inst.addService(new KittenService());
+		inst.addService(new LinkService());
 		inst.addService(new GoHomeService(args[1]));
 		inst.addService(new MOTDService(new File("/etc/motd.dat"), args[1]));
 
