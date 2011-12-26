@@ -1,8 +1,8 @@
 package uk.co.harcourtprogramming.netcat.docitten;
 
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.Random;
 import uk.co.harcourtprogramming.netcat.MessageService;
 import uk.co.harcourtprogramming.netcat.NetCat.Message;
 
@@ -10,6 +10,7 @@ public class KittenService extends MessageService
 {
 	private static final Pattern kitten = Pattern.compile("kitte[nh]", Pattern.CASE_INSENSITIVE);
 	private static final Pattern mewls  = Pattern.compile("(^|\\s)(mew|nya+n|mr+a*o+w)", Pattern.CASE_INSENSITIVE);
+	private static final Random r = new Random();
 
 	public KittenService()
 	{
@@ -34,7 +35,12 @@ public class KittenService extends MessageService
 
 	private String mewl()
 	{
-		return "mew ";
+		switch (r.nextInt(8))
+		{
+			case 0: return "nyaann ";
+			case 1: return "mraow ";
+			default: return "mew ";
+		}
 	}
 
 	public void shutdown()
