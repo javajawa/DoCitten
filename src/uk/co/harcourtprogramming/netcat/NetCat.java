@@ -111,25 +111,27 @@ public class NetCat extends PircBot implements Runnable
 	}
 
 	private final String host;
-	private final String channel;
+	private final List<String> channels;
 	private final List<Service> srvs = new ArrayList<Service>();
 	private final List<MessageService> msrvs = new ArrayList<MessageService>();
 	private boolean dispose = false;
 
-	public NetCat(String host, String channel)
+	public NetCat(final String name, final String host, final List<String> channels)
 	{
-		this.setName("DoCitten");
+		if (name==null || name.length()==0) throw new IllegalArgumentException("Name must be a non-empty String");
+		if (host==null) throw new IllegalArgumentException("Host must be supplied");
+
+		this.setName(name);
 		this.host = host;
 
-		if (channel.charAt(0) == '#')
+		if (channels == null)
 		{
-			this.channel = channel;
+			this.channels = new ArrayList<String>(0);
 		}
 		else
 		{
-			this.channel = '#' + channel;
+			this.channels = channels;
 		}
-
 		this.setVerbose(false);
 	}
 
@@ -160,8 +162,11 @@ public class NetCat extends PircBot implements Runnable
 		{
 			log.log(Level.INFO, "Connecting to '" + host + "'");
 			this.connect(host);
-			log.log(Level.INFO, "Joining '" + channel + "'");
-			this.joinChannel(channel);
+			for (String channel : channels)
+			{
+				log.log(Level.INFO, "Joining '" + channel + "'");
+				this.joinChannel(channel);
+			}
 			log.log(Level.INFO, "Operations Running!");
 			this.wait();
 		}

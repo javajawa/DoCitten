@@ -4,15 +4,26 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.util.Arrays;
+import java.util.List;
 import uk.co.harcourtprogramming.netcat.NetCat;
 
 public class Main
 {
-	public static void main(String [] args) throws IOException
-	{
-		final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	public final static String nick = "DoCitten";
 
-		NetCat inst = new NetCat(args[0], args[1]);
+	public static void main(String[] args) throws IOException
+	{
+		if (args.length < 2)
+		{
+			System.out.println("Arguments : <host> <#channel> [<#channel> <#channel> ...]");
+			System.exit(-1);
+		}
+
+		final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		final List<String> channels = Arrays.asList(Arrays.copyOfRange(args, 1, args.length));
+
+		NetCat inst = new NetCat(nick, args[0], channels);
 		new Thread(inst).start();
 
 		inst.addService(new KittenService());
