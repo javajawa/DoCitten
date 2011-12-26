@@ -196,7 +196,7 @@ public class NetCat extends PircBot implements Runnable
 	public void onMessage(String channel, String sender, String login, String hostname, String message)
 	{
 		log.log(Level.FINE, "Message received from " + sender + '/' + channel);
-		final Message m = new Message(message, sender, channel);
+		final Message m = new Message(message, sender, channel, false);
 		synchronized(srvs)
 		{
 			for (MessageService s : msrvs)
