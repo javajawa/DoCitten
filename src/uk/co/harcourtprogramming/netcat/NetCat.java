@@ -20,6 +20,7 @@ public class NetCat extends PircBot implements Runnable
 	{
 		private final String message;
 		private final String nick;
+		private final String me = NetCat.this.getNick();
 		private final String channel;
 		private final boolean action;
 		private boolean dispose = false;
@@ -52,12 +53,23 @@ public class NetCat extends PircBot implements Runnable
 			return this.nick;
 		}
 
+		public String getMyNick()
+		{
+			return this.me;
+		}
+
 		public synchronized void reply(String message)
 		{
 			for (String s : message.split("\n"))
 			{
 				NetCat.this.sendMessage(this.nick, s);
 			}
+		}
+
+		public synchronized void act(String action)
+		{
+			final String target = (this.channel == null ? this.nick : this.channel);
+			NetCat.this.sendAction(target, action);
 		}
 
 		public synchronized void replyToAll(String message)
