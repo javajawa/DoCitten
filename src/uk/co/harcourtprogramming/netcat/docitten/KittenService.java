@@ -44,7 +44,7 @@ public class KittenService extends MessageService
 
 	private String mewl()
 	{
-		switch (r.nextInt(8))
+		switch (r.nextInt(6))
 		{
 			case 0: return "nyaann ";
 			case 1: return "mraow ";
