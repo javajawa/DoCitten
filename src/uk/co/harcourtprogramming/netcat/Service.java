@@ -1,6 +1,6 @@
 package uk.co.harcourtprogramming.netcat;
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -27,10 +27,14 @@ public abstract class Service
 		{
 			public String format(LogRecord l)
 			{
+				Calendar c = Calendar.getInstance();
+				c.setTimeInMillis(l.getMillis());
 				StringBuilder b = new StringBuilder();
 				b.append('[');
-				b.append(new Date(l.getMillis()).toString());
+				b.append(c.get(Calendar.HOUR_OF_DAY));
 				b.append(':');
+				b.append(c.get(Calendar.MINUTE));
+				b.append(' ');
 				b.append(l.getLevel().getLocalizedName());
 				b.append("] Service ");
 				b.append(Service.this.getClass().getSimpleName());
