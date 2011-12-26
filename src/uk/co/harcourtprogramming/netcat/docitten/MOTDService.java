@@ -46,7 +46,7 @@ public class MOTDService extends ExternalService
 			b.append("@doc): ");
 			b.append(title);
 			b.append('\n');
-			b.append(mlong.replace("<BR>","\n");
+			b.append(mlong.replace("<BR>","\n"));
 
 			return b.toString();
 		}
@@ -104,11 +104,7 @@ public class MOTDService extends ExternalService
 				if (line.charAt(0) == '#') continue;
 				if (line.equals("[Message]"))
 				{
-					if (curr != null)
-					{
-						log(Level.INFO, curr.toString());
-						stack.push(curr);
-					}
+					if (curr != null) stack.push(curr);
 					curr = new Message();
 					continue;
 				}
@@ -189,17 +185,14 @@ public class MOTDService extends ExternalService
 			}
 		}
 
-		if (curr != null)
-		{
-			log(Level.INFO, curr.toString());
-			stack.push(curr);
-		}
+		if (curr != null) stack.push(curr);
 		lastModified = f.lastModified();
 
 		for (Message m : stack)
 		{
 			if (m.id > lastId)
 			{
+				log(Level.INFO, "Sending MOTD Notice #" + m.id);
 				message(channel, m.toString());
 				lastId = m.id;
 			}
