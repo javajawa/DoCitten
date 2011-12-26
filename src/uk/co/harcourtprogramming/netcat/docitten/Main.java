@@ -1,5 +1,6 @@
 package uk.co.harcourtprogramming.netcat.docitten;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
@@ -15,7 +16,8 @@ public class Main
 		new Thread(inst).start();
 
 		inst.addService(new KittenService());
-		inst.addService(new GoHomeService("#hpelizausers"));
+		inst.addService(new GoHomeService(args[1]));
+		inst.addService(new MOTDService(new File("/etc/motd.dat"), args[1]));
 
 		while ( true )
 		{
