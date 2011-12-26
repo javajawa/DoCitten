@@ -21,13 +21,20 @@ public class NetCat extends PircBot implements Runnable
 		private final String message;
 		private final String nick;
 		private final String channel;
+		private final boolean action;
 		private boolean dispose = false;
 
-		private Message(String message, String nick, String channel)
+		private Message(String message, String nick, String channel, boolean action)
 		{
 			this.message = Colors.removeFormattingAndColors(message);
 			this.nick = nick;
 			this.channel = channel;
+			this.action = action;
+		}
+
+		public boolean isAction()
+		{
+			return this.action;
 		}
 
 		public String getMessage()
@@ -206,6 +213,30 @@ public class NetCat extends PircBot implements Runnable
 	public void onPrivateMessage(String sender, String login, String hostname, String message)
 	{
 		onMessage(null, sender, login, hostname, message);
+	}
+
+	public void onAction(String sender, String login, String hostname, String target, String action)
+	{
+		final String channel = (target == getNick() ? null : target);
+
+		log.log(Level.FINE, "Action received from " + sender + '/' + channel);
+		final Message m = new Message(action, sender, channel, true);
+		synchronized(srvs)
+		{
+			for (MessageService s : msrvs)
+			{
+				log.log(Level.FINE, "Message dispatched to " + s.getClass().getSimpleName() + '@' + s.getId());
+				try
+				{
+					s.handle(m);
+				}
+				catch (Throwable ex)
+				{
+					log.log(Level.SEVERE, "Error whilst passing message to " + s.getClass().getSimpleName() + '@' + s.getId(), ex);
+				}
+				if (m.dispose) break;
+			}
+		}
 	}
 
 	public synchronized void shutdown()
