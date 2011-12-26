@@ -51,7 +51,7 @@ public abstract class Service
 		log.setUseParentHandlers(false);
 	}
 
-	public void log(Level lvl, String msg, Exception ex)
+	public void log(Level lvl, String msg, Throwable ex)
 	{
 		log.log(lvl, msg, ex);
 	}
@@ -61,7 +61,7 @@ public abstract class Service
 		log.log(lvl, msg);
 	}
 
-	public void log(Level lvl, Exception ex)
+	public void log(Level lvl, Throwable ex)
 	{
 		log.log(lvl, null, ex);
 	}
