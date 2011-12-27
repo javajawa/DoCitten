@@ -3,6 +3,7 @@
 
 JAVAC=javac
 JAR=jar
+JAVA=java
 
 BUILD=build
 SRC=src
@@ -27,10 +28,10 @@ $(PACKAGEJAR): $(BUILD) $(PACKAGE) $(CLASS) $(LIBS)
 	cp lib/irc/dist/*.jar $(PACKAGE)
 
 deploy:
-	$(JAVA) -cp $(CP):$(BUILD) $(MAIN) $(HOST) \#doc
+	$(JAVA) -jar $(PACKAGEJAR) irc.esper.net \#doc \#hpelizausers
 
-run:
-	$(JAVA) -cp $(CP):$(BUILD) $(MAIN) $(HOST) $(CHANNEL)
+beta:
+	$(JAVA) -jar $(PACKAGEJAR) irc.esper.net \#hpelizausers
 
 lib/irc/dist/netcat.jar:
 	$(MAKE) --directory=lib/irc package
