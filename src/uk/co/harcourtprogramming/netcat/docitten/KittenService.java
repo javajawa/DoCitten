@@ -9,7 +9,7 @@ import uk.co.harcourtprogramming.netcat.NetCat.Message;
 public class KittenService extends MessageService
 {
 	private static final Pattern kitten = Pattern.compile("kitte[nh]", Pattern.CASE_INSENSITIVE);
-	private static final Pattern mewls  = Pattern.compile("(^|\\s)(mew|nya+n|mr+a*o+w)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern mewls  = Pattern.compile("(^|\\s)(m+e+w+l*|ny+a+n|m(i+|r+)a*o+w?)", Pattern.CASE_INSENSITIVE);
 	private static final Random r = new Random();
 
 	public KittenService()
