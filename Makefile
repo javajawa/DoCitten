@@ -13,7 +13,7 @@ LIBS=$(wildcard lib/*.jar) lib/irc/dist/netcat.jar
 
 CP=$(SRC):$(LIBS: =:)
 
-FILES=$(wildcard $(SRC)/uk/co/harcourtprogramming/netcat/docitten*.java)
+FILES=$(wildcard $(SRC)/uk/co/harcourtprogramming/netcat/docitten/*.java)
 CLASS=$(patsubst $(SRC)/%.java,$(BUILD)/%.class,$(FILES))
 
 package: $(PACKAGEJAR)
