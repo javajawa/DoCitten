@@ -1,3 +1,3 @@
 [submodule "lib/irc"]
 	path = lib/irc
-	url = /homes/bh308/InternetRelayCat
+	url = https://javajawa@github.com/javajawa/InternetRelayCats.git
