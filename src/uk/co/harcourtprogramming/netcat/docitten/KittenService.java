@@ -8,9 +8,22 @@ import uk.co.harcourtprogramming.netcat.NetCat.Message;
 
 public class KittenService extends MessageService
 {
-	private static final Pattern kitten = Pattern.compile("kitte[nh]", Pattern.CASE_INSENSITIVE);
-	private static final Pattern mewls  = Pattern.compile("(^|\\s)(m+e+w+l*|ny+a+n|m(i+|r+)a*o+w?)", Pattern.CASE_INSENSITIVE);
-	private static final Pattern attention = Pattern.compile("(^|\\s)(scritchl?es|pets|cud+les|hugs|feeds|greets|nuz*les)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern kitten =
+		Pattern.compile(
+			"kitte[nh]",
+			Pattern.CASE_INSENSITIVE
+		);
+	private static final Pattern mewls =
+		Pattern.compile(
+			"(^|\\s)(m+e+w+l*|ny+a+n|m(i+|r+)a*o+w?)",
+			Pattern.CASE_INSENSITIVE
+		);
+	private static final Pattern attention =
+		Pattern.compile(
+			"(^|\\s)(scritchl?es|pets|cud+les|hugs|feeds|greets|nuz*les)",
+			Pattern.CASE_INSENSITIVE
+		);
+
 	private static final Random r = new Random();
 
 	public KittenService()
