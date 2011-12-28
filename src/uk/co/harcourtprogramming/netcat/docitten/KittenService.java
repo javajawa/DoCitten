@@ -10,6 +10,7 @@ public class KittenService extends MessageService
 {
 	private static final Pattern kitten = Pattern.compile("kitte[nh]", Pattern.CASE_INSENSITIVE);
 	private static final Pattern mewls  = Pattern.compile("(^|\\s)(m+e+w+l*|ny+a+n|m(i+|r+)a*o+w?)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern attention = Pattern.compile("(^|\\s)(scritchl?es|pets|cud+les|hugs|feeds|greets)", Pattern.CASE_INSENSITIVE);
 	private static final Random r = new Random();
 
 	public KittenService()
@@ -23,9 +24,13 @@ public class KittenService extends MessageService
 
 		if (m.isAction())
 		{
-			if (mess.trim().equalsIgnoreCase("scritches " + m.getMyNick()))
+			if (mess.toLowerCase().contains(m.getMyNick().toLowerCase()))
 			{
-				m.act("purrrrrrrs");
+				Matcher attentionMatcher = attention.matcher(mess);
+				if (attentionMatcher.find())
+				{
+					m.act("purrrrrrrs");
+				}
 			}
 		}
 
