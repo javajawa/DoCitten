@@ -42,7 +42,7 @@ public class KittenService extends MessageService
 				Matcher attentionMatcher = attention.matcher(mess);
 				if (attentionMatcher.find())
 				{
-					m.act("purrrrrrrs");
+					m.act(attend(m.getSender()));
 				}
 			}
 		}
@@ -67,6 +67,21 @@ public class KittenService extends MessageService
 			case 0: return "nyaann ";
 			case 1: return "mraow ";
 			default: return "mew ";
+		}
+	}
+
+	private String attend(String user)
+	{
+		switch (r.nextInt(6))
+		{
+			case 0: return "purrs";
+			case 1: return "purrrs";
+			case 2: return "purrrrs";
+			case 3: return "purrrrrs";
+			case 4: return "paws at " + user;
+			case 5: return "rubs againsts " + user + "'s legs";
+			case 6: return null;
+			default: return "purrs";
 		}
 	}
 
