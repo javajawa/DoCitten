@@ -9,24 +9,39 @@ import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 public class KittenService extends Service implements MessageService
 {
+	/**
+	 * Words that resolve to the concept of 'kitten'
+	 */
 	private static final Pattern kitten =
 		Pattern.compile(
-			"kitte[nh]",
+			"kitt+e[nh]",
 			Pattern.CASE_INSENSITIVE
 		);
+	/**
+	 * Phrases that resolve to the sounds that cats make
+	 */
 	private static final Pattern mewls =
 		Pattern.compile(
 			"(^|\\s)(m+e+w+l*|ny+a+n|m(i+|r+)a*o+w?)",
 			Pattern.CASE_INSENSITIVE
 		);
+	/**
+	 * Phrases that resolve to things that kitten like being done to them
+	 */
 	private static final Pattern attention =
 		Pattern.compile(
 			"(^|\\s)(scritchl?es|pets|cud+les|hugs|feeds|greets|nuz+les|dangles.+(string|yarn|wool))",
 			Pattern.CASE_INSENSITIVE
 		);
 
+	/**
+	 * Random number source for randomising responses
+	 */
 	private static final Random r = new Random();
 
+	/**
+	 * Creates the kitten service
+	 */
 	public KittenService()
 	{
 		// Nothing to see here. Move along, citizen!
@@ -62,6 +77,9 @@ public class KittenService extends Service implements MessageService
 		}
 	}
 
+	/**e
+	 * @return a random(ish) mewling sound with trailing space
+	 */
 	private String mewl()
 	{
 		switch (r.nextInt(6))
@@ -72,6 +90,10 @@ public class KittenService extends Service implements MessageService
 		}
 	}
 
+	/**
+	 * @param user the user attention is given to
+	 * @return how the kitten responds to the user, or null if it ignores the user
+	 */
 	private String attend(String user)
 	{
 		switch (r.nextInt(6))
