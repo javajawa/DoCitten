@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 
 public class Main
@@ -26,10 +28,17 @@ public class Main
 		RelayCat inst = new RelayCat(nick, args[0], channels);
 		new Thread(inst).start();
 
-		inst.addService(new KittenService());
-		inst.addService(new LinkService());
-		inst.addService(new GoHomeService(args[1]));
-		inst.addService(new MOTDService(new File("/etc/motd.dat"), args[1]));
+		try
+		{
+			inst.addService(new KittenService());
+			inst.addService(new LinkService());
+			inst.addService(new GoHomeService(args[1]));
+			inst.addService(new MOTDService(new File("/etc/motd.dat"), args[1]));
+		}
+		catch (Throwable ex)
+		{
+			Logger.getLogger(nick).log(Level.SEVERE, null, ex);
+		}
 
 		while ( true )
 		{
