@@ -11,10 +11,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.co.harcourtprogramming.internetrelaycats.BasicRelayCat;
 
+/**
+ * <p>Utility class for main function for DoCitten</p>
+ */
 public class Main
 {
+	/**
+	 * <p>The nickname that the bot should use</p>
+	 */
 	public final static String nick = "DoCitten";
 
+	/**
+	 * <p>Runs DoCitten, waiting for 'quit' as a line of stdin before closing</p>
+	 * @param args the command line arguments to the program
+	 * @throws IOException if there's an error reading from stdin
+	 */
 	public static void main(String[] args) throws IOException
 	{
 		if (args.length < 2)
@@ -47,6 +58,14 @@ public class Main
 			if ("quit".equalsIgnoreCase(s)) break;
 		}
 		inst.shutdown();
+	}
+
+	/**
+	 * Private constructor for utility class
+	 */
+	private Main()
+	{
+		throw new RuntimeException("Utility class, not to be created.");
 	}
 }
 
