@@ -9,7 +9,6 @@ class GoHomeService extends ExternalService
 {
 	private final String channel;
 	private final Calendar c = Calendar.getInstance();
-	private boolean dispose = false;
 
 	GoHomeService(BasicRelayCat inst, String channel)
 	{
@@ -22,7 +21,7 @@ class GoHomeService extends ExternalService
 	public synchronized void run()
 	{
 		log(Level.INFO, "'GoHomeService' started");
-		while (!dispose)
+		while (true)
 		{
 			try
 			{
@@ -62,7 +61,7 @@ class GoHomeService extends ExternalService
 	@Override
 	public void shutdown()
 	{
-		dispose = true;
+		// Nothing to see here. Move along, citizen.
 	}
 }
 
