@@ -1,4 +1,4 @@
-package uk.co.harcourtprogramming.netcat.docitten;
+package uk.co.harcourtprogramming.docitten;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.logging.Level;
-import uk.co.harcourtprogramming.netcat.ExternalService;
+import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 
 public class MOTDService extends ExternalService
 {

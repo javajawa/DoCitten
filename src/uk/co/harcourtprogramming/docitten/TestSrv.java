@@ -1,8 +1,8 @@
-package uk.co.harcourtprogramming.netcat.docitten;
+package uk.co.harcourtprogramming.docitten;
 
 import java.util.logging.Level;
-import uk.co.harcourtprogramming.netcat.MessageService;
-import uk.co.harcourtprogramming.netcat.NetCat.Message;
+import uk.co.harcourtprogramming.internetrelaycats.MessageService;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat.Message;
 
 public class TestSrv extends MessageService
 {

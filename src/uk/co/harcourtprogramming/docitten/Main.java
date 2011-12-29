@@ -1,4 +1,4 @@
-package uk.co.harcourtprogramming.netcat.docitten;
+package uk.co.harcourtprogramming.docitten;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.util.Arrays;
 import java.util.List;
-import uk.co.harcourtprogramming.netcat.NetCat;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 
 public class Main
 {
@@ -23,7 +23,7 @@ public class Main
 		final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		final List<String> channels = Arrays.asList(Arrays.copyOfRange(args, 1, args.length));
 
-		NetCat inst = new NetCat(nick, args[0], channels);
+		RelayCat inst = new RelayCat(nick, args[0], channels);
 		new Thread(inst).start();
 
 		inst.addService(new KittenService());

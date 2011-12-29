@@ -1,10 +1,10 @@
-package uk.co.harcourtprogramming.netcat.docitten;
+package uk.co.harcourtprogramming.docitten;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.Random;
-import uk.co.harcourtprogramming.netcat.MessageService;
-import uk.co.harcourtprogramming.netcat.NetCat.Message;
+import uk.co.harcourtprogramming.internetrelaycats.MessageService;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat.Message;
 
 public class KittenService extends MessageService
 {

@@ -1,11 +1,11 @@
-package uk.co.harcourtprogramming.netcat.docitten;
+package uk.co.harcourtprogramming.docitten;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import uk.co.harcourtprogramming.netcat.MessageService;
-import uk.co.harcourtprogramming.netcat.NetCat.Message;
+import uk.co.harcourtprogramming.internetrelaycats.MessageService;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat.Message;
 
 public class LinkService extends MessageService
 {

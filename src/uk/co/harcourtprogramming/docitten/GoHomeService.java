@@ -1,8 +1,8 @@
-package uk.co.harcourtprogramming.netcat.docitten;
+package uk.co.harcourtprogramming.docitten;
 
 import java.util.Calendar;
 import java.util.logging.Level;
-import uk.co.harcourtprogramming.netcat.ExternalService;
+import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 
 class GoHomeService extends ExternalService
 {
