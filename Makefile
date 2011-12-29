@@ -9,7 +9,7 @@ BUILD=build
 SRC=src
 PACKAGE=dist
 PACKAGEJAR=$(PACKAGE)/docitten.jar
-LIBS=$(wildcard lib/*.jar) lib/irc/dist/netcat.jar
+LIBS=$(wildcard lib/*.jar) lib/irc/dist/irc.jar
 
 CP=$(SRC):$(LIBS: =:)
 
