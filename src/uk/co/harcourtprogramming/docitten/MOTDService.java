@@ -97,8 +97,8 @@ public class MOTDService extends ExternalService
 
 		this.channel = channel;
 		this.f = f;
-		processFile();
-
+		processFile(); // Pre-process the file - messages will not be sent,
+		// thus old MOTD's won't be reposted to the list on Service restart
 	}
 
 	/**
