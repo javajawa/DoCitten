@@ -7,16 +7,38 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.logging.Level;
+import org.jibble.pircbot.Colors;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.BasicRelayCat;
 
+/**
+ * <p>Service for processing the motd.dat files on DoC's file systems, and
+ * posting new announcements to the irc channel</p>
+ */
 public class MOTDService extends ExternalService
 {
+	/**
+	 * <p>The MOTD.dat file</p>
+	 */
 	private final File f;
+	/**
+	 * <p>The channel (or user) to sent information to</p>
+	 */
 	private final String channel;
+	/**
+	 * <p>The id of the last message sent</p>
+	 */
 	private int lastId = 0;
+	/**
+	 * <p>The last seen modification timestamp for the file</p>
+	 */
 	private long lastModified = 0;
 
+	/**
+	 * <p>Class that stores the attributes of messages as laid out in the
+	 * motd.dat file</p>
+	 * @see MOTDService#processFile()
+	 */
 	private class Message
 	{
 		private Integer id = null;
@@ -29,30 +51,41 @@ public class MOTDService extends ExternalService
 		private String poster_uid = null;
 		private String poster_name = null;
 
+		/**
+		 *
+		 */
 		private Message()
 		{
 			// Nothing to see here. Move along, citizen!
 		}
 
+		/**
+		 * Returns this MOTD mesasge in the form:
+		 * <pre>#666 *Benedict Harcourt* (bh308@doc): Important Announcement
+		 * DoCitten can now read the Message of the Day data files</pre>
+		 * @return
+		 */
+		@Override
 		public String toString()
 		{
-			StringBuilder b = new StringBuilder();
-
-			b.append('#');
-			b.append(id);
-			b.append(" *");
-			b.append(poster_name);
-			b.append("* (");
-			b.append(poster_uid);
-			b.append("@doc): ");
-			b.append(title);
-			b.append('\n');
-			b.append(mlong.replace("<BR>","\n"));
-
-			return b.toString();
+			return String.format("#%1$d %6$s%2$s%6$s (%3$s@doc): %4$s\n%5$s",
+			    new Object[]{
+			        id,
+			        poster_name,
+			        poster_uid,
+			        title,
+			        mlong.replaceAll("</?(p|P|br|BR)( ?/)?>", "\n"),
+			        Colors.BOLD
+			    });
 		}
 	}
 
+	/**
+	 * <p>Creates an MOTD Service</p>
+	 * @param inst the BasicRelayCat instance this service will be used with
+	 * @param f the motd.dat file to watch
+	 * @param channel the channel (or user) to post new entries to
+	 */
 	public MOTDService(BasicRelayCat inst, File f, String channel)
 	{
 		super(inst);
@@ -69,6 +102,10 @@ public class MOTDService extends ExternalService
 		getThread().setDaemon(true);
 	}
 
+	/**
+	 * <p>Runs the MOTD Service</p>
+	 */
+	@Override
 	public void run()
 	{
 		while (true)
@@ -79,7 +116,7 @@ public class MOTDService extends ExternalService
 			}
 			try
 			{
-				getThread().sleep(60000);
+				Thread.sleep(60000);
 			}
 			catch (InterruptedException ex)
 			{
@@ -87,7 +124,12 @@ public class MOTDService extends ExternalService
 		}
 	}
 
+	/**
+	 * <p>Process an MOTD.dat file at the supplied path, look for new entries,
+	 * and message the appropriate channel or user.</p>
+	 */
 	@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+	// Accessing final fields of a private inner class that is not exported
 	private void processFile()
 	{
 		log(Level.INFO, "Processing MOTD file " + f.getPath());
@@ -201,6 +243,7 @@ public class MOTDService extends ExternalService
 		}
 	}
 
+	@Override
 	public void shutdown()
 	{
 		// Nothing to see here. Move along, citizen!
