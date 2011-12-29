@@ -17,6 +17,8 @@ class GoHomeService extends ExternalService
 		getThread().setDaemon(true);
 	}
 
+	@Override
+	@SuppressWarnings({"SleepWhileHoldingLock", "SleepWhileInLoop"})
 	public synchronized void run()
 	{
 		log(Level.INFO, "'GoHomeService' started");
@@ -33,23 +35,23 @@ class GoHomeService extends ExternalService
 						case 40:
 							message(channel,
 							  "Ladies and Gentlemen, your attention please: DoC Labs will be closing in 20 minutes");
-							getThread().sleep(60000);
+							Thread.sleep(60000);
 							break;
 						case 50:
 							message(channel,
 							  "Ladies and Gentlemen, your attention please: DoC Labs will be closing in 10 minutes\n" +
 							  "A wry, witty comment should go here!");
-							getThread().sleep(60000);
+							Thread.sleep(60000);
 							break;
 						case 55:
 							message(channel,
 							  "Ladies and Gentlemen, your attention please: DoC Labs will be closing in 5 minutes\n" +
 							  "Please save your work, log off, and try not to get locked in!");
-							getThread().sleep(60000);
+							Thread.sleep(60000);
 							break;
 					}
 				}
-				getThread().sleep(30000);
+				Thread.sleep(30000);
 			}
 			catch (InterruptedException ex)
 			{
