@@ -6,8 +6,9 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat.Message;
+import uk.co.harcourtprogramming.internetrelaycats.Service;
 
-public class LinkService extends MessageService
+public class LinkService extends Service implements MessageService
 {
 	private final static Pattern uriPattern =
 		Pattern.compile("(https?://)?(\\w+\\.)+(com|net|uk|edu|is.gd|bit.ly)(/[\\w.#?%=+-~]*)*", Pattern.CASE_INSENSITIVE);

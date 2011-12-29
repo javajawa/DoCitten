@@ -3,8 +3,9 @@ package uk.co.harcourtprogramming.docitten;
 import java.util.logging.Level;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat.Message;
+import uk.co.harcourtprogramming.internetrelaycats.Service;
 
-public class TestSrv extends MessageService
+public class TestSrv extends Service implements MessageService
 {
 	public TestSrv()
 	{

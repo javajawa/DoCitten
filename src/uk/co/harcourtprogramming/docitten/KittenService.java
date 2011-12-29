@@ -5,8 +5,9 @@ import java.util.regex.Matcher;
 import java.util.Random;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat.Message;
+import uk.co.harcourtprogramming.internetrelaycats.Service;
 
-public class KittenService extends MessageService
+public class KittenService extends Service implements MessageService
 {
 	private static final Pattern kitten =
 		Pattern.compile(
@@ -38,7 +39,7 @@ public class KittenService extends MessageService
 
 		if (m.isAction())
 		{
-			if (mess.toLowerCase().contains(m.getMyNick().toLowerCase()))
+			if (mess.toLowerCase().contains(m.getNick().toLowerCase()))
 			{
 				Matcher attentionMatcher = attention.matcher(mess);
 				if (attentionMatcher.find())
