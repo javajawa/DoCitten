@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
+import uk.co.harcourtprogramming.internetrelaycats.BasicRelayCat;
 
 public class MOTDService extends ExternalService
 {
@@ -52,9 +53,9 @@ public class MOTDService extends ExternalService
 		}
 	}
 
-	public MOTDService(File f, String channel)
+	public MOTDService(BasicRelayCat inst, File f, String channel)
 	{
-		super();
+		super(inst);
 
 		if (!f.canRead())
 		{
@@ -194,7 +195,7 @@ public class MOTDService extends ExternalService
 			if (m.id > lastId)
 			{
 				log(Level.INFO, "Sending MOTD Notice #" + m.id);
-				message(channel, m.toString());
+				getInstance().message(channel, m.toString());
 				lastId = m.id;
 			}
 		}

@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.Random;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
-import uk.co.harcourtprogramming.internetrelaycats.RelayCat.Message;
+import uk.co.harcourtprogramming.internetrelaycats.BasicRelayCat.Message;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 public class KittenService extends Service implements MessageService

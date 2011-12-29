@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
-import uk.co.harcourtprogramming.internetrelaycats.RelayCat.Message;
+import uk.co.harcourtprogramming.internetrelaycats.BasicRelayCat.Message;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 public class LinkService extends Service implements MessageService
