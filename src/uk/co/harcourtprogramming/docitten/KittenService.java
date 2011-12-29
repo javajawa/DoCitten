@@ -56,7 +56,7 @@ public class KittenService extends MessageService
 
 		if (reply.length() != 0)
 		{
-			m.replyToAll(reply += "=^.^=");
+			m.replyToAll(reply + "=^.^=");
 		}
 	}
 
