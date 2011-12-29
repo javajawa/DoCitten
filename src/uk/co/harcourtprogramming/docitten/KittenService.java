@@ -20,7 +20,7 @@ public class KittenService extends MessageService
 		);
 	private static final Pattern attention =
 		Pattern.compile(
-			"(^|\\s)(scritchl?es|pets|cud+les|hugs|feeds|greets|nuz*les)",
+			"(^|\\s)(scritchl?es|pets|cud+les|hugs|feeds|greets|nuz+les)",
 			Pattern.CASE_INSENSITIVE
 		);
 
