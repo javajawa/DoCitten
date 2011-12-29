@@ -15,7 +15,6 @@ class GoHomeService extends ExternalService
 	{
 		super(inst);
 		this.channel = channel;
-		getThread().setDaemon(true);
 	}
 
 	@Override

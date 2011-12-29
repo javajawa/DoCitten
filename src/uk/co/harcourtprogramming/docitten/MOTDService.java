@@ -99,7 +99,6 @@ public class MOTDService extends ExternalService
 		this.f = f;
 		processFile();
 
-		getThread().setDaemon(true);
 	}
 
 	/**
