@@ -1,10 +1,11 @@
 package uk.co.harcourtprogramming.docitten;
 
+import static java.util.Arrays.asList;
+import static java.util.Arrays.copyOfRange;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +24,7 @@ public class Main
 		}
 
 		final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		final List<String> channels = Arrays.asList(Arrays.copyOfRange(args, 1, args.length));
+		final List<String> channels = asList(copyOfRange(args, 1, args.length));
 
 		BasicRelayCat inst = new BasicRelayCat(nick, args[0], channels);
 		new Thread(inst).start();
