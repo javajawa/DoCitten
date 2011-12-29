@@ -8,16 +8,34 @@ import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.BasicRelayCat.Message;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 
+/**
+ * Link detection/analysis service
+ */
 public class LinkService extends Service implements MessageService
 {
+	/**
+	 * <p>Links are detected using this regex</p>
+	 * <p>The regex works from detecting a limited subset of the top-level and
+	 * selected other domains as a focal point; by looking for subdomains and
+	 * protocol before, and path, query and location after, the full uris is
+	 * matched.
+	 */
 	private final static Pattern uriPattern =
 		Pattern.compile("(https?://)?(\\w+\\.)+(com|net|uk|edu|is.gd|bit.ly)(/[\\w.#?%=+-~]*)*", Pattern.CASE_INSENSITIVE);
 
+	/**
+	 * Create a link server
+	 */
 	public LinkService()
 	{
 		// Nothing to see here. Move along, citizen!
 	}
 
+	/**
+	 * Code for testing the class/regex from the command line
+	 * @param args the cli arguments
+	 * @todo Migrate this to a JUnit test
+	 */
 	public static void main(String[] args)
 	{
 		String[] tests = new String[] {
@@ -34,10 +52,10 @@ public class LinkService extends Service implements MessageService
 
 		for (String l : tests)
 		{
-			System.out.println("" + uri(l).size() + '\t' + l);
+			System.out.println("" + uris(l).size() + '\t' + l);
 		}
 
-		List<String> s = uri("Hello there hello.com and example.com/?q=bob are spam sites");
+		List<String> s = uris("Hello there hello.com and example.com/?q=bob are spam sites");
 		System.out.println("Hello there hello.com and example.com/?q=bob are spam sites");
 		for (String t : s)
 		{
@@ -48,12 +66,17 @@ public class LinkService extends Service implements MessageService
 	@Override
 	public void handle(Message m)
 	{
-		List<String> uris = uri(m.getMessage());
+		List<String> uris = uris(m.getMessage());
 		for (String uri : uris)
 			m.replyToAll("Link Detected: " + uri);
 	}
 
-	public static List<String> uri(String message)
+	/**
+	 * <p>Finds and returns all matched uris in a given string (message)
+	 * @param message the message to scan for links
+	 * @return the list of links that are found (may by empty, but not null)
+	 */
+	public static List<String> uris(String message)
 	{
 		Matcher m = uriPattern.matcher(message);
 		final List<String> r = new ArrayList<String>();
