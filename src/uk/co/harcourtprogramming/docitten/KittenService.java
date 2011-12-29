@@ -31,6 +31,7 @@ public class KittenService extends MessageService
 		// Nothing to see here. Move along, citizen!
 	}
 
+	@Override
 	public void handle(Message m)
 	{
 		final String mess = m.getMessage();
@@ -85,6 +86,7 @@ public class KittenService extends MessageService
 		}
 	}
 
+	@Override
 	public void shutdown()
 	{
 		// Nothing to see here. Move along, citizen!

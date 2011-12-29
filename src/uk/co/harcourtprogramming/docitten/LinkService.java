@@ -44,6 +44,7 @@ public class LinkService extends MessageService
 		}
 	}
 
+	@Override
 	public void handle(Message m)
 	{
 		List<String> uris = uri(m.getMessage());
@@ -63,6 +64,7 @@ public class LinkService extends MessageService
 		return r;
 	}
 
+	@Override
 	public void shutdown()
 	{
 		// Nothing to see here. Move along, citizen!

@@ -16,7 +16,7 @@ public class MOTDService extends ExternalService
 	private int lastId = 0;
 	private long lastModified = 0;
 
-	public class Message
+	private class Message
 	{
 		private Integer id = null;
 		private Boolean active = null;
@@ -86,6 +86,7 @@ public class MOTDService extends ExternalService
 		}
 	}
 
+	@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
 	private void processFile()
 	{
 		log(Level.INFO, "Processing MOTD file " + f.getPath());

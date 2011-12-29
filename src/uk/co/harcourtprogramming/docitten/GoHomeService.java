@@ -10,7 +10,7 @@ class GoHomeService extends ExternalService
 	private final Calendar c = Calendar.getInstance();
 	private boolean dispose = false;
 
-	public GoHomeService(String channel)
+	GoHomeService(String channel)
 	{
 		super();
 		this.channel = channel;
@@ -59,6 +59,7 @@ class GoHomeService extends ExternalService
 		}
 	}
 
+	@Override
 	public void shutdown()
 	{
 		dispose = true;
