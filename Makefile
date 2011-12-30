@@ -27,7 +27,7 @@ $(PACKAGEJAR): $(BUILD) $(PACKAGE) $(CLASS) $(LIBS)
 	cp $(LIBS) $(PACKAGE)
 	cp lib/irc/dist/*.jar $(PACKAGE)
 
-lib/irc/dist/netcat.jar:
+lib/irc/dist/irc.jar:
 	$(MAKE) --directory=lib/irc package
 
 $(BUILD):
@@ -37,6 +37,7 @@ $(PACKAGE):
 	-mkdir $(PACKAGE)
 
 clean:
+	$(MAKE) --directory=lib/irc clean
 	-rm -f build/* -r
 	-rm -f dist/* -r
 
