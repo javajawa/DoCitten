@@ -57,10 +57,11 @@ public class HelpingServiceTest
 	 * Test of handle method, of class HelpingService.
 	 */
 	@Test
-	public void testMessageChannel()
+	public void testMessageViaChannel()
 	{
 		final String channel = "#doc";
-		cat.inputMessage("bob", channel, input);
+		final String user = "bob";
+		cat.inputMessage(user, channel, input);
 
 		Message reply = cat.getOutput();
 		if (!output)
@@ -71,7 +72,10 @@ public class HelpingServiceTest
 
 		assertNotNull("No reply was generared for " + input, reply);
 		assertEquals("Not sent back to channel", channel, reply.getChannel());
-		assertEquals("Nto correct reply", HelpingService.HELPING, reply.getMessage());
+		assertEquals("Not correct reply", HelpingService.HELPING, reply.getMessage());
+
+		assertNull("More than one message generated", cat.getOutput());
+	}
 
 		assertNull("More than one message generated", cat.getOutput());
 	}
