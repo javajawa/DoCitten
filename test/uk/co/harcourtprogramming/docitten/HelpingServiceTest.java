@@ -80,6 +80,31 @@ public class HelpingServiceTest
 		assertNull("More than one message generated", cat.getOutput());
 	}
 
+
+	/**
+	 * For each supplied parameter, test whether the HelpingService generates
+	 * the given output (either HelpingService.HELP or none) from a given input
+	 * The version sends to a user, and expects replies to, and only to,
+	 * the user
+	 */
+	@Test
+	public void testMessageDirectFromUser()
+	{
+		final String channel = null;
+		final String user = "bob";
+		cat.inputMessage(user, channel, input);
+
+		Message reply = cat.getOutput();
+		if (!output)
+		{
+			assertNull("Unexpected reply with " + input, reply);
+			return;
+		}
+
+		assertNotNull("No reply was generared for " + input, reply);
+		assertEquals("Not sent back to user", user, reply.getChannel());
+		assertEquals("Not correct reply", HelpingService.HELPING, reply.getMessage());
+
 		assertNull("More than one message generated", cat.getOutput());
 	}
 }
