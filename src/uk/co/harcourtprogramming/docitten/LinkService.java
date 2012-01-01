@@ -32,7 +32,7 @@ public class LinkService extends Service implements MessageService
 	 * matched.
 	 */
 	private final static Pattern uriPattern =
-		Pattern.compile("(https?://)?(\\w+\\.)*(www|com|net|uk|edu|is.gd|bit.ly)(/[^\\s]*)*", Pattern.CASE_INSENSITIVE);
+		Pattern.compile("(https?://)?(\\w+\\.)*((\\w+\\.(com|net|uk|edu))|(www|is.gd|bit.ly))(/[^\\s]*)*", Pattern.CASE_INSENSITIVE);
 	private final static Pattern protocolPattern =
 		Pattern.compile("https?://.+", Pattern.CASE_INSENSITIVE);
 
