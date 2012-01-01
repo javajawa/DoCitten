@@ -223,38 +223,6 @@ public class LinkService extends Service implements MessageService
 		// Nothing to see here. Move along, citizen!
 	}
 
-	/**
-	 * Code for testing the class/regex from the command line
-	 * @param args the cli arguments
-	 * @todo Migrate this to a JUnit test
-	 */
-	public static void main(String[] args)
-	{
-		String[] tests = new String[] {
-			"http://example.com",
-			"http://example.com/",
-			"example.com",
-			"example.com/",
-			"hello com",
-			"bob",
-			"example.com/index.html",
-			"example.com/?q=bob",
-			"http://www.youtube.com/watch?v=2jzugX2NMnk"
-		};
-
-		for (String l : tests)
-		{
-			System.out.println("" + uris(l).size() + '\t' + l);
-		}
-
-		Set<String> s = uris("Hello there hello.com and example.com/?q=bob are spam sites");
-		System.out.println("Hello there hello.com and example.com/?q=bob are spam sites");
-		for (String t : s)
-		{
-			System.out.println(" >> " + t);
-		}
-	}
-
 	@Override
 	public void handle(Message m)
 	{
