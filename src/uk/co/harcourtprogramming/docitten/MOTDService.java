@@ -97,7 +97,7 @@ public class MOTDService extends ExternalService
 
 		this.channel = channel;
 		this.f = f;
-		processFile(); // Pre-process the file - messages will not be sent,
+		processFile(true); // Pre-process the file - messages will not be sent,
 		// thus old MOTD's won't be reposted to the list on Service restart
 	}
 
@@ -111,7 +111,7 @@ public class MOTDService extends ExternalService
 		{
 			if (f.lastModified() > lastModified)
 			{
-				processFile();
+				processFile(false);
 			}
 			try
 			{
@@ -129,7 +129,7 @@ public class MOTDService extends ExternalService
 	 */
 	@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
 	// Accessing final fields of a private inner class that is not exported
-	private void processFile()
+	private void processFile(boolean initial)
 	{
 		log(Level.INFO, "Processing MOTD file " + f.getPath());
 		BufferedReader in = null;
@@ -164,6 +164,7 @@ public class MOTDService extends ExternalService
 					curr.id = Integer.parseInt(value);
 					continue;
 				}
+				if (initial) continue; // We only care for ids in initial pass
 				if (field.equals("active"))
 				{
 					curr.active = Boolean.valueOf(value);
@@ -231,6 +232,11 @@ public class MOTDService extends ExternalService
 		if (curr != null) stack.push(curr);
 		lastModified = f.lastModified();
 
+		if (initial)
+		{
+			if (stack.size() > 0) lastId = stack.getLast().id;
+			return;
+		}
 		for (Message m : stack)
 		{
 			if (m.id > lastId)
