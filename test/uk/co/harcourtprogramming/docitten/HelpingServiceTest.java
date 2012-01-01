@@ -54,7 +54,10 @@ public class HelpingServiceTest
 	}
 
 	/**
-	 * Test of handle method, of class HelpingService.
+	 * For each supplied parameter, test whether the HelpingService generates
+	 * the given output (either HelpingService.HELP or none) from a given input
+	 * The version sends to a channel, and expects replies to, and only to,
+	 * the channel
 	 */
 	@Test
 	public void testMessageViaChannel()
