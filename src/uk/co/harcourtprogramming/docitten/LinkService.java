@@ -5,8 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -282,7 +282,8 @@ public class LinkService extends Service implements MessageService
 	 */
 	public static Set<String> uris(String message)
 	{
-		final Set<String> r = new HashSet<String>();
+		// TreeSet is strongly ordered
+		final Set<String> r = new TreeSet<String>();
 
 		Matcher m = uriPattern.matcher(message);
 		while (m.find())

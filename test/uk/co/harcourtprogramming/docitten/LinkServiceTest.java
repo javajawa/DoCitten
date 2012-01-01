@@ -2,8 +2,8 @@ package uk.co.harcourtprogramming.docitten;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +35,8 @@ public class LinkServiceTest
 			String... links)
 		{
 			this.inputText = inputText;
-			this.links = new HashSet<String>(Arrays.asList(links));
+			// TreeSet will force natural ordering
+			this.links = new TreeSet<String>(Arrays.asList(links));
 		}
 
 	}
