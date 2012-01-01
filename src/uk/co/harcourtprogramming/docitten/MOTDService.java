@@ -60,23 +60,19 @@ public class MOTDService extends ExternalService
 		}
 
 		/**
-		 * Returns this MOTD mesasge in the form:
+		 * Returns this MOTD message in the form:
 		 * <pre>#666 *Benedict Harcourt* (bh308@doc): Important Announcement
 		 * DoCitten can now read the Message of the Day data files</pre>
-		 * @return
+		 * @return formatted MOTD message
 		 */
 		@Override
 		public String toString()
 		{
 			return String.format("#%1$d %6$s%2$s%6$s (%3$s@doc): %4$s\n%5$s",
-			    new Object[]{
-			        id,
-			        poster_name,
-			        poster_uid,
-			        title,
-			        mlong.replaceAll("</?(p|P|br|BR)( ?/)?>", "\n"),
-			        Colors.BOLD
-			    });
+			    id, poster_name, poster_uid, title,
+			    mlong.replaceAll("</?(br|BR)( ?/)?>", "").replaceAll("</?(p|P) ( ?/)?>", "\n"),
+			    Colors.BOLD
+			);
 		}
 	}
 
