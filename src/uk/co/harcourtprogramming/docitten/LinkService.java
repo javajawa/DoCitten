@@ -48,7 +48,7 @@ public class LinkService extends Service implements MessageService
 	/**
 	 * <p>Thread group for running link resolvers in</p.
 	 * <p>The group is marked as a Daemon group, and so will be ignored by the
-	 * JVM when it comes to determining the nubmer of important running threads</p>
+	 * JVM when it comes to determining the number of important running threads</p>
 	 */
 	private final static ThreadGroup THREAD_GROUP = new ThreadGroup("LinkResolvers") {
 		@Override
@@ -110,11 +110,25 @@ public class LinkService extends Service implements MessageService
 		return String.format("%.1f %siB", bytes / Math.pow(1024, exp), UNIT_PREFIX.charAt(exp-1));
 	}
 
+	/**
+	 * <p>Recursive URL retriever</p>
+	 */
 	private class LinkResolver implements Runnable
 	{
+		/**
+		 * The original URI that we are retrieving
+		 */
 		private final URI baseURI;
+		/**
+		 * Message that we will be replying to
+		 */
 		private final Message mess;
 
+		/**
+		 * Creates a link resolver instance
+		 * @param baseURI the link we're following
+		 * @param mess the message to replyToAll
+		 */
 		private LinkResolver(String baseURI, Message mess)
 		{
 			if (!protocolPattern.matcher(baseURI).matches())
@@ -128,6 +142,9 @@ public class LinkService extends Service implements MessageService
 			this.mess = mess;
 		}
 
+		/**
+		 * Runs this LinkResolver
+		 */
 		@Override
 		public void run()
 		{
