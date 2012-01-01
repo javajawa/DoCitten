@@ -112,18 +112,18 @@ public class LinkService extends Service implements MessageService
 
 	private class LinkResolver implements Runnable
 	{
-		private final URL baseURI;
+		private final URI baseURI;
 		private final Message mess;
 
-		private LinkResolver(String baseURI, Message mess) throws MalformedURLException
+		private LinkResolver(String baseURI, Message mess)
 		{
 			if (!protocolPattern.matcher(baseURI).matches())
 			{
-				this.baseURI = new URL("http://" + baseURI);
+				this.baseURI = URI.create("http://" + baseURI);
 			}
 			else
 			{
-				this.baseURI = new URL(baseURI);
+				this.baseURI = URI.create(baseURI);
 			}
 			this.mess = mess;
 		}
@@ -133,7 +133,7 @@ public class LinkService extends Service implements MessageService
 		{
 			try
 			{
-				URL curr = baseURI;
+				URL curr = baseURI.toURL();
 				HttpURLConnection conn;
 				boolean resolved = false;
 
@@ -247,21 +247,15 @@ public class LinkService extends Service implements MessageService
 	public void handle(Message m)
 	{
 		Set<String> uris = uris(m.getMessage());
+		LinkResolver l; Thread t;
+
 		for (String uri : uris)
-			try
-			{
-				LinkResolver l = new LinkResolver(uri, m);
-				if (THREAD_GROUP.isDestroyed())
-					throw new IllegalThreadStateException("Thread Group destoryed whilst trying to start search for " + uri);
-				Thread t = new Thread(THREAD_GROUP, l, "Link Resolver: " + uri);
-				t.setDaemon(true);
-				t.start();
-			}
-			catch (MalformedURLException ex)
-			{
-				Logger.getLogger(LinkService.class.getName()).
-					log(Level.SEVERE, "Malformed URI: " + uri, ex);
-			}
+		{
+			l = new LinkResolver(uri, m);
+			t = new Thread(THREAD_GROUP, l, "Link Resolver: " + uri);
+			t.setDaemon(true);
+			t.start();
+		}
 	}
 
 	/**
