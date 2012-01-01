@@ -83,11 +83,11 @@ public class LinkService extends Service implements MessageService
 		THREAD_GROUP.setDaemon(false);
 	}
 
-	private static final String pre = "kMGTPE";
+	private static final String UNIT_PREFIX = "kMGTPE";
 	private static String humanReadableByteCount(long bytes) {
 		if (bytes < 1024) return bytes + " B";
 		int exp = (int) (Math.log(bytes) / Math.log(1024));
-		return String.format("%.1f %siB", bytes / Math.pow(1024, exp), pre.charAt(exp-1));
+		return String.format("%.1f %siB", bytes / Math.pow(1024, exp), UNIT_PREFIX.charAt(exp-1));
 	}
 
 	private class LinkResolver implements Runnable
