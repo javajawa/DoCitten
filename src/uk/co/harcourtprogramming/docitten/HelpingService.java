@@ -14,11 +14,11 @@ public class HelpingService extends Service implements MessageService
 	 * <p>Regex to determine when someone is asking for help</p>
 	 */
 	private final static Pattern HELP_PATTERN =
-	    Pattern.compile("\\s(help|assist(ance|ence)?|aid)\\s", Pattern.CASE_INSENSITIVE);
+	    Pattern.compile("(^|\\s)(help|assist(ance|ence)?|aid)(\\s|$)", Pattern.CASE_INSENSITIVE);
 	/**
 	 * <p>What to say when help is asked for</p>
 	 */
-	private final static String HELPING = "HELPING!!!";
+	final static String HELPING = "HELPING!!!";
 
 	/**
 	 * <p>Creates a Helping Service instance</p>
@@ -30,7 +30,7 @@ public class HelpingService extends Service implements MessageService
 	@Override
 	public void handle(Message m)
 	{
-		if (HELP_PATTERN.matcher(m.getMessage()).matches())
+		if (HELP_PATTERN.matcher(m.getMessage()).find())
 			m.replyToAll(HELPING);
 	}
 
