@@ -88,10 +88,25 @@ public class LinkService extends Service implements MessageService
 		THREAD_GROUP.setDaemon(false);
 	}
 
-	private static final String UNIT_PREFIX = "kMGTPE";
+	/**
+	 * <p>Letters for binary prefixs</p>
+	 * <p>kilo, mega, giga, terra, pera, exa, zetta, yotta, hella</p>
+	 * <p>Note: hella is my favourite proposal for 10^27. Also, Long.MAX_VALUE
+	 * is only about 8 EiB, so it'll be a little while before it gets used</p>
+	 */
+	private final static String UNIT_PREFIX = "kMGTPEZYH";
+	/**
+	 * ln(ratio between any two prefixes)
+	 */
+	private final static double UNIT_SIZE = Math.log(1024);
+	/**
+	 * Converts a byte count into a 1dp figure of <kMG...>iB (uses base 1024)
+	 * @param bytes the number of bytes
+	 * @return formatted value
+	 */
 	private static String humanReadableByteCount(long bytes) {
 		if (bytes < 1024) return bytes + " B";
-		int exp = (int) (Math.log(bytes) / Math.log(1024));
+		int exp = (int) (Math.log(bytes) / UNIT_SIZE);
 		return String.format("%.1f %siB", bytes / Math.pow(1024, exp), UNIT_PREFIX.charAt(exp-1));
 	}
 
