@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.logging.Level;
-import org.jibble.pircbot.Colors;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.BasicRelayCat;
 
@@ -68,10 +67,9 @@ public class MOTDService extends ExternalService
 		@Override
 		public String toString()
 		{
-			return String.format("#%1$d %6$s%2$s%6$s (%3$s@doc): %4$s\n%5$s",
+			return String.format("#%1$d *%2$s* (%3$s@doc): %4$s\n%5$s",
 			    id, poster_name, poster_uid, title,
-			    mlong.replaceAll("</?(br|BR)( ?/)?>", "").replaceAll("</?(p|P) ( ?/)?>", "\n"),
-			    Colors.BOLD
+			    mlong.replaceAll("</?(br|BR)( ?/)?>", "").replaceAll("</?(p|P) ( ?/)?>", "\n")
 			);
 		}
 	}

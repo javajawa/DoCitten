@@ -33,13 +33,13 @@ test-build: $(TCLASS)
 test:
 	java -cp $(TBUILD):$(TCP) org.junit.runner.JUnitCore $(TESTS)
 
-$(BUILD)/%.class : $(SRC)/%.java $(LIBS)
+$(BUILD)/%.class : $(SRC)/%.java $(LIBS) $(BUILD)
 	$(JAVAC) -classpath $(CP) -d $(BUILD) $<
 
 $(TBUILD)/%.class : $(TEST)/%.java $(LIBS) compile $(TBUILD)
 	$(JAVAC) -classpath $(TCP) -d $(TBUILD) $<
 
-$(PACKAGEJAR): $(BUILD) $(PACKAGE) $(CLASS) $(LIBS)
+$(PACKAGEJAR): $(BUILD) $(PACKAGE) $(CLASS) $(LIBS) Manifest.mf
 	$(JAR) cfm $(PACKAGEJAR) Manifest.mf -C $(BUILD) .
 	cp $(LIBS) $(PACKAGE)
 	cp lib/irc/dist/*.jar $(PACKAGE)
