@@ -46,6 +46,7 @@ public class Main
 			inst.addService(new LinkService());
 			inst.addService(new GoHomeService(inst, args[1]));
 			inst.addService(new HelpingService());
+			inst.addService(new ReminderService(inst));
 			inst.addService(new MOTDService(inst, new File("/etc/motd.dat"), args[1]));
 		}
 		catch (Throwable ex)
