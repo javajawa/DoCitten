@@ -1,5 +1,7 @@
 package uk.co.harcourtprogramming.docitten;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import org.junit.Test;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.TestingRelayCat;
@@ -16,7 +18,7 @@ public class ReminderServiceTest
 	}
 
 	@Test
-	public void testListEmptyList()
+	public void testListEmptyList() throws UnknownHostException, IOException
 	{
 		final TestingRelayCat cat = new TestingRelayCat();
 		final ReminderService srv = new ReminderService(cat);
@@ -31,7 +33,7 @@ public class ReminderServiceTest
 	}
 
 	@Test
-	public void testNote()
+	public void testNote() throws UnknownHostException, IOException
 	{
 		final String note = "Hello, world!";
 		final TestingRelayCat cat = new TestingRelayCat();
@@ -57,7 +59,7 @@ public class ReminderServiceTest
 	}
 
 	@Test
-	public void testNotes() throws InterruptedException
+	public void testNotes()  throws UnknownHostException, IOException, InterruptedException
 	{
 		final String note1 = "Hello, world!";
 		final String note2 = "Hello, computer!";
@@ -96,7 +98,7 @@ public class ReminderServiceTest
 	}
 
 	@Test
-	public void UnknownCommand()
+	public void UnknownCommand() throws UnknownHostException, IOException
 	{
 		final TestingRelayCat cat = new TestingRelayCat();
 		final ReminderService srv = new ReminderService(cat);
@@ -113,7 +115,7 @@ public class ReminderServiceTest
 
 
 	@Test
-	public void NullCommand()
+	public void NullCommand() throws UnknownHostException, IOException
 	{
 		final TestingRelayCat cat = new TestingRelayCat();
 		final ReminderService srv = new ReminderService(cat);

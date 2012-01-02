@@ -1,5 +1,7 @@
 package uk.co.harcourtprogramming.docitten;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
@@ -16,7 +18,7 @@ public class KittenServiceTest
 	}
 
 	@Test
-	public void testMew()
+	public void testMew() throws UnknownHostException, IOException
 	{
 		final KittenService instance = new KittenService();
 
