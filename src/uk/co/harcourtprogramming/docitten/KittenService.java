@@ -22,7 +22,7 @@ public class KittenService extends Service implements MessageService
 	 */
 	private static final Pattern mewls =
 		Pattern.compile(
-			"(^|\\s)(m+e+w+l*|ny+a+n|m(i+|r+)a*o+w?)",
+			"(^|\\s)(m+e+[oa]*w+l*|ny+a+n|m(i+|r+)a*o+w?)",
 			Pattern.CASE_INSENSITIVE
 		);
 	/**
