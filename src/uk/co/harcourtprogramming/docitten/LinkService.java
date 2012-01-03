@@ -1,5 +1,8 @@
 package uk.co.harcourtprogramming.docitten;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -17,6 +20,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 /**
@@ -71,6 +75,7 @@ public class LinkService extends Service implements MessageService
 
 				String mess = String.format("[%2$tR %1$s] %3$s\n",
 					l.getLevel().getLocalizedName(), time, formatMessage(l));
+
 				if (l.getThrown() != null)
 				{
 					Throwable t =  l.getThrown();
@@ -113,7 +118,7 @@ public class LinkService extends Service implements MessageService
 	/**
 	 * <p>Recursive URL retriever</p>
 	 */
-	private class LinkResolver implements Runnable
+	public static class LinkResolver implements Runnable
 	{
 		/**
 		 * The original URI that we are retrieving
@@ -122,14 +127,15 @@ public class LinkService extends Service implements MessageService
 		/**
 		 * Message that we will be replying to
 		 */
-		private final Message mess;
+		private final RelayCat mess;
+		private final String target;
 
 		/**
 		 * Creates a link resolver instance
 		 * @param baseURI the link we're following
 		 * @param mess the message to replyToAll
 		 */
-		private LinkResolver(String baseURI, Message mess)
+		public LinkResolver(String baseURI, RelayCat mess, String target)
 		{
 			if (!protocolPattern.matcher(baseURI).matches())
 			{
@@ -140,6 +146,7 @@ public class LinkService extends Service implements MessageService
 				this.baseURI = URI.create(baseURI);
 			}
 			this.mess = mess;
+			this.target = target;
 		}
 
 		/**
@@ -226,17 +233,17 @@ public class LinkService extends Service implements MessageService
 
 				if (conn.getContentType().matches("(text/.+|.+xhtml.+)")) // A HTML/XHTML file (most likely)
 				{
-					mess.replyToAll(String.format("[%s] %s", curr.getHost(), "<TODO: Retreive Title>"));
+					mess.message(target, String.format("[%s] %s", curr.getHost(), getTitle(conn)));
 				}
 				else
 				{
 					if (conn.getContentLength() == -1)
 					{
-						mess.replyToAll(String.format("[%s] %s (size unknown)", curr.getHost(), mime));
+						mess.message(target, String.format("[%s] %s (size unknown)", curr.getHost(), mime));
 					}
 					else
 					{
-						mess.replyToAll(String.format("[%s] %s %s",
+						mess.message(target, String.format("[%s] %s %s",
 							curr.getHost(),
 							mime,
 							humanReadableByteCount(conn.getContentLength())
@@ -250,6 +257,43 @@ public class LinkService extends Service implements MessageService
 			}
 		}
 
+		private String getTitle(HttpURLConnection conn) throws IOException
+		{
+			BufferedReader pageData = new BufferedReader(new InputStreamReader(
+				conn.getInputStream()));
+
+			String line;
+			boolean reading = false;
+			String title = "[No Title Set]";
+			while (true)
+			{
+				line = pageData.readLine();
+				if (line == null)
+					break;
+
+				if (line.contains("<title>"))
+				{
+					reading = true;
+					line = line.substring(line.indexOf("<title>") + 7);
+					title = "";
+				}
+
+				if (reading && line.contains("</title>"))
+				{
+					title += line.substring(0, line.indexOf("</title>"));
+					break;
+				}
+
+				if (line.contains("</head>")  || line.contains("<body>"))
+					break;
+
+				if (reading)
+					title += line;
+			}
+
+			pageData.close();
+			return title;
+		}
 	}
 
 	/**
@@ -268,7 +312,7 @@ public class LinkService extends Service implements MessageService
 
 		for (String uri : uris)
 		{
-			l = new LinkResolver(uri, m);
+			l = new LinkResolver(uri, m, m.getReplyToAllTarget());
 			t = new Thread(THREAD_GROUP, l, "Link Resolver: " + uri);
 			t.setDaemon(true);
 			t.start();
