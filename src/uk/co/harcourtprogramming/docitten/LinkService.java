@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
@@ -36,7 +35,7 @@ public class LinkService extends Service implements MessageService
 	 * matched.
 	 */
 	private final static Pattern uriPattern =
-		Pattern.compile("(https?://)?(\\w+\\.)*((\\w+\\.(com|net|uk|edu))|(www|is.gd|bit.ly))(/[^\\s]*)*", Pattern.CASE_INSENSITIVE);
+		Pattern.compile("(https?://)?(\\w+\\.)*((\\w+\\.(com|net|uk|edu))|(www|is.gd|bit.ly))(/[^\\s]*)?", Pattern.CASE_INSENSITIVE);
 	/**
 	 * Links will also be matched if they begin with the http or https protocols.
 	 * This regex is also used in the {@link LinkResolver} to determine is a protocol
@@ -292,7 +291,7 @@ public class LinkService extends Service implements MessageService
 			}
 
 			pageData.close();
-			return title;
+			return title.trim().replaceAll("\\s\\s+", " ");
 		}
 	}
 
