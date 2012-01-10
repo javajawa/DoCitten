@@ -2,7 +2,6 @@ package uk.co.harcourtprogramming.docitten;
 
 import java.net.SocketTimeoutException;
 import org.junit.Test;
-import uk.co.harcourtprogramming.docitten.LinkResolver;
 
 public class LinkTimeoutTest
 {
