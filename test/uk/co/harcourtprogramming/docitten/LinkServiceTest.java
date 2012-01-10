@@ -85,12 +85,21 @@ public class LinkServiceTest
 	 * Test of uris method, of class LinkService.
 	 */
 	@Test
+	@SuppressWarnings("UseOfSystemOutOrSystemErr")
 	public void testUris()
 	{
 		Set<String> result = LinkService.uris(ld.inputText);
 
-		System.out.println(ld.inputText + " >> " + Arrays.deepToString(result.toArray()));
-		assertEquals(ld.links.size(), result.size());
-		assertArrayEquals(ld.links.toArray(), result.toArray());
+		try
+		{
+			assertEquals(ld.links.size(), result.size());
+			assertArrayEquals(ld.links.toArray(), result.toArray());
+		}
+		catch (AssertionError ex)
+		{
+			System.out.println(ld.inputText + " >> " + Arrays.deepToString(result.toArray()));
+			System.out.println(ex.toString());
+			throw ex;
+		}
 	}
 }
