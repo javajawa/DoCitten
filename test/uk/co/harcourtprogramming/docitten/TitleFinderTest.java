@@ -14,68 +14,60 @@ public class TitleFinderTest
 	private String target = null;
 	private String message = null;
 
+	private final RelayCat cat = new RelayCat() {
+		@Override
+		public void message(String target, String message)
+		{
+			TitleFinderTest.this.target  = target;
+			TitleFinderTest.this.message = message;
+		}
+
+		@Override
+		public void act(String target, String message)
+		{
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
+
+		@Override
+		public void join(String channel)
+		{
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
+
+		@Override
+		public void leave(String channel)
+		{
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
+
+		@Override
+		public String getNick()
+		{
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
+
+		@Override
+		public String[] names(String channel)
+		{
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
+
+		@Override
+		public String[] channels()
+		{
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
+	};
+
 	@Test
-	public void theTest() throws InterruptedException
+	@SuppressWarnings("CallToThreadRun")
+	public void TestTitleResolution() throws InterruptedException
 	{
-		final Thread outerThread = Thread.currentThread();
 		final String nick = "bob";
 
-		LinkResolver r = new LinkResolver(uri,
-			new RelayCat() {
+		LinkResolver r = new LinkResolver(uri, cat, nick);
 
-			@Override
-			public void message(String target, String message)
-			{
-				synchronized (outerThread)
-				{
-					TitleFinderTest.this.target  = target;
-					TitleFinderTest.this.message = message;
-					outerThread.notify();
-				}
-			}
-
-			@Override
-			public void act(String target, String message)
-			{
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-
-			@Override
-			public void join(String channel)
-			{
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-
-			@Override
-			public void leave(String channel)
-			{
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-
-			@Override
-			public String getNick()
-			{
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-
-			@Override
-			public String[] names(String channel)
-			{
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-
-			@Override
-			public String[] channels()
-			{
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-		}, nick);
-
-		synchronized(outerThread)
-		{
-			r.start();
-			outerThread.wait();
-		}
+		r.run();
 
 		assertNotNull(target);
 		assertEquals(nick, target);
