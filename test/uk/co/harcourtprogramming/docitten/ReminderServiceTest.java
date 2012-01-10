@@ -124,5 +124,7 @@ public class ReminderServiceTest
 		assertNotNull(m);
 		assertEquals("Unknown Command", m.getMessage());
 
+		m = cat.getOutput();
+		assertNotNull("Help was not also sent", m.getMessage());
 	}
 }
