@@ -179,43 +179,16 @@ public class LinkService extends Service implements MessageService
 							resolved = true;
 							break;
 
-						case HttpURLConnection.HTTP_BAD_GATEWAY:
-						case HttpURLConnection.HTTP_BAD_METHOD:
-						case HttpURLConnection.HTTP_BAD_REQUEST:
-						case HttpURLConnection.HTTP_CLIENT_TIMEOUT:
-						case HttpURLConnection.HTTP_CONFLICT:
-						case HttpURLConnection.HTTP_ENTITY_TOO_LARGE:
-						case HttpURLConnection.HTTP_FORBIDDEN:
-						case HttpURLConnection.HTTP_GATEWAY_TIMEOUT:
-						case HttpURLConnection.HTTP_GONE:
-						case HttpURLConnection.HTTP_INTERNAL_ERROR:
-						case HttpURLConnection.HTTP_LENGTH_REQUIRED:
-						case HttpURLConnection.HTTP_NOT_ACCEPTABLE:
-						case HttpURLConnection.HTTP_NOT_AUTHORITATIVE:
-						case HttpURLConnection.HTTP_NOT_FOUND:
-						case HttpURLConnection.HTTP_NOT_IMPLEMENTED:
-						case HttpURLConnection.HTTP_PAYMENT_REQUIRED:
-						case HttpURLConnection.HTTP_PRECON_FAILED:
-						case HttpURLConnection.HTTP_PROXY_AUTH:
-						case HttpURLConnection.HTTP_REQ_TOO_LONG:
-						case HttpURLConnection.HTTP_UNAUTHORIZED:
-						case HttpURLConnection.HTTP_UNAVAILABLE:
-						case HttpURLConnection.HTTP_UNSUPPORTED_TYPE:
-						case HttpURLConnection.HTTP_USE_PROXY:
-						case HttpURLConnection.HTTP_VERSION:
-							return;
-
 						case HttpURLConnection.HTTP_MOVED_PERM:
 						case HttpURLConnection.HTTP_MOVED_TEMP:
 						case HttpURLConnection.HTTP_MULT_CHOICE:
 						case HttpURLConnection.HTTP_SEE_OTHER:
 							if (conn.getHeaderField("Location") == null) return;
 							curr = URI.create(curr.toExternalForm()).resolve(
-								conn.getHeaderField("location")).toURL();
+								conn.getHeaderField("Location")).toURL();
 							break;
 
 						default:
-							log.log(Level.WARNING, "Unknown HTTP Status code returned: {0}", conn.getResponseCode());
 							return;
 					}
 					conn.disconnect();
