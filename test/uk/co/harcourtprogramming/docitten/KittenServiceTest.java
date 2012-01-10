@@ -7,10 +7,6 @@ import static org.junit.Assert.*;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.TestingRelayCat;
 
-/**
- *
- * @author Benedict
- */
 public class KittenServiceTest
 {
 	public KittenServiceTest()

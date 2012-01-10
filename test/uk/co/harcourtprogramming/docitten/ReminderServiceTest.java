@@ -7,10 +7,6 @@ import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.TestingRelayCat;
 import static org.junit.Assert.*;
 
-/**
- *
- *
- */
 public class ReminderServiceTest
 {
 	public ReminderServiceTest()

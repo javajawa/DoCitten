@@ -15,10 +15,6 @@ import static org.junit.Assert.*;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.TestingRelayCat;
 
-/**
- *
- * @author Benedict
- */
 @RunWith(Parameterized.class)
 public class HelpingServiceTest
 {
