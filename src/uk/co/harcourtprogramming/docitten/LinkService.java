@@ -165,6 +165,8 @@ public class LinkService extends Service implements MessageService
 					conn = (HttpURLConnection)curr.openConnection();
 					conn.setInstanceFollowRedirects(false);
 					conn.setRequestMethod("HEAD");
+					conn.setConnectTimeout(2500);
+					conn.setReadTimeout(2500);
 					conn.connect();
 
 					switch (conn.getResponseCode())
