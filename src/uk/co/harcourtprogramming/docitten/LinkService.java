@@ -104,7 +104,7 @@ public class LinkService extends Service implements MessageService
 	 */
 	private final static double UNIT_SIZE = Math.log(1024);
 	/**
-	 * Converts a byte count into a 1dp figure of <kMG...>iB (uses base 1024)
+	 * Converts a byte count into a 1dp figure of &lt;kMG...&gt;iB (uses base 1024)
 	 * @param bytes the number of bytes
 	 * @return formatted value
 	 */
