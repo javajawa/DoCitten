@@ -63,7 +63,8 @@ public class LinkServiceTest
 			new LinkData[]{new LinkData("  https://github.com", "https://github.com")},
 			new LinkData[]{new LinkData("[https://github.com]", "https://github.com")},
 			new LinkData[]{new LinkData("  github.com", "github.com")},
-			new LinkData[]{new LinkData("[github.com]", "github.com")}
+			new LinkData[]{new LinkData("[github.com]", "github.com")},
+			new LinkData[]{new LinkData("example.com:8080", "example.com:8080")}
 		});
 	}
 

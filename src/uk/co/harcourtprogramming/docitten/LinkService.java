@@ -35,7 +35,7 @@ public class LinkService extends Service implements MessageService
 	 * matched.
 	 */
 	private final static Pattern uriPattern =
-		Pattern.compile("(?:^|\\s)\\(?\\[?((?:https?://)?(?:\\w+\\.)*(?:(?:\\w+\\.(com|net|uk|edu))|(?:www|is.gd|bit.ly))(?:/[^\\s\\])]*)?)", Pattern.CASE_INSENSITIVE);
+		Pattern.compile("(?:^|\\s)\\(?\\[?((?:https?://)?(?:\\w+\\.)*(?:(?:\\w+\\.(com|net|uk|edu))|(?:www|is.gd|bit.ly))(?::[0-9]+)?(?:/[^\\s\\])]*)?)", Pattern.CASE_INSENSITIVE);
 	/**
 	 * Links will also be matched if they begin with the http or https protocols.
 	 * This regex is also used in the {@link LinkResolver} to determine is a protocol
