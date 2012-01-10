@@ -35,7 +35,7 @@ public class KittenService extends Service implements MessageService
 		);
 
 	/**
-	 * Random number source for randomising responses
+	 * Random number source for randomised responses
 	 */
 	private static final Random r = new Random();
 
