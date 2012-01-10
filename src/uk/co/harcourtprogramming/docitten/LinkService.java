@@ -192,6 +192,7 @@ public class LinkService extends Service implements MessageService
 							return;
 					}
 					conn.disconnect();
+					if (Thread.interrupted()) return;
 					if (resolved) break;
 				}
 
@@ -315,6 +316,6 @@ public class LinkService extends Service implements MessageService
 	@Override
 	public void shutdown()
 	{
-		// TODO: clean up threads
+		THREAD_GROUP.interrupt();
 	}
 }
