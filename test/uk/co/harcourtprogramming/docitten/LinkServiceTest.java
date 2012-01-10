@@ -55,8 +55,15 @@ public class LinkServiceTest
 			new LinkData[]{new LinkData("is.gd", "is.gd")},
 			new LinkData[]{new LinkData("www/~bh308", "www/~bh308")},
 			new LinkData[]{new LinkData("http://www.youtube.com/watch?v=2jzugX2NMnk", "http://www.youtube.com/watch?v=2jzugX2NMnk")},
+			new LinkData[]{new LinkData("mewww?")},
+			new LinkData[]{new LinkData("www.google.com", "www.google.com")},
 			new LinkData[]{new LinkData("example.com/?q=bob", "example.com/?q=bob")},
-			new LinkData[]{new LinkData("google.com or bing.com", "google.com", "bing.com")}
+			new LinkData[]{new LinkData("google.com or bing.com", "google.com", "bing.com")},
+			new LinkData[]{new LinkData("https://github.com", "https://github.com")},
+			new LinkData[]{new LinkData("  https://github.com", "https://github.com")},
+			new LinkData[]{new LinkData("[https://github.com]", "https://github.com")},
+			new LinkData[]{new LinkData("  github.com", "github.com")},
+			new LinkData[]{new LinkData("[github.com]", "github.com")}
 		});
 	}
 
