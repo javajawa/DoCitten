@@ -33,6 +33,7 @@ public class LinkResolver extends Thread
 	private final static Logger LOG = Logger.getLogger("DoCitten.LinkService");
 	private final static Pattern PROTOCOL = Pattern.compile("^https?://.+");
 	private final static int TIMEOUT = 2000;
+	private final static int MAX_HOPS = 5;
 
 	/**
 	 * <p>Letters for binary prefixs</p>
@@ -97,6 +98,7 @@ public class LinkResolver extends Thread
 			URL curr = baseURI.toURL();
 			HttpURLConnection conn;
 			boolean resolved = false;
+			int hops = 0;
 			while (true)
 			{
 				conn = (HttpURLConnection)curr.openConnection();
@@ -129,13 +131,25 @@ public class LinkResolver extends Thread
 				conn.disconnect();
 				if (interrupted()) return;
 				if (resolved) break;
+				++hops;
+				if (hops == MAX_HOPS) break;
 			}
+
+			if (hops == MAX_HOPS)
+			{
+				mess.message(target,
+					String.format("[%s] (Unresolved after %d hops)", curr.getHost(), MAX_HOPS));
+				return;
+			}
+
 			conn = (HttpURLConnection)curr.openConnection();
 			conn.setRequestMethod("GET");
 			conn.connect();
+
 			String mime = conn.getContentType();
 			if (mime == null) mime = "";
 			mime = mime.split(";")[0];
+
 			if (conn.getContentType().matches("(text/.+|.+xhtml.+)"))
 			{
 				mess.message(target,
