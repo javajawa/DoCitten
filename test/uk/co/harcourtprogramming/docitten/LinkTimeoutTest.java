@@ -2,7 +2,7 @@ package uk.co.harcourtprogramming.docitten;
 
 import java.net.SocketTimeoutException;
 import org.junit.Test;
-import uk.co.harcourtprogramming.docitten.LinkService.LinkResolver;
+import uk.co.harcourtprogramming.docitten.LinkResolver;
 
 public class LinkTimeoutTest
 {
@@ -10,7 +10,7 @@ public class LinkTimeoutTest
 	@SuppressWarnings("CallToThreadRun")
 	public void linkTimeoutTest() throws Throwable
 	{
-		LinkResolver linkResolver = new LinkService.LinkResolver("http://example.com:8080/", null, null);
+		LinkResolver linkResolver = new LinkResolver("http://example.com:8080/", null, null);
 		try
 		{
 			linkResolver.run();

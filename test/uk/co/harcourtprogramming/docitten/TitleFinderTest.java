@@ -20,7 +20,7 @@ public class TitleFinderTest
 		final Thread outerThread = Thread.currentThread();
 		final String nick = "bob";
 
-		LinkService.LinkResolver r = new LinkService.LinkResolver(uri,
+		LinkResolver r = new LinkResolver(uri,
 			new RelayCat() {
 
 			@Override
