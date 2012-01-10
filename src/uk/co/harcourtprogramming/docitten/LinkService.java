@@ -117,7 +117,7 @@ public class LinkService extends Service implements MessageService
 	/**
 	 * <p>Recursive URL retriever</p>
 	 */
-	public static class LinkResolver implements Runnable
+	public static class LinkResolver extends Thread
 	{
 		/**
 		 * The original URI that we are retrieving
@@ -136,6 +136,7 @@ public class LinkService extends Service implements MessageService
 		 */
 		public LinkResolver(String baseURI, RelayCat mess, String target)
 		{
+			super(THREAD_GROUP, baseURI);
 			if (!protocolPattern.matcher(baseURI).matches())
 			{
 				this.baseURI = URI.create("http://" + baseURI);
@@ -146,6 +147,7 @@ public class LinkService extends Service implements MessageService
 			}
 			this.mess = mess;
 			this.target = target;
+			setDaemon(true);
 		}
 
 		/**
@@ -194,7 +196,7 @@ public class LinkService extends Service implements MessageService
 							return;
 					}
 					conn.disconnect();
-					if (Thread.interrupted()) return;
+					if (interrupted()) return;
 					if (resolved) break;
 				}
 
@@ -288,9 +290,7 @@ public class LinkService extends Service implements MessageService
 		for (String uri : uris)
 		{
 			l = new LinkResolver(uri, m, m.getReplyToAllTarget());
-			t = new Thread(THREAD_GROUP, l, "Link Resolver: " + uri);
-			t.setDaemon(true);
-			t.start();
+			l.start();
 		}
 	}
 

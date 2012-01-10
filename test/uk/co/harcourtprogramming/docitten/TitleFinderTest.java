@@ -73,7 +73,7 @@ public class TitleFinderTest
 
 		synchronized(outerThread)
 		{
-			new Thread(r).start();
+			r.start();
 			outerThread.wait();
 		}
 
