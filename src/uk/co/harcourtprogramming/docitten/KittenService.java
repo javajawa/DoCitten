@@ -37,14 +37,19 @@ public class KittenService extends Service implements MessageService
 	/**
 	 * Random number source for randomised responses
 	 */
-	private static final Random r = new Random();
+	private final Random r;
 
 	/**
 	 * Creates the kitten service
 	 */
 	public KittenService()
 	{
-		// Nothing to see here. Move along, citizen!
+		r = new Random();
+	}
+
+	public KittenService(Random r)
+	{
+		this.r = r;
 	}
 
 	@Override
