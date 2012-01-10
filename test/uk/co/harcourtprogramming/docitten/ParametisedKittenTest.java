@@ -19,22 +19,6 @@ import uk.co.harcourtprogramming.internetrelaycats.TestingRelayCat;
 public class ParametisedKittenTest
 {
 
-	public static class MessageData
-	{
-		private final String input;
-		private final String[] outputs;
-		private final boolean action;
-		private final String channel;
-
-		MessageData(Boolean action, String channel, String input, String ... outputs)
-		{
-			this.action = action;
-			this.channel = channel;
-			this.input = input;
-			this.outputs = outputs;
-		}
-	}
-
 	/**
 	 * @return The parameter data for a paramterised test
 	 */
