@@ -42,6 +42,7 @@ public class Main
 
 		try
 		{
+			inst.addService(new HushService());
 			inst.addService(new KittenService());
 			inst.addService(new LinkService());
 			inst.addService(new GoHomeService(inst, args[1]));
