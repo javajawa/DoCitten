@@ -19,24 +19,27 @@ or send a letter to
 Compiling
 ---------
 
-First, make sure that the submodule is iniialised
-	git submodule update --init lib/irc
+First, make sure that the submodule is initialised:
+
+    git submodule update --init lib/irc
 
 The project can be make from the command line using
 make
-	make compile    - Creates the class files in build/
-	make package    - Creates/copies JAR archives to dist/
-	make test-build - Creates class files for the tests
-	make test       - Runs test classes that have been compiled
-	make clean      - Removes all class and JAR files
+
+- ```make compile```    - Creates the class files in ```build/```
+- ```make package```    - Creates/copies JAR archives to ```dist/```
+- ```make test-build``` - Creates class files for the tests
+- ```make test```       - Runs test classes that have been compiled
+- ```make clean```      - Removes all class and JAR files
 
 It cna also be imported into an ide of your choice.
 Two projects will likely need to be created - one at the root of the working
-tree (DoCitten), and one in lib/irc (InternetRelayCats).
+tree (DoCitten), and one in ```lib/irc``` (InternetRelayCats).
 In both cases, Netbeans Java Project with existing sources project wizard
 will correctly create the projects with
-	src/ listed as a source folder
-	test/ listed as a test sources folder
+
+- ```src/``` listed as a source folder
+- ```test/``` listed as a test sources folder
 
 Note that you will to tell the IDE that DoCitten needs InternetRelayCats as a
 library, and the DoCitten's test packages rely both of InternetRelayCats main
@@ -58,11 +61,13 @@ Bug Reporting
 -------------
 
 Bug reports / suggestions for improvement are accept via:
- - patches,
- - pull requests,
- - git hub issues,
- - direct email to me,
- - inline comments
- - moaning on an irc channel I'm in
- - IPoAC
+
+- patches,
+- pull requests,
+- git hub issues,
+- direct email to me,
+- moaning on an irc channel I'm in
+- inline comments
+- IPoAC
+
 in decending order of preference.
