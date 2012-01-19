@@ -101,7 +101,7 @@ public class KittenService extends Service implements MessageService
 	 */
 	private String attend(String user)
 	{
-		switch (r.nextInt(6))
+		switch (r.nextInt(9))
 		{
 			case 0: return "purrs";
 			case 1: return "purrrs";
