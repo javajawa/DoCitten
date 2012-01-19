@@ -26,6 +26,9 @@ public class ReminderServiceTest
 		assertNotNull(m);
 		assertEquals("bob", m.getChannel());
 		assertEquals("You have no active reminders.", m.getMessage());
+
+		m = cat.getOutput();
+		assertNull(m);
 	}
 
 	@Test
@@ -52,6 +55,9 @@ public class ReminderServiceTest
 		m = cat.getOutput();
 		assertNotNull(m);
 		assertEquals("  1: " + note, m.getMessage());
+
+		m = cat.getOutput();
+		assertNull(m);
 	}
 
 	@Test
@@ -91,6 +97,9 @@ public class ReminderServiceTest
 		m = cat.getOutput();
 		assertNotNull(m);
 		assertEquals("  2: " + note2, m.getMessage());
+
+		m = cat.getOutput();
+		assertNull(m);
 	}
 
 	@Test
@@ -107,6 +116,8 @@ public class ReminderServiceTest
 		assertNotNull(m);
 		assertEquals("Unknown Command", m.getMessage());
 
+		m = cat.getOutput();
+		assertNotNull("Help was not also sent", m.getMessage());
 	}
 
 
