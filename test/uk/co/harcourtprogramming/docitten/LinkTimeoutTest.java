@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class LinkTimeoutTest
 {
-	@Test(timeout=4000,expected=SocketTimeoutException.class)
+	@Test(timeout=3000,expected=SocketTimeoutException.class)
 	@SuppressWarnings("CallToThreadRun")
 	public void linkTimeoutTest() throws Throwable
 	{
