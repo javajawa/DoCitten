@@ -1,7 +1,5 @@
 package uk.co.harcourtprogramming.docitten;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
@@ -50,7 +48,7 @@ public class ParametisedKittenTest
 	}
 
 	@Test
-	public void testMew() throws UnknownHostException, IOException
+	public void testMew()
 	{
 		final KittenService instance = new KittenService(new Random() {
 			private static final long serialVersionUID = 1L;

@@ -1,11 +1,7 @@
 package uk.co.harcourtprogramming.docitten;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,24 +15,7 @@ import uk.co.harcourtprogramming.internetrelaycats.TestingRelayCat;
 public class HelpingServiceTest
 {
 
-	private static TestingRelayCat cat;
-	static
-	{
-		try
-		{
-			cat = new TestingRelayCat();
-		}
-		catch (UnknownHostException ex)
-		{
-			Logger.getLogger(HelpingServiceTest.class.getName()).log(Level.SEVERE,
-				null, ex);
-		}
-		catch (IOException ex)
-		{
-			Logger.getLogger(HelpingServiceTest.class.getName()).log(Level.SEVERE,
-				null, ex);
-		}
-	}
+	private final static TestingRelayCat cat = new TestingRelayCat();
 	private final static HelpingService srv = new HelpingService();
 
 	@BeforeClass
