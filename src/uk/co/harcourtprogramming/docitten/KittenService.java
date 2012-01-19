@@ -109,7 +109,6 @@ public class KittenService extends Service implements MessageService
 			case 3: return "purrrrrs";
 			case 4: return "paws at " + user;
 			case 5: return "rubs againsts " + user + "'s legs";
-			case 6: return null;
 			default: return "purrs";
 		}
 	}
