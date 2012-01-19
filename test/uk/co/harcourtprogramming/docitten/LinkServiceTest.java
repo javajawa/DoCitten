@@ -31,8 +31,7 @@ public class LinkServiceTest
 		 * @param inputText
 		 * @param links
 		 */
-		public LinkData(String inputText,
-			String... links)
+		LinkData(String inputText, String... links)
 		{
 			this.inputText = inputText;
 			// TreeSet will force natural ordering
@@ -45,26 +44,26 @@ public class LinkServiceTest
 	 * @return The parameter data for a paramterised test
 	 */
 	@Parameterized.Parameters
-	public static Collection<LinkData[]> data()
+	public static Collection<Object[]> data()
 	{
-		return Arrays.asList(new LinkData[][]{
-			new LinkData[]{new LinkData("http://example.com", "http://example.com")},
-			new LinkData[]{new LinkData("bob")},
-			new LinkData[]{new LinkData("http://t.co", "http://t.co")},
-			new LinkData[]{new LinkData("hello com")},
-			new LinkData[]{new LinkData("is.gd", "is.gd")},
-			new LinkData[]{new LinkData("www/~bh308", "www/~bh308")},
-			new LinkData[]{new LinkData("http://www.youtube.com/watch?v=2jzugX2NMnk", "http://www.youtube.com/watch?v=2jzugX2NMnk")},
-			new LinkData[]{new LinkData("mewww?")},
-			new LinkData[]{new LinkData("www.google.com", "www.google.com")},
-			new LinkData[]{new LinkData("example.com/?q=bob", "example.com/?q=bob")},
-			new LinkData[]{new LinkData("google.com or bing.com", "google.com", "bing.com")},
-			new LinkData[]{new LinkData("https://github.com", "https://github.com")},
-			new LinkData[]{new LinkData("  https://github.com", "https://github.com")},
-			new LinkData[]{new LinkData("[https://github.com]", "https://github.com")},
-			new LinkData[]{new LinkData("  github.com", "github.com")},
-			new LinkData[]{new LinkData("[github.com]", "github.com")},
-			new LinkData[]{new LinkData("example.com:8080", "example.com:8080")}
+		return Arrays.asList(new Object[][]{
+			new Object[]{new LinkData("http://example.com", "http://example.com")},
+			new Object[]{new LinkData("bob")},
+			new Object[]{new LinkData("http://t.co", "http://t.co")},
+			new Object[]{new LinkData("hello com")},
+			new Object[]{new LinkData("is.gd", "is.gd")},
+			new Object[]{new LinkData("www/~bh308", "www/~bh308")},
+			new Object[]{new LinkData("http://www.youtube.com/watch?v=2jzugX2NMnk", "http://www.youtube.com/watch?v=2jzugX2NMnk")},
+			new Object[]{new LinkData("mewww?")},
+			new Object[]{new LinkData("www.google.com", "www.google.com")},
+			new Object[]{new LinkData("example.com/?q=bob", "example.com/?q=bob")},
+			new Object[]{new LinkData("google.com or bing.com", "google.com", "bing.com")},
+			new Object[]{new LinkData("https://github.com", "https://github.com")},
+			new Object[]{new LinkData("  https://github.com", "https://github.com")},
+			new Object[]{new LinkData("[https://github.com]", "https://github.com")},
+			new Object[]{new LinkData("  github.com", "github.com")},
+			new Object[]{new LinkData("[github.com]", "github.com")},
+			new Object[]{new LinkData("example.com:8080", "example.com:8080")}
 		});
 	}
 
