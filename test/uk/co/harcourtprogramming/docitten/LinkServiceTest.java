@@ -15,7 +15,7 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class LinkServiceTest
 {
-	public static class LinkData
+	private static class LinkData
 	{
 		/**
 		 *
@@ -84,7 +84,7 @@ public class LinkServiceTest
 	 * Test of uris method, of class LinkService.
 	 */
 	@Test
-	@SuppressWarnings("UseOfSystemOutOrSystemErr")
+	@SuppressWarnings("UseOfSystemOutOrSystemErr") // Additional assertion failure data
 	public void testUris()
 	{
 		Set<String> result = LinkService.uris(ld.inputText);
