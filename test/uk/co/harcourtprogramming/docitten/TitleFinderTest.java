@@ -6,6 +6,9 @@ import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 
 public class TitleFinderTest
 {
+	// Pefroming a depth-first search of my bookmarks, this is the first thing
+	// As it isn't going to change title (unlike, possibly, Google), it seems
+	// like a good bet.
 	private final String uri = "http://www.artima.com/weblogs/viewpost.jsp?thread=142428";
 	private final String title = "Java API Design Guidelines";
 	private final String site = "www.artima.com";
