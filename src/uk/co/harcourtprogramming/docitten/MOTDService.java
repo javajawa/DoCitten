@@ -69,7 +69,7 @@ public class MOTDService extends ExternalService
 		{
 			return String.format("#%1$d *%2$s* (%3$s@doc): %4$s\n%5$s",
 			    id, poster_name, poster_uid, title,
-			    mlong.replaceAll("</?(br|BR)( ?/)?>", "").replaceAll("</?(p|P) ( ?/)?>", "\n")
+			    mlong.replaceAll("</?(br|BR)( ?/)?>", " ").replaceAll("</?(p|P) ( ?/)?>", "\n")
 			);
 		}
 	}
