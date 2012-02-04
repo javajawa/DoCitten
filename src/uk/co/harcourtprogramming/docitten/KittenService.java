@@ -69,6 +69,9 @@ public class KittenService extends Service implements MessageService
 			}
 		}
 
+		// Stop DoCitten replying to itself as much
+		if (mess.equals("mew =^.^=")) return;
+
 		String reply = "";
 
 		Matcher kittenMatcher = kitten.matcher(mess);
