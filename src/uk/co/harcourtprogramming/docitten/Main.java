@@ -38,7 +38,7 @@ public class Main
 		final List<String> channels = asList(copyOfRange(args, 1, args.length));
 
 		InternetRelayCat inst = new InternetRelayCat(nick, args[0], channels);
-		new Thread(inst).start();
+		new Thread(inst, "IRC-Thread").start();
 
 		try
 		{
