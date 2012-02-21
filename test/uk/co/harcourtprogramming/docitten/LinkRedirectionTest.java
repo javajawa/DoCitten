@@ -57,6 +57,12 @@ public class LinkRedirectionTest
 		{
 			throw new UnsupportedOperationException("Not supported yet.");
 		}
+
+		@Override
+		public boolean isConnected()
+		{
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
 	};
 
 	@Test
