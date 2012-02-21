@@ -3,7 +3,7 @@ package uk.co.harcourtprogramming.docitten;
 import java.util.Calendar;
 import java.util.logging.Level;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
-import uk.co.harcourtprogramming.internetrelaycats.BasicRelayCat;
+import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
 
 /**
  * Class that gives warnings for people to leave the laboratories before the
@@ -22,10 +22,10 @@ class GoHomeService extends ExternalService
 
 	/**
 	 * Create a go home service
-	 * @param inst the BasicRelayCat instance
+	 * @param inst the InternetRelayCat instance
 	 * @param channel target name/channel
 	 */
-	GoHomeService(BasicRelayCat inst, String channel)
+	GoHomeService(InternetRelayCat inst, String channel)
 	{
 		super(inst);
 		this.channel = channel;

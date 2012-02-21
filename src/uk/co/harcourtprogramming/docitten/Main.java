@@ -9,7 +9,7 @@ import java.io.BufferedReader;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.co.harcourtprogramming.internetrelaycats.BasicRelayCat;
+import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
 
 /**
  * <p>Utility class for main function for DoCitten</p>
@@ -37,7 +37,7 @@ public class Main
 		final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		final List<String> channels = asList(copyOfRange(args, 1, args.length));
 
-		BasicRelayCat inst = new BasicRelayCat(nick, args[0], channels);
+		InternetRelayCat inst = new InternetRelayCat(nick, args[0], channels);
 		new Thread(inst).start();
 
 		try

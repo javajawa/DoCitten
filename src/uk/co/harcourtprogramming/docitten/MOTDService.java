@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
-import uk.co.harcourtprogramming.internetrelaycats.BasicRelayCat;
+import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
 
 /**
  * <p>Service for processing the motd.dat files on DoC's file systems, and
@@ -76,11 +76,11 @@ public class MOTDService extends ExternalService
 
 	/**
 	 * <p>Creates an MOTD Service</p>
-	 * @param inst the BasicRelayCat instance this service will be used with
+	 * @param inst the InternetRelayCat instance this service will be used with
 	 * @param f the motd.dat file to watch
 	 * @param channel the channel (or user) to post new entries to
 	 */
-	public MOTDService(BasicRelayCat inst, File f, String channel)
+	public MOTDService(InternetRelayCat inst, File f, String channel)
 	{
 		super(inst);
 
