@@ -23,9 +23,11 @@ public class ParametisedKittenTest
 	@Parameterized.Parameters
 	public static Collection<MessageData[]> data()
 	{
-		return Arrays.asList(new MessageData[][]{
-			new MessageData[]{new MessageData(Boolean.FALSE, "#flub", "mewwww", "nyaann =^.^=")}
-		});
+		return Arrays.asList(
+			new MessageData[]{new MessageData(Boolean.FALSE, "#flub", "meww", "nyaann =^.^=")},
+			new MessageData[]{new MessageData(Boolean.TRUE, "#flub", "meww", "nyaann =^.^=")},
+			new MessageData[]{new MessageData(Boolean.FALSE, "#flub", "cat", "nyaann =^.^=")}
+		);
 	}
 
 	/**
