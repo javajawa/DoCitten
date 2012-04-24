@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -109,74 +110,83 @@ public class LinkResolver extends Thread
 	@Override
 	public void run()
 	{
+		URL curr;
 		try
 		{
-			URL curr = baseURI.toURL();
-			HttpURLConnection conn;
-			boolean resolved = false;
-			int hops = 0;
-
-			while (true)
-			{
-				try
-				{
-					conn = createConnection(curr);
-					conn.connect();
-				}
-				catch (UnknownHostException ex)
-				{
-					LOG.log(Level.FINE,
-						String.format("Host %s not found [lookup of %s]",
-						curr.getHost(), baseURI.toString()));
-					return;
-				}
-
-				switch (conn.getResponseCode())
-				{
-					case HttpURLConnection.HTTP_ACCEPTED:
-					case HttpURLConnection.HTTP_CREATED:
-					case HttpURLConnection.HTTP_NO_CONTENT:
-					case HttpURLConnection.HTTP_OK:
-					case HttpURLConnection.HTTP_PARTIAL:
-					case HttpURLConnection.HTTP_RESET:
-					case HttpURLConnection.HTTP_NOT_MODIFIED:
-						resolved = true;
-						break;
-
-					case HttpURLConnection.HTTP_MOVED_PERM:
-					case HttpURLConnection.HTTP_MOVED_TEMP:
-					case HttpURLConnection.HTTP_MULT_CHOICE:
-					case HttpURLConnection.HTTP_SEE_OTHER:
-						if (conn.getHeaderField("Location") == null) return;
-						curr = URI.create(curr.toExternalForm()).resolve(conn.getHeaderField("Location")).toURL();
-						break;
-
-					default:
-						return;
-				}
-
-				conn.disconnect();
-
-				if (interrupted())
-					return;
-
-				if (resolved || ++ hops == MAX_HOPS)
-					break;
-			}
-
-			if (hops == MAX_HOPS)
-			{
-				mess.message(target,
-					String.format("[%s] (Unresolved after %d hops)", curr.getHost(), MAX_HOPS));
-				return;
-			}
-
-			fetchData(curr);
+			curr = baseURI.toURL();
 		}
-		catch (Throwable ex)
+		catch (MalformedURLException ex)
 		{
 			throw new RuntimeException(ex);
 		}
+
+		HttpURLConnection conn;
+		boolean resolved = false;
+		int hops = 0;
+
+		while (true)
+		{
+			int statusCode;
+
+			try
+			{
+				conn = createConnection(curr);
+				conn.connect();
+				statusCode = conn.getResponseCode();
+			}
+			catch (UnknownHostException ex)
+			{
+				LOG.log(Level.FINE,
+					String.format("Host %s not found [lookup of %s]",
+					curr.getHost(), baseURI.toString()));
+				return;
+			}
+			catch (IOException ex)
+			{
+				throw new RuntimeException(ex);
+			}
+
+			switch (statusCode)
+			{
+				case HttpURLConnection.HTTP_ACCEPTED:
+				case HttpURLConnection.HTTP_CREATED:
+				case HttpURLConnection.HTTP_NO_CONTENT:
+				case HttpURLConnection.HTTP_OK:
+				case HttpURLConnection.HTTP_PARTIAL:
+				case HttpURLConnection.HTTP_RESET:
+				case HttpURLConnection.HTTP_NOT_MODIFIED:
+					resolved = true;
+					break;
+
+				case HttpURLConnection.HTTP_MOVED_PERM:
+				case HttpURLConnection.HTTP_MOVED_TEMP:
+				case HttpURLConnection.HTTP_MULT_CHOICE:
+				case HttpURLConnection.HTTP_SEE_OTHER:
+					if (conn.getHeaderField("Location") == null) return;
+					curr = resolveLocation(curr, conn.getHeaderField("Location"));
+					break;
+
+				default:
+					return;
+			}
+
+			conn.disconnect();
+
+			if (interrupted())
+				return;
+
+			if (resolved || ++ hops == MAX_HOPS)
+				break;
+		}
+
+		if (hops == MAX_HOPS)
+		{
+			mess.message(target,
+				String.format("[%s] (Unresolved after %d hops)", curr.getHost(), MAX_HOPS));
+			return;
+		}
+
+		fetchData(curr);
 	}
 
 	private HttpURLConnection createConnection(URL curr) throws IOException
@@ -191,34 +201,41 @@ public class LinkResolver extends Thread
 		return conn;
 	}
 
-	private void fetchData(URL curr) throws IOException
+	private void fetchData(URL curr)
 	{
-		HttpURLConnection conn = (HttpURLConnection)curr.openConnection();
-		conn.setRequestMethod("GET");
-		conn.connect();
-
-		String mime = conn.getContentType();
-		if (mime == null) mime = "";
-		mime = mime.split(";")[0];
-
-		if (conn.getContentType().matches("(text/.+|.+xhtml.+)"))
+		try
 		{
-			mess.message(target, String.format("[%s] %s", curr.getHost(), getTitle(conn.getInputStream())));
-		}
-		else
-		{
-			if (conn.getContentLength() == -1)
+			HttpURLConnection conn = (HttpURLConnection)curr.openConnection();
+			conn.setRequestMethod("GET");
+			conn.connect();
+
+			String mime = conn.getContentType();
+			if (mime == null) mime = "";
+			mime = mime.split(";")[0];
+
+			if (conn.getContentType().matches("(text/.+|.+xhtml.+)"))
 			{
-				mess.message(target,
-					String.format("[%s] %s (size unknown)", curr.getHost(),
-					mime));
+				mess.message(target, String.format("[%s] %s", curr.getHost(), getTitle(conn.getInputStream())));
 			}
 			else
 			{
-				mess.message(target,
-					String.format("[%s] %s %s", curr.getHost(), mime,
-					humanReadableByteCount(conn.getContentLength())));
+				if (conn.getContentLength() == -1)
+				{
+					mess.message(target,
+						String.format("[%s] %s (size unknown)", curr.getHost(),
+						mime));
+				}
+				else
+				{
+					mess.message(target,
+						String.format("[%s] %s %s", curr.getHost(), mime,
+						humanReadableByteCount(conn.getContentLength())));
+				}
 			}
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -271,6 +288,18 @@ public class LinkResolver extends Thread
 		pageData.close();
 
 		return title.trim().replaceAll("\\s\\s+", " ");
+	}
+
+	private URL resolveLocation(URL curr, String location)
+	{
+		try
+		{
+			return URI.create(curr.toExternalForm()).resolve(location).toURL();
+		}
+		catch (MalformedURLException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 
 }
