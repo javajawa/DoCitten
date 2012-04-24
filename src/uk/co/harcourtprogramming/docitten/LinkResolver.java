@@ -2,10 +2,12 @@ package uk.co.harcourtprogramming.docitten;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -116,12 +118,19 @@ public class LinkResolver extends Thread
 
 			while (true)
 			{
-				conn = (HttpURLConnection)curr.openConnection();
-				conn.setInstanceFollowRedirects(false);
-				conn.setRequestMethod("HEAD");
-				conn.setConnectTimeout(TIMEOUT);
-				conn.setReadTimeout(TIMEOUT);
-				conn.connect();
+				try
+				{
+					conn = createConnection(curr);
+					conn.connect();
+				}
+				catch (UnknownHostException ex)
+				{
+					LOG.log(Level.FINE,
+						String.format("Host %s not found [lookup of %s]",
+						curr.getHost(), baseURI.toString()));
+					return;
+				}
+
 				switch (conn.getResponseCode())
 				{
 					case HttpURLConnection.HTTP_ACCEPTED:
@@ -147,10 +156,12 @@ public class LinkResolver extends Thread
 				}
 
 				conn.disconnect();
-				if (interrupted()) return;
-				if (resolved) break;
-				++hops;
-				if (hops == MAX_HOPS) break;
+
+				if (interrupted())
+					return;
+
+				if (resolved || ++ hops == MAX_HOPS)
+					break;
 			}
 
 			if (hops == MAX_HOPS)
@@ -160,34 +171,7 @@ public class LinkResolver extends Thread
 				return;
 			}
 
-			conn = (HttpURLConnection)curr.openConnection();
-			conn.setRequestMethod("GET");
-			conn.connect();
-
-			String mime = conn.getContentType();
-			if (mime == null) mime = "";
-			mime = mime.split(";")[0];
-
-			if (conn.getContentType().matches("(text/.+|.+xhtml.+)"))
-			{
-				mess.message(target,
-					String.format("[%s] %s", curr.getHost(), getTitle(conn)));
-			}
-			else
-			{
-				if (conn.getContentLength() == -1)
-				{
-					mess.message(target,
-						String.format("[%s] %s (size unknown)", curr.getHost(),
-						mime));
-				}
-				else
-				{
-					mess.message(target,
-						String.format("[%s] %s %s", curr.getHost(), mime,
-						humanReadableByteCount(conn.getContentLength())));
-				}
-			}
+			fetchData(curr);
 		}
 		catch (Throwable ex)
 		{
@@ -195,9 +179,54 @@ public class LinkResolver extends Thread
 		}
 	}
 
-	private String getTitle(HttpURLConnection conn) throws IOException
+	private HttpURLConnection createConnection(URL curr) throws IOException
 	{
-		BufferedReader pageData = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		HttpURLConnection conn = (HttpURLConnection)curr.openConnection();
+
+		conn.setInstanceFollowRedirects(false);
+		conn.setRequestMethod("HEAD");
+		conn.setConnectTimeout(TIMEOUT);
+		conn.setReadTimeout(TIMEOUT);
+
+		return conn;
+	}
+
+	private void fetchData(URL curr) throws IOException
+	{
+		HttpURLConnection conn = (HttpURLConnection)curr.openConnection();
+		conn.setRequestMethod("GET");
+		conn.connect();
+
+		String mime = conn.getContentType();
+		if (mime == null) mime = "";
+		mime = mime.split(";")[0];
+
+		if (conn.getContentType().matches("(text/.+|.+xhtml.+)"))
+		{
+			mess.message(target, String.format("[%s] %s", curr.getHost(), getTitle(conn.getInputStream())));
+		}
+		else
+		{
+			if (conn.getContentLength() == -1)
+			{
+				mess.message(target,
+					String.format("[%s] %s (size unknown)", curr.getHost(),
+					mime));
+			}
+			else
+			{
+				mess.message(target,
+					String.format("[%s] %s %s", curr.getHost(), mime,
+					humanReadableByteCount(conn.getContentLength())));
+			}
+		}
+	}
+
+	private String getTitle(InputStream stream) throws IOException
+	{
+		BufferedReader pageData =
+			new BufferedReader(new InputStreamReader(stream));
+
 		String line;
 		boolean reading = false;
 		String title = "[No Title Set]";
@@ -213,13 +242,30 @@ public class LinkResolver extends Thread
 				line = line.substring(line.indexOf("<title>") + 7);
 				title = "";
 			}
+			if (line.contains("<TITLE>"))
+			{
+				reading = true;
+				line = line.substring(line.indexOf("<TITLE>") + 7);
+				title = "";
+			}
+
 			if (reading && line.contains("</title>"))
 			{
 				title += line.substring(0, line.indexOf("</title>"));
 				break;
 			}
-			if (line.contains("</head>") || line.contains("<body>")) break;
-			if (reading) title += line;
+			if (reading && line.contains("</TITLE>"))
+			{
+				title += line.substring(0, line.indexOf("</TITLE>"));
+				break;
+			}
+
+			if (line.contains("</head>") || line.contains("<body>") ||
+				line.contains("</HEAD>") || line.contains("<BODY>"))
+					break;
+
+			if (reading)
+				title += line;
 		}
 
 		pageData.close();
