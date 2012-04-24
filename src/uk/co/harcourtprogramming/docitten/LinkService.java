@@ -37,7 +37,7 @@ public class LinkService extends Service implements MessageService
 		Pattern.compile("https?://[^\\s\\])]+", Pattern.CASE_INSENSITIVE);
 
 	/**
-	 * The logger for the Link Service (
+	 * The logger for the Link Service
 	 */
 	private final static Logger log = Logger.getLogger("docitten.LinkService");
 
@@ -84,7 +84,7 @@ public class LinkService extends Service implements MessageService
 	public void handle(Message m)
 	{
 		Set<String> uris = uris(m.getMessage());
-		LinkResolver l; Thread t;
+		LinkResolver l;
 
 		for (String uri : uris)
 		{

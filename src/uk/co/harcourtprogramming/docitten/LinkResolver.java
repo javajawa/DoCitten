@@ -18,9 +18,7 @@ public class LinkResolver extends Thread
 {
 
 	/**
-	 * <p>Thread group for running link resolvers in</p.
-	 * <p>The group is marked as a Daemon group, and so will be ignored by the
-	 * JVM when it comes to determining the number of important running threads</p>
+	 * <p>Thread group for running link resolvers in</p>
 	 */
 	private final static ThreadGroup THREAD_GROUP = new ThreadGroup("LinkResolvers") {
 		@Override
@@ -47,7 +45,8 @@ public class LinkResolver extends Thread
 	 */
 	private final static double UNIT_SIZE = Math.log(1024);
 	/**
-	 * Converts a byte count into a 1dp figure of &lt;kMG...&gt;iB (uses base 1024)
+	 * <p>Converts a byte count into a 1dp figure of &lt;kMG...&gt;iB
+	 * (uses base 1024)</p>
 	 * @param bytes the number of bytes
 	 * @return formatted value
 	 */
@@ -65,6 +64,9 @@ public class LinkResolver extends Thread
 	 * Message that we will be replying to
 	 */
 	private final RelayCat mess;
+	/**
+	 * The channel or user to whom we need to reply
+	 */
 	private final String target;
 
 	/**
@@ -75,13 +77,10 @@ public class LinkResolver extends Thread
 	public LinkResolver(String baseURI, RelayCat mess, String target)
 	{
 		if (!PROTOCOL.matcher(baseURI).matches())
-		{
 			this.baseURI = URI.create("http://" + baseURI);
-		}
 		else
-		{
 			this.baseURI = URI.create(baseURI);
-		}
+
 		this.mess = mess;
 		this.target = target;
 		setDaemon(true);
