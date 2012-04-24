@@ -32,7 +32,7 @@ make
 - ```make test```       - Runs test classes that have been compiled
 - ```make clean```      - Removes all class and JAR files
 
-It cna also be imported into an ide of your choice.
+It can also be imported into an IDE of your choice.
 Two projects will likely need to be created - one at the root of the working
 tree (DoCitten), and one in ```lib/irc``` (InternetRelayCats).
 In both cases, Netbeans Java Project with existing sources project wizard
@@ -62,12 +62,12 @@ Bug Reporting
 
 Bug reports / suggestions for improvement are accept via:
 
-- patches,
-- pull requests,
-- git hub issues,
-- direct email to me,
+- patches
+- pull requests
+- git hub issues
+- direct email to me
 - moaning on an irc channel I'm in
 - inline comments
 - IPoAC
 
-in decending order of preference.
+in descending order of preference.
