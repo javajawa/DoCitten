@@ -28,9 +28,24 @@ public class LinkResolver extends Thread
 		}
 	};
 
+	/**
+	 * <p>Logger shared with {@link LinkService} and with all other LinkResolver
+	 * instances</p>
+	 */
 	private final static Logger LOG = Logger.getLogger("DoCitten.LinkService");
+	/**
+	 * <p>Regex pattern to test whether a string has an http or https protocol
+	 * section</p>
+	 * <p>The URI class in Java requires this in order to create an instance</p>
+	 */
 	private final static Pattern PROTOCOL = Pattern.compile("^https?://.+");
+	/**
+	 * <p>Max time to wait for any one hop before giving up</p>
+	 */
 	private final static int TIMEOUT = 2000;
+	/**
+	 * <p>The maximum number of redirects to follow</p>
+	 */
 	private final static int MAX_HOPS = 5;
 
 	/**
@@ -98,6 +113,7 @@ public class LinkResolver extends Thread
 			HttpURLConnection conn;
 			boolean resolved = false;
 			int hops = 0;
+
 			while (true)
 			{
 				conn = (HttpURLConnection)curr.openConnection();
@@ -117,6 +133,7 @@ public class LinkResolver extends Thread
 					case HttpURLConnection.HTTP_NOT_MODIFIED:
 						resolved = true;
 						break;
+
 					case HttpURLConnection.HTTP_MOVED_PERM:
 					case HttpURLConnection.HTTP_MOVED_TEMP:
 					case HttpURLConnection.HTTP_MULT_CHOICE:
@@ -124,9 +141,11 @@ public class LinkResolver extends Thread
 						if (conn.getHeaderField("Location") == null) return;
 						curr = URI.create(curr.toExternalForm()).resolve(conn.getHeaderField("Location")).toURL();
 						break;
+
 					default:
 						return;
 				}
+
 				conn.disconnect();
 				if (interrupted()) return;
 				if (resolved) break;
@@ -182,10 +201,12 @@ public class LinkResolver extends Thread
 		String line;
 		boolean reading = false;
 		String title = "[No Title Set]";
+
 		while (true)
 		{
 			line = pageData.readLine();
 			if (line == null) break;
+
 			if (line.contains("<title>"))
 			{
 				reading = true;
@@ -200,7 +221,9 @@ public class LinkResolver extends Thread
 			if (line.contains("</head>") || line.contains("<body>")) break;
 			if (reading) title += line;
 		}
+
 		pageData.close();
+
 		return title.trim().replaceAll("\\s\\s+", " ");
 	}
 
