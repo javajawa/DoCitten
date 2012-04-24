@@ -62,10 +62,10 @@ Bug Reporting
 
 Bug reports / suggestions for improvement are accept via:
 
-- patches,
-- pull requests,
-- git hub issues,
-- direct email to me,
+- patches
+- pull requests
+- git hub issues
+- direct email to me
 - moaning on an irc channel I'm in
 - inline comments
 - IPoAC
