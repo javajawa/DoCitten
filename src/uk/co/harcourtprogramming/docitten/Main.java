@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
+import uk.co.harcourtprogramming.logging.LogFormatter;
 
 /**
  * <p>Utility class for main function for DoCitten</p>
@@ -21,6 +22,7 @@ public class Main
 	 */
 	public final static String nick = "DoCitten";
 
+	private final static Logger rootLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).getParent();
 	/**
 	 * <p>Runs DoCitten, waiting for 'quit' as a line of stdin before closing</p>
 	 * @param args the command line arguments to the program
@@ -33,6 +35,9 @@ public class Main
 			System.out.println("Arguments : <host> <#channel> [<#channel> <#channel> ...]");
 			System.exit(-1);
 		}
+
+		rootLogger.getHandlers()[0].setFormatter(new LogFormatter());
+		rootLogger.setLevel(Level.FINE);
 
 		final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		final List<String> channels = asList(copyOfRange(args, 1, args.length));

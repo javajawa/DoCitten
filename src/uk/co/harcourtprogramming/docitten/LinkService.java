@@ -1,12 +1,7 @@
 package uk.co.harcourtprogramming.docitten;
 
-import java.util.Calendar;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -35,42 +30,6 @@ public class LinkService extends Service implements MessageService
 	 */
 	private final static Pattern protocolPattern =
 		Pattern.compile("https?://[^\\s\\])]+", Pattern.CASE_INSENSITIVE);
-
-	/**
-	 * The logger for the Link Service
-	 */
-	private final static Logger log = Logger.getLogger("docitten.LinkService");
-
-	static
-	{
-		Handler h = new ConsoleHandler();
-		h.setFormatter(new Formatter()
-		{
-			@Override
-			public String format(LogRecord l)
-			{
-				Calendar time = Calendar.getInstance();
-				time.setTimeInMillis(l.getMillis());
-
-				String mess = String.format("[%2$tR %1$s] %3$s\n",
-					l.getLevel().getLocalizedName(), time, formatMessage(l));
-
-				if (l.getThrown() != null)
-				{
-					Throwable t =  l.getThrown();
-					mess += t.getMessage() + '\n';
-					for (StackTraceElement ste : t.getStackTrace())
-					{
-						mess += '\t' + ste.toString() + '\n';
-					}
-				}
-				return mess;
-			}
-		});
-		log.addHandler(h);
-		log.setUseParentHandlers(false);
-	}
-
 
 	/**
 	 * Create a link server
