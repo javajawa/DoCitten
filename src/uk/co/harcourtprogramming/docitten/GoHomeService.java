@@ -72,6 +72,7 @@ class GoHomeService extends ExternalService
 			}
 			catch (InterruptedException ex)
 			{
+				return;
 			}
 		}
 	}
