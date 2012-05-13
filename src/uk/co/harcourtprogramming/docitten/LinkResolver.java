@@ -23,7 +23,8 @@ public class LinkResolver extends Thread
 	/**
 	 * <p>Thread group for running link resolvers in</p>
 	 */
-	private final static ThreadGroup THREAD_GROUP = new ThreadGroup("LinkResolvers") {
+	private final static ThreadGroup THREAD_GROUP = new ThreadGroup("LinkResolvers")
+	{
 		@Override
 		public void uncaughtException(Thread t, Throwable e)
 		{

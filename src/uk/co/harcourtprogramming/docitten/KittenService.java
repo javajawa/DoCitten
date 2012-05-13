@@ -76,6 +76,8 @@ public class KittenService extends Service implements MessageService
 
 		Matcher kittenMatcher = kitten.matcher(mess);
 		Matcher mewlsMatcher  = mewls .matcher(mess);
+
+		// Note that mewl() adds a trailing space
 		while (kittenMatcher.find()) reply += mewl();
 		while (mewlsMatcher.find())  reply += mewl();
 

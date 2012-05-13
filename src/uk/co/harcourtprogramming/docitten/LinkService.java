@@ -2,7 +2,6 @@ package uk.co.harcourtprogramming.docitten;
 
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
