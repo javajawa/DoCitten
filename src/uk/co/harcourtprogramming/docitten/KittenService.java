@@ -14,7 +14,7 @@ public class KittenService extends Service implements MessageService
 	 */
 	private static final Pattern kitten =
 		Pattern.compile(
-			"(^|\\s)(kitt+(y|i?e+[nh]?)s*|cat(\\s|$))",
+			"(?:^|\\s)(kitt+(?:y|i?e+[nh]?)s*|cat(?:\\s|$))",
 			Pattern.CASE_INSENSITIVE
 		);
 	/**
@@ -22,7 +22,7 @@ public class KittenService extends Service implements MessageService
 	 */
 	private static final Pattern mewls =
 		Pattern.compile(
-			"(^|\\s)(m+(i+|r+|e+)[oa]*w+l*|ny+a+n)",
+			"(?:^|\\s)(m+(?:i+|r+|e+)[oa]*w+l*|ny+a+n)",
 			Pattern.CASE_INSENSITIVE
 		);
 	/**
@@ -30,7 +30,7 @@ public class KittenService extends Service implements MessageService
 	 */
 	private static final Pattern attention =
 		Pattern.compile(
-			"(^|\\s)(scritchl?es|pets|cud+les|paws( at)?|hugs|feeds|greets|nuz+les|(dangles|gives).+(string|yarn|wool|catnip))",
+			"(?:^|\\s)(scritchl?es|pets|cud+les|paws(?: at)?|hugs|feeds|greets|nuz+les|(?:dangles|gives).+(string|yarn|wool|catnip))",
 			Pattern.CASE_INSENSITIVE
 		);
 
