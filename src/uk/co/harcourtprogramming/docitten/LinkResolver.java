@@ -288,7 +288,7 @@ public class LinkResolver extends Thread
 
 		pageData.close();
 
-		return title.trim().replaceAll("\\s\\s+", " ");
+		return HtmlEntities.decode(title.trim().replaceAll("\\s\\s+", " "));
 	}
 
 	private URL resolveLocation(URL curr, String location)
