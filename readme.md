@@ -37,7 +37,8 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Compiling
 ---------
 
-First, make sure that the submodule is initialised:
+First, make sure that the submodule is initialised. This can be done be cloning
+with --recursive, or initialising/updating the sub-repo with:
 
     git submodule update --init lib/irc
 
