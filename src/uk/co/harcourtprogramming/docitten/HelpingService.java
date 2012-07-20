@@ -15,7 +15,7 @@ public class HelpingService extends Service implements MessageService
 	 * <p>Regex to determine when someone is asking for help</p>
 	 */
 	private final static Pattern HELP_PATTERN =
-	    Pattern.compile("(^|\\s)(help|assist(ance|ence)?|aid)(\\s|$)", Pattern.CASE_INSENSITIVE);
+	    Pattern.compile("(^|\\s)(ha*l*p|assist(ance|ence)?|aid)(\\s|$)", Pattern.CASE_INSENSITIVE);
 	/**
 	 * <p>What to say when help is asked for</p>
 	 */
