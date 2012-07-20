@@ -177,13 +177,11 @@ public class ReminderService extends ExternalService implements MessageService
 		MessageTokeniser tokeniser = new MessageTokeniser(m.getMessage());
 		tokeniser.setConsumeWhitespace(true);
 
-		if (m.getChannel() != null)
-		{
-			if (!tokeniser.startsWith(m.getNick() + ':')) return;
-			tokeniser.consume(m.getNick() + ':');
-		}
-		if (!tokeniser.startsWith(SERVICE_NAME)) return;
-		tokeniser.consume(SERVICE_NAME);
+		if (!tokeniser.consume(m.getNick() + ':') && m.getChannel() != null)
+			return;
+
+		if (!tokeniser.consume(SERVICE_NAME))
+			return;
 
 		Commands c;
 		try
@@ -219,18 +217,18 @@ public class ReminderService extends ExternalService implements MessageService
 
 	private void note(Message m, String data)
 	{
-		Note newNote = new Note(m.getNick(), data);
+		Note newNote = new Note(m.getSender(), data);
 		synchronized (globalReminders)
 		{
-			if (!userReminders.containsKey(m.getNick()))
+			if (!userReminders.containsKey(m.getSender()))
 			{
 				TreeSet<AbstractReminder> newUserSet = new TreeSet<AbstractReminder>(reminderOrderer);
 				newUserSet.add(newNote);
-				userReminders.put(m.getNick(), newUserSet);
+				userReminders.put(m.getSender(), newUserSet);
 			}
 			else
 			{
-				userReminders.get(m.getNick()).add(newNote);
+				userReminders.get(m.getSender()).add(newNote);
 			}
 		}
 		try
@@ -248,13 +246,13 @@ public class ReminderService extends ExternalService implements MessageService
 		synchronized (globalReminders)
 		{
 			SortedSet<AbstractReminder> userSet;
-			if (!userReminders.containsKey(m.getNick()))
+			if (!userReminders.containsKey(m.getSender()))
 			{
 				userSet = new TreeSet<AbstractReminder>();
 			}
 			else
 			{
-				userSet = userReminders.get(m.getNick());
+				userSet = userReminders.get(m.getSender());
 			}
 			if (userSet.isEmpty())
 			{
@@ -262,7 +260,7 @@ public class ReminderService extends ExternalService implements MessageService
 			}
 			else
 			{
-				m.reply("Active Reminders (" + userSet.size() + "):");
+				m.reply("Active Reminders for " + m.getSender() + " (" + userSet.size() + "):");
 				int i = 0;
 				for (AbstractReminder r : userSet)
 				{
