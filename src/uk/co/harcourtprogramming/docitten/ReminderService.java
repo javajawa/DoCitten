@@ -3,6 +3,7 @@ package uk.co.harcourtprogramming.docitten;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -134,7 +135,17 @@ public class ReminderService extends ExternalService implements MessageService
 	@Override
 	protected void startup(RelayCat r)
 	{
-		// Nothing to see here. Move along, citizen!
+		List<HelpService> helpServices = r.getServicesByClass(HelpService.class);
+
+		if (!helpServices.isEmpty())
+		{
+			HelpService.HelpInfo help = new HelpService.HelpInfo("Reminder Service",
+				  "  add _time_ _message_    Not Yet Implemented\n"
+				+ "  note _note text_        Add a static note with the given textm\n"
+				+ "  list                    List all notes and alarms\n"
+				+ "  remove _index_          Remove a note or alarm, by the index in the list");
+			helpServices.get(0).addHelp("reminder", help);
+		}
 	}
 
 	@Override
@@ -202,7 +213,7 @@ public class ReminderService extends ExternalService implements MessageService
 			case badcmd:
 				m.reply("Unknown Command");
 			case help:
-				m.reply("= Reminder Service =\nadd     Not Yet Implemented\nnote    Add a static note\nlist    List all notes and alarms\nremove  Not Yet Implemented\nhelp    This help information");
+				m.reply("See 'help reminder'");
 				break;
 			case list:
 				list(m);
