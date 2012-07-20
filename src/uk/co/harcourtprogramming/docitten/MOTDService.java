@@ -1,26 +1,33 @@
 package uk.co.harcourtprogramming.docitten;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
+import uk.co.harcourtprogramming.internetrelaycats.MessageService;
+import uk.co.harcourtprogramming.internetrelaycats.MessageTokeniser;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 
 /**
  * <p>Service for processing the motd.dat files on DoC's file systems, and
  * posting new announcements to the irc channel</p>
  */
-public class MOTDService extends ExternalService
+public class MOTDService extends ExternalService implements MessageService
 {
 	/**
 	 * <p>The MOTD.dat file</p>
 	 */
-	private final File f;
+	private final File data_file;
+	/**
+	 * <p>The MOTD file</p>
+	 */
+	private final File motd_file;
 	/**
 	 * <p>The channel (or user) to sent information to</p>
 	 */
@@ -78,20 +85,21 @@ public class MOTDService extends ExternalService
 	/**
 	 * <p>Creates an MOTD Service</p>
 	 * @param inst the InternetRelayCat instance this service will be used with
-	 * @param f the motd.dat file to watch
+	 * @param data_file the motd.dat file to watch
 	 * @param channel the channel (or user) to post new entries to
 	 */
-	public MOTDService(InternetRelayCat inst, File f, String channel)
+	public MOTDService(InternetRelayCat inst, File data_file, File motd_file, String channel)
 	{
 		super(inst);
 
-		if (!f.canRead())
-		{
-			throw new RuntimeException(new FileNotFoundException());
-		}
+		if (!data_file.canRead())
+			throw new RuntimeException(new FileNotFoundException("MOTD data file not found"));
+		if (!motd_file.canRead())
+			throw new RuntimeException(new FileNotFoundException("MOTD file not found"));
 
 		this.channel = channel;
-		this.f = f;
+		this.data_file = data_file;
+		this.motd_file = motd_file;
 		processFile(true); // Pre-process the file - messages will not be sent,
 		// thus old MOTD's won't be reposted to the list on Service restart
 	}
@@ -104,13 +112,13 @@ public class MOTDService extends ExternalService
 	{
 		while (true)
 		{
-			if (f.lastModified() > lastModified)
+			if (data_file.lastModified() > lastModified)
 			{
 				processFile(false);
 			}
 			try
 			{
-				Thread.sleep(60000);
+				Thread.sleep(300000);
 			}
 			catch (InterruptedException ex)
 			{
@@ -126,14 +134,14 @@ public class MOTDService extends ExternalService
 	// Accessing final fields of a private inner class that is not exported
 	private void processFile(boolean initial)
 	{
-		log(Level.INFO, "Processing MOTD file " + f.getPath());
+		log(Level.INFO, "Processing MOTD file " + data_file.getPath());
 		BufferedReader in = null;
 		Message curr = null;
 		final LinkedList<Message> stack = new LinkedList<Message>();
 
 		try
 		{
-			in = new BufferedReader(new FileReader(f));
+			in = new BufferedReader(new FileReader(data_file));
 
 			while (in.ready())
 			{
@@ -225,7 +233,7 @@ public class MOTDService extends ExternalService
 		}
 
 		if (curr != null) stack.push(curr);
-		lastModified = f.lastModified();
+		lastModified = data_file.lastModified();
 
 		if (initial)
 		{
@@ -244,9 +252,49 @@ public class MOTDService extends ExternalService
 	}
 
 	@Override
+	public void handle(uk.co.harcourtprogramming.internetrelaycats.Message m)
+	{
+		MessageTokeniser t = new MessageTokeniser(m.getMessage());
+		t.setConsumeWhitespace(true);
+
+		// Check that the bot is actually being addressed in some way
+		if (!t.consume(m.getNick() + ':') && m.getChannel() != null)
+			return;
+		// Check the command was 'motd' with no other parameters
+		if (!t.consume("motd") || !t.isEmpty())
+			return;
+
+		try
+		{
+			BufferedReader r = new BufferedReader(new FileReader(motd_file));
+			StringBuilder s = new StringBuilder(1000);
+
+			while (r.ready())
+				s.append(r.readLine()).append("\r\n");
+
+			m.reply(s.toString());
+		}
+		catch (IOException ex)
+		{
+			log(Level.WARNING, "Error whilst reading MOTD for user", ex);
+		}
+	}
+
+	@Override
 	protected void startup(RelayCat r)
 	{
-		// Nothing to see here. Move along, citizen!
+		List<HelpService> helpServices = r.getServicesByClass(HelpService.class);
+
+		if (!helpServices.isEmpty())
+		{
+			HelpService.HelpInfo help = new HelpService.HelpInfo("MOTD Service",
+				"The MOTD service exists to broadcast DoC service announcements "
+				+ "to the users in the #doc channel. The MOTD data file is "
+				+ "checked for changes every 5 minutes.\r\n"
+				+ "The service also offers the 'motd' command, which will send "
+				+ "the current MOTD to the user in full.");
+			helpServices.get(0).addHelp("motd", help);
+		}
 	}
 
 	@Override
