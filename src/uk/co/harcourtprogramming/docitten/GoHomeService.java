@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 
 /**
  * Class that gives warnings for people to leave the laboratories before the
@@ -75,6 +76,12 @@ class GoHomeService extends ExternalService
 				return;
 			}
 		}
+	}
+
+	@Override
+	protected void startup(RelayCat r)
+	{
+		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package uk.co.harcourtprogramming.docitten;
 import java.util.regex.Pattern;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 /**
@@ -32,6 +33,12 @@ public class HelpingService extends Service implements MessageService
 	{
 		if (HELP_PATTERN.matcher(m.getMessage()).find())
 			m.replyToAll(HELPING);
+	}
+
+	@Override
+	protected void startup(RelayCat r)
+	{
+		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override

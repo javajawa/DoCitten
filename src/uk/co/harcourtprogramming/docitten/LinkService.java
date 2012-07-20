@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 /**
@@ -70,6 +71,12 @@ public class LinkService extends Service implements MessageService
 			r.add(m.group());
 
 		return r;
+	}
+
+	@Override
+	protected void startup(RelayCat r)
+	{
+		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override

@@ -6,12 +6,19 @@ import uk.co.harcourtprogramming.internetrelaycats.FilterService;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.MessageTokeniser;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.OutboundMessage;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 public class HushService extends Service implements MessageService, FilterService
 {
 	private final Set<String> hushedTargets = new HashSet<String>();
+
+	@Override
+	protected void startup(RelayCat r)
+	{
+		// Nothing to see here. Move along, citizen!
+	}
 
 	@Override
 	public void shutdown()

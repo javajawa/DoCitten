@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.Random;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 public class KittenService extends Service implements MessageService
@@ -117,6 +118,12 @@ public class KittenService extends Service implements MessageService
 			case 6: return null;
 			default: return "purrs";
 		}
+	}
+
+	@Override
+	protected void startup(RelayCat r)
+	{
+		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override

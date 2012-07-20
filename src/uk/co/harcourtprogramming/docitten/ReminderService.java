@@ -9,11 +9,12 @@ import java.util.TreeSet;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.regex.Pattern;
-import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
+import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.MessageTokeniser;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 
 /**
  *
@@ -130,6 +131,12 @@ public class ReminderService extends ExternalService implements MessageService
 	public ReminderService(InternetRelayCat inst)
 	{
 		super(inst);
+	}
+
+	@Override
+	protected void startup(RelayCat r)
+	{
+		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 
 /**
  * <p>Service for processing the motd.dat files on DoC's file systems, and
@@ -240,6 +241,12 @@ public class MOTDService extends ExternalService
 				lastId = m.id;
 			}
 		}
+	}
+
+	@Override
+	protected void startup(RelayCat r)
+	{
+		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override
