@@ -1,5 +1,6 @@
 package uk.co.harcourtprogramming.docitten;
 
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.Random;
@@ -123,7 +124,13 @@ public class KittenService extends Service implements MessageService
 	@Override
 	protected void startup(RelayCat r)
 	{
-		// Nothing to see here. Move along, citizen!
+		List<HelpService> helpServices = r.getServicesByClass(HelpService.class);
+
+		if (!helpServices.isEmpty())
+		{
+			HelpService.HelpInfo help = new HelpService.HelpInfo("Kitten Service", "Kittens do not need your help. They do appreciate being looked after. But, there are plenty of other expendable humans to do that...");
+			helpServices.get(0).addHelp("kitten", help);
+		}
 	}
 
 	@Override
