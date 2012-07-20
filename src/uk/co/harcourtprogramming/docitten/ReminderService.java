@@ -154,6 +154,9 @@ public class ReminderService extends ExternalService implements MessageService
 			{
 				synchronized (globalReminders)
 				{
+					// new Reminder() returns reminders reminder that is timestamped now
+					// Due to the ordering, the head set of this is all reminders
+					// that happened in the past
 					for (Reminder r : globalReminders.headSet(new Reminder()))
 					{
 						this.getInstance().message(r.nick, r.data);
