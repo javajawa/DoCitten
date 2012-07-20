@@ -1,4 +1,4 @@
-package uk.co.harcourtprogramming.docitten;
+package uk.co.harcourtprogramming.docitten.utility;
 
 import java.util.HashMap;
 import java.util.Map;
