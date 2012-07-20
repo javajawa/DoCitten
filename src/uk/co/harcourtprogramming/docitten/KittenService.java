@@ -89,7 +89,7 @@ public class KittenService extends Service implements MessageService
 		}
 	}
 
-	/**e
+	/**
 	 * @return a random(ish) mewling sound with trailing space
 	 */
 	private String mewl()
