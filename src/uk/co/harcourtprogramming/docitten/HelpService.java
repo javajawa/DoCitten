@@ -2,6 +2,7 @@ package uk.co.harcourtprogramming.docitten;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import uk.co.harcourtprogramming.internetrelaycats.*;
 
 /**
@@ -81,11 +82,12 @@ public class HelpService extends Service implements MessageService
 	public HelpService()
 	{
 		root = new HelpInfo("Help", "This kitten comes equipped with a help module.\r\nFor more information, try 'help help', or one of the other help options below");
-		root.addChild("help", new HelpInfo("Help Service", "The help service uses a recusive tree structure, and allows an DoCitten module to add help information."));
+		root.addChild("help", new HelpInfo("Help Service", "The help service uses a recusive tree structure, and allows any DoCitten module to add help information."));
 	}
 
 	public final HelpInfo addHelp(String key, HelpInfo info)
 	{
+		log(Level.INFO, "Help added for {0}", new Object[] {key});
 		return root.addChild(key, info);
 	}
 
