@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.regex.Pattern;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
@@ -66,7 +64,6 @@ public class ReminderService extends ExternalService implements MessageService
 		}
 	};
 
-	private final ScheduledExecutorService pool = new ScheduledThreadPoolExecutor(1);
 	private final Map<String, SortedSet<AbstractReminder>> userReminders =
 	    new TreeMap<String, SortedSet<AbstractReminder>>();
 	private final SortedSet<Reminder> globalReminders =
