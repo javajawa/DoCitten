@@ -2,6 +2,7 @@ package uk.co.harcourtprogramming.docitten;
 
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -210,7 +211,7 @@ public class ReminderService extends ExternalService implements MessageService
 				note(m, tokeniser.toString());
 				break;
 			case remove:
-				m.reply("reminder: remove command");
+				remove(m, tokeniser);
 				break;
 		}
 	}
@@ -269,4 +270,48 @@ public class ReminderService extends ExternalService implements MessageService
 			}
 		}
 	}
+
+	private void remove(Message m, MessageTokeniser tokeniser)
+	{
+		int index;
+		try
+		{
+			index = Integer.parseInt(tokeniser.toString());
+		}
+		catch (NumberFormatException ex)
+		{
+			m.reply("The remove function takes a single, numberic parameter.\r\n"
+				+ "See 'help reminder' for more information");
+			return;
+		}
+
+		synchronized (globalReminders)
+		{
+			SortedSet<AbstractReminder> reminders = userReminders.get(m.getSender());
+
+			if (reminders == null)
+			{
+				m.reply("You have no reminders to remove");
+				return;
+			}
+			if (index < 1 || index > reminders.size())
+			{
+				m.reply(String.format("Index %d out of range - see 'reminder list'", index));
+				return;
+			}
+
+			Iterator<AbstractReminder> it = reminders.iterator();
+			AbstractReminder toRemove = null;
+
+			while (--index >= 0)
+				toRemove = it.next();
+
+			reminders.remove(toRemove);
+			if (toRemove instanceof Reminder)
+				globalReminders.remove((Reminder)toRemove);
+
+			m.reply("Reminder removed.");
+		}
+	}
+
 }
