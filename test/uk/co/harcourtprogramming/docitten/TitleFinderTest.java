@@ -1,8 +1,11 @@
 package uk.co.harcourtprogramming.docitten;
 
+import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
+import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 public class TitleFinderTest
 {
@@ -63,6 +66,12 @@ public class TitleFinderTest
 
 		@Override
 		public boolean isConnected()
+		{
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
+
+		@Override
+		public <Clazz extends Service> List<Clazz> getServicesByClass(Class<Clazz> clazz)
 		{
 			throw new UnsupportedOperationException("Not supported yet.");
 		}
