@@ -3,7 +3,12 @@ package uk.co.harcourtprogramming.docitten;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
-import uk.co.harcourtprogramming.internetrelaycats.*;
+import uk.co.harcourtprogramming.internetrelaycats.Message;
+import uk.co.harcourtprogramming.internetrelaycats.MessageService;
+import uk.co.harcourtprogramming.internetrelaycats.MessageTokeniser;
+import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
+import uk.co.harcourtprogramming.internetrelaycats.Service;
+
 
 /**
  *
@@ -11,8 +16,8 @@ import uk.co.harcourtprogramming.internetrelaycats.*;
  */
 public class HelpService extends Service implements MessageService
 {
-	private final static String EOL = "\r\n";
-	private final static String DOUBLE_EOL = "\r\n \r\n";
+	private final static char EOL = '\n';
+	private final static String DOUBLE_EOL = "\n \n";
 
 	public final static class HelpInfo
 	{
