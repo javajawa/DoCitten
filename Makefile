@@ -44,7 +44,7 @@ $(PACKAGEJAR): $(BUILD) $(PACKAGE) $(CLASS) $(LIBS) Manifest.mf
 	cp $(LIBS) $(PACKAGE)
 	cp lib/irc/dist/*.jar $(PACKAGE)
 
-lib/irc/dist/irc.jar: lib/irc
+lib/irc/dist/irc.jar::
 	$(MAKE) --directory=lib/irc package
 
 $(BUILD):
