@@ -49,6 +49,8 @@ public class Main
 		{
 			inst.addService(new HelpService());
 			inst.addService(new HushService());
+			inst.addService(new ContextService());
+
 			inst.addService(new KittenService());
 			inst.addService(new LinkService());
 			inst.addService(new GoHomeService(inst, args[1]));
