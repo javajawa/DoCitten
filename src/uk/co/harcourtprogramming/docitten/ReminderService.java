@@ -208,7 +208,7 @@ public class ReminderService extends ExternalService implements MessageService
 		switch (c)
 		{
 			case add:
-				m.reply("reminder: add command");
+				add(m, tokeniser.toString());
 				break;
 			case badcmd:
 				m.reply("Unknown Command");
@@ -222,9 +222,14 @@ public class ReminderService extends ExternalService implements MessageService
 				note(m, tokeniser.toString());
 				break;
 			case remove:
-				remove(m, tokeniser);
+				remove(m, tokeniser.toString());
 				break;
 		}
+	}
+
+	private void add(Message m, String data)
+	{
+		m.reply("Not yet implemented (sorry!)");
 	}
 
 	private void note(Message m, String data)
@@ -282,12 +287,12 @@ public class ReminderService extends ExternalService implements MessageService
 		}
 	}
 
-	private void remove(Message m, MessageTokeniser tokeniser)
+	private void remove(Message m, String data)
 	{
 		int index;
 		try
 		{
-			index = Integer.parseInt(tokeniser.toString());
+			index = Integer.parseInt(data);
 		}
 		catch (NumberFormatException ex)
 		{
@@ -324,5 +329,4 @@ public class ReminderService extends ExternalService implements MessageService
 			m.reply("Reminder removed.");
 		}
 	}
-
 }
