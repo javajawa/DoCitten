@@ -50,7 +50,7 @@ public class ReminderServiceTest
 
 		m = cat.getOutput();
 		assertNotNull(m);
-		assertEquals("Active Reminders (1):", m.getMessage());
+		assertEquals("Active Reminders for bob (1):", m.getMessage());
 
 		m = cat.getOutput();
 		assertNotNull(m);
@@ -88,7 +88,7 @@ public class ReminderServiceTest
 
 		m = cat.getOutput();
 		assertNotNull(m);
-		assertEquals("Active Reminders (2):", m.getMessage());
+		assertEquals("Active Reminders for bob (2):", m.getMessage());
 
 		m = cat.getOutput();
 		assertNotNull(m);
