@@ -34,7 +34,11 @@ public class HelpingServiceTest
 	public static Collection<Object[]> data()
 	{
 		return Arrays.asList(new Object[][] {
-			new Object[]{"help me", true},
+			new Object[]{"help me", false},
+			new Object[]{"halp!", true},
+			new Object[]{"halp?", true},
+			new Object[]{"halp", true},
+			new Object[]{"i need halp", true},
 			new Object[]{"bob", false}
 		});
 	}
