@@ -39,7 +39,10 @@ public class HelpingServiceTest
 			new Object[]{"halp?", true},
 			new Object[]{"halp", true},
 			new Object[]{"i need halp", true},
-			new Object[]{"bob", false}
+			new Object[]{"bob", false},
+			new Object[]{"Can I get some assistance with this?", true},
+			new Object[]{"Can I get some assistence with this?", true},
+			new Object[]{"hlp", true},
 		});
 	}
 
