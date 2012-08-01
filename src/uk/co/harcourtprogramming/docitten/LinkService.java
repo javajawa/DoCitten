@@ -2,10 +2,10 @@ package uk.co.harcourtprogramming.docitten;
 
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import uk.co.harcourtprogramming.internetrelaycats.MessageService;
+import java.util.regex.Pattern;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
+import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 
