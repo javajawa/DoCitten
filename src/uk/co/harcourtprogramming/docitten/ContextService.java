@@ -8,7 +8,7 @@ import uk.co.harcourtprogramming.docitten.utility.ArrayBuffer;
 import uk.co.harcourtprogramming.internetrelaycats.FilterService;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
-import uk.co.harcourtprogramming.internetrelaycats.MessageTokeniser;
+import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 import uk.co.harcourtprogramming.internetrelaycats.OutboundMessage;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;

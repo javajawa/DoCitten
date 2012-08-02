@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
-import uk.co.harcourtprogramming.internetrelaycats.MessageTokeniser;
+import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 
 /**

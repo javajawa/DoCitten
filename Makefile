@@ -1,6 +1,9 @@
 .PHONY: package compile clean test-build test
 .DEFAULT: package
 
+SPACE:=
+SPACE+=
+
 JAVAC=javac
 JAR=jar
 JUNIT=/usr/share/java/junit4.jar
@@ -13,10 +16,10 @@ TBUILD=tb
 PACKAGE=dist
 
 PACKAGEJAR=$(PACKAGE)/docitten.jar
-LIBS=$(wildcard lib/*.jar) lib/irc/dist/irc.jar
+LIBS=lib/irc/dist/irc.jar lib/irc/dist/mewler.jar $(wildcard lib/*.jar)
 
-CP=$(SRC):$(LIBS: =:)
-TCP=$(TEST):$(BUILD):$(JUNIT):$(LIBS: =:):lib/irc/test
+CP=$(SRC):$(subst $(SPACE),:,$(LIBS))
+TCP=$(TEST):$(BUILD):$(JUNIT):$(subst $(SPACE),:,$(LIBS)):lib/irc/test:lib/irc/lib/mewler/test
 
 FILES=$(wildcard $(SRC)/uk/co/harcourtprogramming/docitten/*.java)
 CLASS=$(patsubst $(SRC)/%.java,$(BUILD)/%.class,$(FILES))
@@ -44,7 +47,7 @@ $(PACKAGEJAR): $(BUILD) $(PACKAGE) $(CLASS) $(LIBS) Manifest.mf
 	cp $(LIBS) $(PACKAGE)
 	cp lib/irc/dist/*.jar $(PACKAGE)
 
-lib/irc/dist/irc.jar::
+lib/irc/dist/irc.jar lib/irc/dist/mewler.jar::
 	$(MAKE) --directory=lib/irc package
 
 $(BUILD):
