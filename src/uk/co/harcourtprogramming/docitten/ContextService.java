@@ -1,5 +1,7 @@
 package uk.co.harcourtprogramming.docitten;
 
+import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -8,20 +10,29 @@ import uk.co.harcourtprogramming.docitten.utility.ArrayBuffer;
 import uk.co.harcourtprogramming.internetrelaycats.FilterService;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
-import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 import uk.co.harcourtprogramming.internetrelaycats.OutboundMessage;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
+import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 
 /**
- *
- * @author Benedict
+ * <p>Service for suppling context to users for when they join a channel</p>
+ * <p>Intended for use for ping timeouts, dodgy networks, etc. Longer term
+ * context should be handled by an IRC bouncer.</p>
+ * @author Benedict Harcourt / javajawa
  */
 public class ContextService extends Service implements MessageService, FilterService
 {
 
+	/**
+	 * <p>Storage for the history of attached channels</p>
+	 */
 	private final Map<String, ArrayBuffer<String>> channelHistories =
-		new HashMap<String, ArrayBuffer<String>>();
+		new HashMap<String, ArrayBuffer<String>>(10);
+	/**
+	 * <p>Instance of {@link Calendar} for generating timestamps on the stored
+	 * messages</p>
+	 */
 	private final Calendar c = Calendar.getInstance();
 
 	@Override
@@ -39,8 +50,8 @@ public class ContextService extends Service implements MessageService, FilterSer
 		{
 			synchronized (channelHistories)
 			{
-				c.setTimeInMillis(System.currentTimeMillis());
-				String mess = String.format("[%tR %s] %s", c, m.getSender(), m.getMessage());
+				c.setTimeInMillis(currentTimeMillis());
+				String mess = format("[%tR %s] %s", c, m.getSender(), m.getMessage());
 
 				if (!channelHistories.containsKey(m.getChannel()))
 				{
@@ -56,23 +67,23 @@ public class ContextService extends Service implements MessageService, FilterSer
 		}
 		else
 		{
-			StringBuilder buffer = new StringBuilder();
 			synchronized (channelHistories)
 			{
 				if (channelHistories.containsKey(m.getChannel()))
 				{
-					ArrayBuffer<String> buf = channelHistories.get(m.getChannel());
-					for (int i = 0; i < buf.getLength(); ++i)
-						buffer.append(buf.get(i)).append('\n');
+					ArrayBuffer<String> hist = channelHistories.get(m.getChannel());
+					StringBuilder buffer = new StringBuilder(50 * hist.getLength());
+
+					for (int i = 0; i < hist.getLength(); ++i)
+						buffer.append(hist.get(i)).append('\n');
+					
+					m.reply(buffer.toString());
 				}
 				else
 				{
 					m.reply("No context available for this channel.");
-					return;
 				}
 			}
-
-			m.reply(buffer.toString());
 		}
 	}
 
@@ -104,7 +115,7 @@ public class ContextService extends Service implements MessageService, FilterSer
 	@Override
 	protected void startup(RelayCat r)
 	{
-				List<HelpService> helpServices = r.getServicesByClass(HelpService.class);
+		List<HelpService> helpServices = r.getServicesByClass(HelpService.class);
 
 		if (!helpServices.isEmpty())
 		{
