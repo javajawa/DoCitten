@@ -11,15 +11,16 @@ import java.util.logging.Level;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
-import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
+import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 
 /**
  * <p>Service for processing the motd.dat files on DoC's file systems, and
- * posting new announcements to the irc channel</p>
+ * posting new announcements to the IRC channel</p>
  */
 public class MOTDService extends ExternalService implements MessageService
 {
+
 	/**
 	 * <p>The MOTD.dat file</p>
 	 */
@@ -44,22 +45,39 @@ public class MOTDService extends ExternalService implements MessageService
 	/**
 	 * <p>Class that stores the attributes of messages as laid out in the
 	 * motd.dat file</p>
+	 *
 	 * @see MOTDService#processFile()
 	 */
 	private class Message
 	{
-		private Integer id = null;
-		private Boolean active = null;
-		private String title = null;
-		private String mshort = null;
-		private String mlong = null;
-		private Long from = null;
-		private Long to = null;
-		private String poster_uid = null;
-		private String poster_name = null;
 
 		/**
-		 *
+		 * <p>MOTD item id</p>
+		 */
+		protected Integer id = null;
+		/**
+		 * <p>If this MOTD item is active</p>
+		 */
+		protected Boolean active = null;
+		/**
+		 * <p>Item title</p>
+		 */
+		protected String title = null;
+		/**
+		 * <p>Item (HTML) content</p>
+		 */
+		protected String content = null;
+		/**
+		 * <p>User account name</p>
+		 */
+		protected String poster_uid = null;
+		/**
+		 * <p>User account 'real' name</p>
+		 */
+		protected String poster_name = null;
+
+		/**
+		 * <p>Creates a new message class</p>
 		 */
 		private Message()
 		{
@@ -67,8 +85,8 @@ public class MOTDService extends ExternalService implements MessageService
 		}
 
 		/**
-		 * Returns this MOTD message in the form:
-		 * <pre>#666 *Benedict Harcourt* (bh308@doc): Important Announcement
+		 * <p>Returns this MOTD message in the form:</p>
+		 * <pre>#666 Benedict Harcourt (bh308@doc): Important Announcement
 		 * DoCitten can now read the Message of the Day data files</pre>
 		 * @return formatted MOTD message
 		 */
@@ -77,15 +95,17 @@ public class MOTDService extends ExternalService implements MessageService
 		{
 			return String.format("#%1$d *%2$s* (%3$s@doc): %4$s\n%5$s",
 			    id, poster_name, poster_uid, title,
-			    mlong.replaceAll("</?(br|BR)( ?/)?>", " ").replaceAll("</?(p|P) ( ?/)?>", "\n")
+			    content.replaceAll("</?(br|BR)( ?/)?>", " ").replaceAll("</?(p|P) ( ?/)?>", "\n")
 			);
 		}
 	}
 
 	/**
 	 * <p>Creates an MOTD Service</p>
+	 *
 	 * @param inst the InternetRelayCat instance this service will be used with
 	 * @param data_file the motd.dat file to watch
+	 * @param motd_file the motd file to use in response to commands
 	 * @param channel the channel (or user) to post new entries to
 	 */
 	public MOTDService(InternetRelayCat inst, File data_file, File motd_file, String channel)
@@ -108,6 +128,7 @@ public class MOTDService extends ExternalService implements MessageService
 	 * <p>Runs the MOTD Service</p>
 	 */
 	@Override
+	@SuppressWarnings("SleepWhileInLoop")
 	public void run()
 	{
 		while (true)
@@ -129,14 +150,17 @@ public class MOTDService extends ExternalService implements MessageService
 	/**
 	 * <p>Process an MOTD.dat file at the supplied path, look for new entries,
 	 * and message the appropriate channel or user.</p>
+	 *
+	 * @param initial whether this is an initial (non-outputting) pass.
 	 */
-	@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
-	// Accessing final fields of a private inner class that is not exported
 	private void processFile(boolean initial)
 	{
 		log(Level.INFO, "Processing MOTD file " + data_file.getPath());
+
 		BufferedReader in = null;
 		Message curr = null;
+		boolean content = false;
+
 		final LinkedList<Message> stack = new LinkedList<Message>();
 
 		try
@@ -147,70 +171,78 @@ public class MOTDService extends ExternalService implements MessageService
 			{
 				String line = in.readLine().trim();
 
-				if (line.charAt(0) == '#') continue;
+				// Ingore commented lines
+				if (line.charAt(0) == '#')
+					continue;
+
+				// Start of a new message
 				if (line.equals("[Message]"))
 				{
-					if (curr != null) stack.push(curr);
+					if (curr != null)
+						stack.push(curr);
+
 					curr = new Message();
+					content = false;
 					continue;
 				}
 
-				if (curr == null) continue;
+				// We have not encountered a [Message] line
+				if (curr == null)
+					continue;
+
+				// If not a key=value line, ignore
+				// unless we're reading entended content
 				int div = line.indexOf('=');
-				if (div == -1) continue;
+				if (div == -1)
+				{
+					if (content)
+						curr.content += line;
 
-				String field = line.substring(0,div).toLowerCase();
-				String value = line.substring(div+1);
+					continue;
+				}
 
-				if (field.equals("id"))
-				{
-					curr.id = Integer.parseInt(value);
-					continue;
-				}
-				if (initial) continue; // We only care for ids in initial pass
-				if (field.equals("active"))
-				{
-					curr.active = Boolean.valueOf(value);
-					continue;
-				}
-				if (field.equals("title"))
-				{
-					curr.title = value;
-					continue;
-				}
-				if (field.equals("short"))
-				{
-					curr.mshort = value;
-					continue;
-				}
-				if (field.equals("long"))
-				{
-					curr.mlong = value;
-					continue;
-				}
-				if (field.equals("from"))
-				{
-//					curr.from = new Date(value).getTime();
-					continue;
-				}
-				if (field.equals("to"))
-				{
-//					curr.to = new Date(value).getTime();
-					continue;
-				}
-				if (field.equals("posterid"))
-				{
-					curr.poster_uid = value;
-					continue;
-				}
-				if (field.equals("postername"))
-				{
-					curr.poster_name = value;
-					continue;
-				}
-				if (field.equals("showunix")) continue;
+				// End of any continuing content block
+				content = false;
 
-				log(Level.WARNING, "Unknown Field '" + field + "'");
+				String field = line.substring(0, div).toLowerCase();
+				String value = line.substring(div + 1);
+
+				switch (field)
+				{
+					case "id":
+						curr.id = Integer.parseInt(value);
+						continue;
+
+					case "active":
+						curr.active = Boolean.valueOf(value);
+						continue;
+
+					case "title":
+						curr.title = value;
+						continue;
+
+					case "long":
+						curr.content = value;
+						content = true;
+						continue;
+
+					case "posterid":
+						curr.poster_uid = value;
+						continue;
+
+					case "postername":
+						curr.poster_name = value;
+						continue;
+
+					case "short":
+					case "from":
+					case "to":
+					case "showunix":
+						continue;
+
+					default:
+						log(Level.WARNING, "Unknown Field '" + field + "'");
+				}
 			}
 		}
 		catch (IOException ex)
@@ -232,14 +264,19 @@ public class MOTDService extends ExternalService implements MessageService
 			}
 		}
 
-		if (curr != null) stack.push(curr);
+		if (curr != null)
+			stack.push(curr);
+
 		lastModified = data_file.lastModified();
 
 		if (initial)
 		{
-			if (stack.size() > 0) lastId = stack.getLast().id;
-			return;
+			if (stack.size() > 0)
+				lastId = stack.getLast().id;
+
+			return; // Don't output on initial pass
 		}
+
 		for (Message m : stack)
 		{
 			if (m.id > lastId)
@@ -270,7 +307,7 @@ public class MOTDService extends ExternalService implements MessageService
 			StringBuilder s = new StringBuilder(1000);
 
 			while (r.ready())
-				s.append(r.readLine()).append("\r\n");
+				s.append(r.readLine()).append('\n');
 
 			m.reply(s.toString());
 		}
@@ -290,7 +327,7 @@ public class MOTDService extends ExternalService implements MessageService
 			HelpService.HelpInfo help = new HelpService.HelpInfo("MOTD Service",
 				"The MOTD service exists to broadcast DoC service announcements "
 				+ "to the users in the #doc channel. The MOTD data file is "
-				+ "checked for changes every 5 minutes.\r\n"
+				+ "checked for changes every 5 minutes.\n"
 				+ "The service also offers the 'motd' command, which will send "
 				+ "the current MOTD to the user in full.");
 			helpServices.get(0).addHelp("motd", help);
@@ -303,4 +340,3 @@ public class MOTDService extends ExternalService implements MessageService
 		// Nothing to see here. Move along, citizen!
 	}
 }
-
