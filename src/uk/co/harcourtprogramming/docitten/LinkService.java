@@ -10,29 +10,33 @@ import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 /**
- * Link detection/analysis service
+ * <p>Link detection/analysis service</p>
+ *
+ * @author Benedict Harcourt / javajawa
  */
 public class LinkService extends Service implements MessageService
 {
+
 	/**
 	 * <p>Links are detected using this regex</p>
 	 * <p>The regex works from detecting a limited subset of the top-level and
 	 * selected other domains as a focal point; by looking for subdomains and
 	 * protocol before, and path, query and location after, the full uris is
-	 * matched.
+	 * matched.</p>
 	 */
 	private final static Pattern uriPattern =
 		Pattern.compile("(?:^|\\s)\\(?\\[?((?:https?://)?(?:\\w+\\.)*(?:(?:\\w+\\.(com|net|uk|edu))|(?:www|is.gd|bit.ly))(?::[0-9]+)?(?:/[^\\s\\])]*)?)", Pattern.CASE_INSENSITIVE);
 	/**
-	 * Links will also be matched if they begin with the http or https protocols.
-	 * This regex is also used in the {@link LinkResolver} to determine is a protocol
-	 * is present (otherwise http will be prefixed)
+	 * <p>Links will also be matched if they begin with the http or https
+	 * protocols.</p>
+	 * <p>This regex is also used in the {@link LinkResolver} to determine is a
+	 * protocol is present (otherwise http:// will be prefixed)</p>
 	 */
 	private final static Pattern protocolPattern =
 		Pattern.compile("https?://[^\\s\\])]+", Pattern.CASE_INSENSITIVE);
 
 	/**
-	 * Create a link server
+	 * <p>Create a link service instance</p>
 	 */
 	public LinkService()
 	{
@@ -43,17 +47,15 @@ public class LinkService extends Service implements MessageService
 	public void handle(Message m)
 	{
 		Set<String> uris = uris(m.getMessage());
-		LinkResolver l;
-
 		for (String uri : uris)
 		{
-			l = new LinkResolver(uri, m, m.getReplyToAllTarget());
-			l.start();
+			new LinkResolver(uri, m, m.getReplyToAllTarget()).start();
 		}
 	}
 
 	/**
-	 * <p>Finds and returns all matched uris in a given string (message)
+	 * <p>Finds and returns all matched URIs in a given string (message)</p>
+	 *
 	 * @param message the message to scan for links
 	 * @return the list of links that are found (may by empty, but not null)
 	 */
