@@ -7,33 +7,35 @@ import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 
 /**
- * Class that gives warnings for people to leave the laboratories before the
- * doors automatically lock
+ * <p>Class that gives warnings for people to leave the laboratories before the
+ * doors automatically lock</p>
  */
-class GoHomeService extends ExternalService
+public class GoHomeService extends ExternalService
 {
+
 	/**
-	 * The channel to inform
+	 * <p>The channel to inform</p>
 	 */
 	private final String channel;
 	/**
-	 * Calendar instance for checking the time
+	 * <p>Calendar instance for checking the time</p>
 	 */
 	private final Calendar c = Calendar.getInstance();
 
 	/**
-	 * Create a go home service
+	 * <p>Create a go home service</p>
+	 *
 	 * @param inst the InternetRelayCat instance
 	 * @param channel target name/channel
 	 */
-	GoHomeService(InternetRelayCat inst, String channel)
+	public GoHomeService(InternetRelayCat inst, String channel)
 	{
 		super(inst);
 		this.channel = channel;
 	}
 
 	/**
-	 * Runs the Go Home Service
+	 * <p>Runs the Go Home Service</p>
 	 */
 	@Override
 	@SuppressWarnings({"SleepWhileHoldingLock", "SleepWhileInLoop"})
@@ -90,5 +92,3 @@ class GoHomeService extends ExternalService
 		// Nothing to see here. Move along, citizen.
 	}
 }
-
-
