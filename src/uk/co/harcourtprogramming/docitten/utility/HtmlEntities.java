@@ -274,7 +274,7 @@ public class HtmlEntities
 		String intermediate = data;
 
 		for (Map.Entry<String, Character> e : mappings.entrySet())
-			intermediate.replaceAll(e.getKey(), e.getValue().toString());
+			intermediate = intermediate.replaceAll(e.getKey(), e.getValue().toString());
 
 		return intermediate;
 	}
