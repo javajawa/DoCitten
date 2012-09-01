@@ -36,6 +36,14 @@ public class ContextService extends Service implements MessageService, FilterSer
 	 */
 	private final Calendar c = Calendar.getInstance();
 
+	/**
+	 * <p>Creates a new Content Service instance</p>
+	 */
+	public ContextService()
+	{
+		// Nothing to seet here. Move along, citizen!
+	}
+
 	@Override
 	public void handle(Message m)
 	{

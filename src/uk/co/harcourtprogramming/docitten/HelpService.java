@@ -49,7 +49,7 @@ public class HelpService extends Service implements MessageService
 		private final Map<String, HelpInfo> children = new TreeMap<String, HelpInfo>();
 		/**
 		 * <p>The title of the topic to display at the top of the
-		 * {@link #toMessage() message}, and in any help listings</p>
+		 * {@link #toString() message}, and in any help listings</p>
 		 *
 		 * @see #getTitle()
 		 * @see #toString()
@@ -213,9 +213,9 @@ public class HelpService extends Service implements MessageService
 	 * <p>As well as wrapping root.addChild, this function will also log with
 	 * level info that the item was added</p>
 	 *
-	 * @param key
-	 * @param info
-	 * @return
+	 * @param key The keyword to use for this sub-item
+	 * @param info The help item to map to this keyword to.
+	 * @return Any item that was replaced
 	 * @see HelpInfo#addChild(java.lang.String,
 	 * uk.co.harcourtprogramming.docitten.HelpService.HelpInfo)
 	 * HelpInfo.addChild

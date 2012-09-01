@@ -24,6 +24,14 @@ public class HushService extends Service implements MessageService, FilterServic
 	 */
 	private final Set<String> hushedTargets = new HashSet<String>();
 
+	/**
+	 * <p>Creates a new HushService instance</p>
+	 */
+	public HushService()
+	{
+		// Nothing to see here. Move along, citizen!
+	}
+
 	@Override
 	protected void startup(RelayCat r)
 	{

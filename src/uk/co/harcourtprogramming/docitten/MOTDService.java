@@ -46,7 +46,7 @@ public class MOTDService extends ExternalService implements MessageService
 	 * <p>Class that stores the attributes of messages as laid out in the
 	 * motd.dat file</p>
 	 *
-	 * @see MOTDService#processFile()
+	 * @see MOTDService#processFile(boolean) processFile
 	 */
 	private class Message
 	{
