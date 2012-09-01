@@ -8,85 +8,149 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
-import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
+import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 
 /**
+ * <p>Service for create todo list and reminders</p>
  *
+ * @author Benedict Harcourt / javajawa
  */
 public class ReminderService extends ExternalService implements MessageService
 {
+
+	/**
+	 * <p>Name of the service, for analysing commands</p>
+	 */
 	private final static String SERVICE_NAME = "reminder";
-
-	private final static Pattern TIME_PATTERN = Pattern.compile(
-	    "(\\d\\d?(\\s?h(ou)?(rs)?|:)\\d\\dm?|\\d\\d?(am|pm))",
-		Pattern.CASE_INSENSITIVE
-	);
-	private final static Pattern DATE_PATTERN = Pattern.compile(
-	    "(\\d\\d?(st|nd|rd)\\s?(jan(uary)?|feb|mar|apr|may|jun|ju?ly?|aug|sep|oct|nov|dec))",
-		Pattern.CASE_INSENSITIVE
-	);
-
+	/**
+	 * <p>List of the different valid commands</p>
+	 */
 	private enum Commands
 	{
+
+		/**
+		 * <p>Add a new times reminder</p>
+		 */
 		add,
+		/**
+		 * <p>Remove a reminder or note</p>
+		 */
 		remove,
+		/**
+		 * <p>List reminders and notes</p>
+		 */
 		list,
+		/**
+		 * <p>Create a new note</p>
+		 */
 		note,
+		/**
+		 * <p>Shows the help information</p>
+		 */
 		help,
+		/**
+		 * <p>Marker for a non-valid command</p>
+		 */
 		badcmd
 	}
-
+	/**
+	 * <p>Comparator that implements the 'natural' ordering for a todo list</p>
+	 * <ul>
+	 *	<li>Notes sort to the bottom of the list</li>
+	 *  <li>Reminders are ordered according how far in the future they occur</li>
+	 *  <li>Remaining comparisons are done based on the creation time (oldest to
+	 * newest</li>
+	 * </ul>
+	 */
 	private final static Comparator<AbstractReminder> reminderOrderer =
-	   new Comparator<AbstractReminder>() {
-
-		@Override
-		public int compare(AbstractReminder o1, AbstractReminder o2)
+	(
+		new Comparator<AbstractReminder>()
 		{
-			if (o1 == o2) return 0;
-			if (o1 instanceof Note)
+			@Override
+			public int compare(AbstractReminder o1, AbstractReminder o2)
 			{
-				if (o2 instanceof Note)	return ((Long)o1.setTimestamp).compareTo(o2.setTimestamp);
-				return -1;
+				if (o1 == o2)
+					return 0;
+
+				if (o1 instanceof Note)
+				{
+					if (o2 instanceof Note)
+						return ((Long)o1.setTimestamp).compareTo(o2.setTimestamp);
+
+					return -1;
+				}
+				if (o2 instanceof Note)
+					return 1;
+
+				final Reminder r1 = (Reminder)o1;
+				final Reminder r2 = (Reminder)o2;
+
+				if (r1.sendTimestamp == r2.sendTimestamp)
+					return ((Long)o1.setTimestamp).compareTo(o2.setTimestamp);
+
+				return ((Long)r1.sendTimestamp).compareTo(r2.sendTimestamp);
 			}
-			if (o2 instanceof Note)
-				return 1;
-			final Reminder r1 = (Reminder)o1;
-			final Reminder r2 = (Reminder)o2;
-			if (r1.sendTimestamp == r2.sendTimestamp)
-			{
-				return ((Long)o1.setTimestamp).compareTo(o2.setTimestamp);
-			}
-			return ((Long)r1.sendTimestamp).compareTo(r2.sendTimestamp);
 		}
-	};
-
+	);
+	/**
+	 * <p>Notes and reminders, catalogued by user</p>
+	 */
 	private final Map<String, SortedSet<AbstractReminder>> userReminders =
-	    new TreeMap<String, SortedSet<AbstractReminder>>();
+			new TreeMap<String, SortedSet<AbstractReminder>>();
+	/**
+	 * <p>All the reminders, ordered by when they need to be sent out</p>
+	 */
 	private final SortedSet<Reminder> globalReminders =
-		new TreeSet<Reminder>(reminderOrderer);
+			new TreeSet<Reminder>(reminderOrderer);
 
+	/**
+	 * <p>Base class for all reminders stored by the ReminderService</p>
+	 */
 	private static abstract class AbstractReminder
 	{
-		final String nick;
-		final String data;
-		final long setTimestamp = System.currentTimeMillis();
 
+		/**
+		 * <p>The nick that created the reminder</p>
+		 */
+		protected final String nick;
+		/**
+		 * <p>The text content of the reminder</p>
+		 */
+		protected final String data;
+		/**
+		 * <p>When this AbstractReminder was created</p>
+		 */
+		protected final long setTimestamp;
+
+		/**
+		 * <p>Creates a new instance of an AbstractReminder</p>
+		 * @param nick the nick that created the reminder
+		 * @param data the text content of the reminder
+		 */
 		AbstractReminder(String nick, String data)
 		{
 			this.nick = nick;
 			this.data = data;
+			this.setTimestamp = System.currentTimeMillis();
 		}
-
 	}
 
+	/**
+	 * <p>Class representing a todo note</p>
+	 */
 	private static class Note extends AbstractReminder
 	{
+
+		/**
+		 * @param nick the nick that created the reminder
+		 * @param data the text content of the reminder
+		 * @see AbstractReminder
+		 */
 		Note(String nick, String data)
 		{
 			super(nick, data);
@@ -99,17 +163,35 @@ public class ReminderService extends ExternalService implements MessageService
 		}
 	}
 
+	/**
+	 * <p>Class representing an active reminder</p>
+	 */
 	private static class Reminder extends AbstractReminder
 	{
+
+		/**
+		 * <p>When to send this reminder</p>
+		 */
 		final long sendTimestamp;
 
-		Reminder(long sendTimestamp, String nick, String data)
+		/**
+		 * <p>Creates a new reminder instance</p>
+		 * @param sendTimestamp when to send this reminder
+		 * @param nick the nick that created the reminder
+		 * @param data the text content of the reminder
+		 */
+		protected Reminder(long sendTimestamp, String nick, String data)
 		{
 			super(nick, data);
 			this.sendTimestamp = sendTimestamp;
 		}
 
-		Reminder()
+		/**
+		 * <p>Creates a blank reminder object, which can be used to partition a
+		 * sorted tree into reminders that have occurred and those that have
+		 * not</p>
+		 */
+		protected Reminder()
 		{
 			super(null, null);
 			sendTimestamp = System.currentTimeMillis();
@@ -123,10 +205,13 @@ public class ReminderService extends ExternalService implements MessageService
 
 			return String.format("[%2$tD %2$tR] %1$s", data, c);
 		}
-
-
 	}
 
+	/**
+	 * <p>Creates a new ReminderService instance</p>
+	 *
+	 * @param inst the IRC interface to attach to
+	 */
 	public ReminderService(InternetRelayCat inst)
 	{
 		super(inst);
@@ -158,6 +243,7 @@ public class ReminderService extends ExternalService implements MessageService
 	}
 
 	@Override
+	@SuppressWarnings("SleepWhileInLoop")
 	public void run()
 	{
 		try
@@ -227,11 +313,21 @@ public class ReminderService extends ExternalService implements MessageService
 		}
 	}
 
+	/**
+	 * <p>Add a new timed reminder</p>
+	 * @param m message that contained this command
+	 * @param data parameters to the command
+	 */
 	private void add(Message m, String data)
 	{
 		m.reply("Not yet implemented (sorry!)");
 	}
 
+	/**
+	 * <p>Adds a new note</p>
+	 * @param m message that contained this command
+	 * @param data parameters to the command
+	 */
 	private void note(Message m, String data)
 	{
 		Note newNote = new Note(m.getSender(), data);
@@ -258,6 +354,10 @@ public class ReminderService extends ExternalService implements MessageService
 		m.reply("Note Created");
 	}
 
+	/**
+	 * <p>Lists all the reminders and notes for a user</p>
+	 * @param m message that contained this command
+	 */
 	private void list(Message m)
 	{
 		synchronized (globalReminders)
@@ -271,6 +371,7 @@ public class ReminderService extends ExternalService implements MessageService
 			{
 				userSet = userReminders.get(m.getSender());
 			}
+
 			if (userSet.isEmpty())
 			{
 				m.reply("You have no active reminders.");
@@ -287,6 +388,11 @@ public class ReminderService extends ExternalService implements MessageService
 		}
 	}
 
+	/**
+	 * <p>Removes a reminder or note</p>
+	 * @param m message that contained this command
+	 * @param data parameters to the command
+	 */
 	private void remove(Message m, String data)
 	{
 		int index;
