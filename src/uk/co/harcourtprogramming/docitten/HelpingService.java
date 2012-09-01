@@ -8,6 +8,7 @@ import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 /**
  * <p>Shouts 'HELPING!' whenever someone asks for help</p>
+ * @author Benedict Harcourt / javajawa
  */
 public class HelpingService extends Service implements MessageService
 {
@@ -26,6 +27,7 @@ public class HelpingService extends Service implements MessageService
 	 */
 	public HelpingService()
 	{
+		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override
