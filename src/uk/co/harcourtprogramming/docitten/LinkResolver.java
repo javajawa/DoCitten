@@ -1,6 +1,5 @@
 package uk.co.harcourtprogramming.docitten;
 
-import uk.co.harcourtprogramming.docitten.utility.HtmlEntities;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,13 +9,15 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import uk.co.harcourtprogramming.docitten.utility.HtmlEntities;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
+import uk.co.harcourtprogramming.logging.LogDecorator;
 
 /**
  * <p>Recursive URL retriever</p>
+ *
+ * @author Benedict Harcourt / javajawa
  */
 public class LinkResolver extends Thread
 {
@@ -29,15 +30,14 @@ public class LinkResolver extends Thread
 		@Override
 		public void uncaughtException(Thread t, Throwable e)
 		{
-			LOG.log(Level.SEVERE, "Excpetion in " + t.getName(), e);
+			LOG.uncaught(t, e);
 		}
 	};
-
 	/**
 	 * <p>Logger shared with {@link LinkService} and with all other LinkResolver
 	 * instances</p>
 	 */
-	private final static Logger LOG = Logger.getLogger("DoCitten.LinkService");
+	private final static LogDecorator LOG = LogDecorator.getLogger("DoCitten.LinkServier");
 	/**
 	 * <p>Regex pattern to test whether a string has an http or https protocol
 	 * section</p>
@@ -52,7 +52,6 @@ public class LinkResolver extends Thread
 	 * <p>The maximum number of redirects to follow</p>
 	 */
 	private final static int MAX_HOPS = 5;
-
 	/**
 	 * <p>Letters for binary prefixs</p>
 	 * <p>kilo, mega, giga, terra, pera, exa, zetta, yotta, hella</p>
@@ -61,41 +60,49 @@ public class LinkResolver extends Thread
 	 */
 	private final static String UNIT_PREFIX = "kMGTPEZYH";
 	/**
-	 * ln(ratio between any two prefixes)
+	 * <p>ln(ratio between any two prefixes)</p>
 	 */
 	private final static double UNIT_SIZE = Math.log(1024);
+
 	/**
 	 * <p>Converts a byte count into a 1dp figure of &lt;kMG...&gt;iB
 	 * (uses base 1024)</p>
+	 *
 	 * @param bytes the number of bytes
 	 * @return formatted value
 	 */
-	private static String humanReadableByteCount(long bytes) {
-		if (bytes < 1024) return bytes + " B";
-		int exp = (int) (Math.log(bytes) / UNIT_SIZE);
-		return String.format("%.1f %siB", bytes / Math.pow(1024, exp), UNIT_PREFIX.charAt(exp-1));
+	private static String humanReadableByteCount(long bytes)
+	{
+		if (bytes < 1024)
+			return bytes + " B";
+		int exp = (int)(Math.log(bytes) / UNIT_SIZE);
+		return String.format("%.1f %siB", bytes / Math.pow(1024, exp), UNIT_PREFIX.charAt(exp - 1));
 	}
-
 	/**
-	 * The original URI that we are retrieving
+	 * <p>The original URI that we are retrieving</p>
 	 */
 	private final URI baseURI;
 	/**
-	 * Message that we will be replying to
+	 * <p>IRC connection that the query came from</p>
 	 */
 	private final RelayCat mess;
 	/**
-	 * The channel or user to whom we need to reply
+	 * <p>IRC user/channel that the query came from</p>
 	 */
 	private final String target;
 
 	/**
-	 * Creates a link resolver instance
+	 * <p>Creates a link resolver instance, targeted at a specified web address,
+	 * which will attempt to send information to a IRC end point via a RelayCat
+	 * instance</p>
+	 *
 	 * @param baseURI the link we're following
-	 * @param mess the message to replyToAll
+	 * @param mess IRC connection that the query came from
+	 * @param target IRC user/channel that the query came from
 	 */
 	public LinkResolver(String baseURI, RelayCat mess, String target)
 	{
+		super(THREAD_GROUP, "LinkResolver [" + baseURI + ']');
 		if (!PROTOCOL.matcher(baseURI).matches())
 			this.baseURI = URI.create("http://" + baseURI);
 		else
@@ -107,7 +114,7 @@ public class LinkResolver extends Thread
 	}
 
 	/**
-	 * Runs this LinkResolver
+	 * <p>Runs this LinkResolver</p>
 	 */
 	@Override
 	public void run()
@@ -138,9 +145,7 @@ public class LinkResolver extends Thread
 			}
 			catch (UnknownHostException ex)
 			{
-				LOG.log(Level.FINE,
-					String.format("Host %s not found [lookup of %s]",
-					curr.getHost(), baseURI.toString()));
+				LOG.fine("Host {0} not found [lookup of {1}]", curr.getHost(), baseURI.toString());
 				return;
 			}
 			catch (IOException ex)
@@ -164,7 +169,9 @@ public class LinkResolver extends Thread
 				case HttpURLConnection.HTTP_MOVED_TEMP:
 				case HttpURLConnection.HTTP_MULT_CHOICE:
 				case HttpURLConnection.HTTP_SEE_OTHER:
-					if (conn.getHeaderField("Location") == null) return;
+					if (conn.getHeaderField("Location") == null)
+						return;
+
 					curr = resolveLocation(curr, conn.getHeaderField("Location"));
 					break;
 
@@ -177,23 +184,36 @@ public class LinkResolver extends Thread
 			if (interrupted())
 				return;
 
-			if (resolved || ++ hops == MAX_HOPS)
+			if (resolved || (++hops == MAX_HOPS))
 				break;
 		}
 
 		if (hops == MAX_HOPS)
 		{
-			mess.message(target,
-				String.format("[%s] (Unresolved after %d hops)", curr.getHost(), MAX_HOPS));
+			mess.message(target, String.format(
+				"[%s] (Unresolved after %d hops)", curr.getHost(), MAX_HOPS
+			));
 			return;
 		}
 
 		fetchData(curr);
 	}
 
-	private HttpURLConnection createConnection(URL curr) throws IOException
+	/**
+	 * <p>Creates an HttpURLConnection to a URL</p>
+	 * <p>The connection is set up to:</p>
+	 * <ul>
+	 *	<li>Not follow redirects (prevents loops)</li>
+	 *  <li>Perform only a head request</li>
+	 *  <li>Timeout after {@link #TIMEOUT}ms on both connect and read</li>
+	 * </ul>
+	 * @param url the target URL
+	 * @return an ready, but unsent, connection to the URL
+	 * @throws IOException
+	 */
+	private HttpURLConnection createConnection(URL url) throws IOException
 	{
-		HttpURLConnection conn = (HttpURLConnection)curr.openConnection();
+		HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 
 		conn.setInstanceFollowRedirects(false);
 		conn.setRequestMethod("HEAD");
@@ -203,34 +223,45 @@ public class LinkResolver extends Thread
 		return conn;
 	}
 
-	private void fetchData(URL curr)
+	/**
+	 * <p>Fetches some simple meta-data about a URL</p>
+	 * <p>The resource is accessed with a GET request, not following re-directs.
+	 * The Content-type is examined; (x)html-like files are searched for a
+	 * {@link #getTitle(java.io.InputStream) title element}. For other types,
+	 * the mime type and seize are sent in lieu of a title.</p>
+	 * @param url the resource to get meta-data for
+	 * @throws RuntimeException on any IO error (caught in {@link #THREAD_GROUP
+	 * the thread group})
+	 */
+	private void fetchData(URL url)
 	{
 		try
 		{
-			HttpURLConnection conn = (HttpURLConnection)curr.openConnection();
+			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 			conn.setRequestMethod("GET");
+			conn.setInstanceFollowRedirects(false);
 			conn.connect();
 
 			String mime = conn.getContentType();
-			if (mime == null) mime = "";
+			if (mime == null)
+				mime = "";
+
 			mime = mime.split(";")[0];
 
 			if (conn.getContentType().matches("(text/.+|.+xhtml.+)"))
 			{
-				mess.message(target, String.format("[%s] %s", curr.getHost(), getTitle(conn.getInputStream())));
+				mess.message(target, String.format("[%s] %s", url.getHost(), getTitle(conn.getInputStream())));
 			}
 			else
 			{
 				if (conn.getContentLength() == -1)
 				{
 					mess.message(target,
-						String.format("[%s] %s (size unknown)", curr.getHost(),
-						mime));
+						String.format("[%s] %s (size unknown)", url.getHost(), mime));
 				}
 				else
 				{
-					mess.message(target,
-						String.format("[%s] %s %s", curr.getHost(), mime,
+					mess.message(target, String.format("[%s] %s %s", url.getHost(), mime,
 						humanReadableByteCount(conn.getContentLength())));
 				}
 			}
@@ -241,30 +272,40 @@ public class LinkResolver extends Thread
 		}
 	}
 
+	/**
+	 * <p>Searches for a &lt;title&gt; element in a stream</p>
+	 * @param stream source data
+	 * @return the title, or "[No Title Set]" is none is found
+	 * @throws IOException
+	 */
 	private String getTitle(InputStream stream) throws IOException
 	{
 		BufferedReader pageData =
 			new BufferedReader(new InputStreamReader(stream));
 
 		String line;
+
 		boolean reading = false;
+		int titleTagLength = "<title>".length();
+
 		String title = "[No Title Set]";
 
 		while (true)
 		{
 			line = pageData.readLine();
-			if (line == null) break;
+			if (line == null)
+				break;
 
 			if (line.contains("<title>"))
 			{
 				reading = true;
-				line = line.substring(line.indexOf("<title>") + 7);
+				line = line.substring(line.indexOf("<title>") + titleTagLength);
 				title = "";
 			}
 			if (line.contains("<TITLE>"))
 			{
 				reading = true;
-				line = line.substring(line.indexOf("<TITLE>") + 7);
+				line = line.substring(line.indexOf("<TITLE>") + titleTagLength);
 				title = "";
 			}
 
@@ -279,9 +320,9 @@ public class LinkResolver extends Thread
 				break;
 			}
 
-			if (line.contains("</head>") || line.contains("<body>") ||
-				line.contains("</HEAD>") || line.contains("<BODY>"))
-					break;
+			if (line.contains("</head>") || line.contains("<body>")
+			 || line.contains("</HEAD>") || line.contains("<BODY>"))
+				break;
 
 			if (reading)
 				title += line;
@@ -292,6 +333,14 @@ public class LinkResolver extends Thread
 		return HtmlEntities.decode(title.trim().replaceAll("\\s\\s+", " "));
 	}
 
+	/**
+	 * <p>Wrapper for {@link URI#resolve(java.lang.String) URI.resolve} for use
+	 * with {@link URL URL} objects</p>
+	 * @param curr base URL
+	 * @param location relative or absolute location to resolve
+	 * @return the resolved URL
+	 * @throws RuntimeException if any URL is malformed
+	 */
 	private URL resolveLocation(URL curr, String location)
 	{
 		try
@@ -303,5 +352,4 @@ public class LinkResolver extends Thread
 			throw new RuntimeException(ex);
 		}
 	}
-
 }
