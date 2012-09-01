@@ -12,10 +12,12 @@ import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 
 /**
  * <p>Rough and ready service for making the bots silent</p>
+ *
  * @author Benedict Harcourt / javajawa
  */
 public class HushService extends Service implements MessageService, FilterService
 {
+
 	/**
 	 * <p>A list of all channels and users in which DoCitten has been told to be
 	 * quiet</p>
@@ -57,14 +59,14 @@ public class HushService extends Service implements MessageService, FilterServic
 
 		if (tokeniser.toString().matches("hush!*"))
 		{
-			synchronized(hushedTargets)
+			synchronized (hushedTargets)
 			{
 				hushedTargets.add(sender);
 			}
 		}
 		else if (tokeniser.toString().matches("speak!*"))
 		{
-			synchronized(hushedTargets)
+			synchronized (hushedTargets)
 			{
 				hushedTargets.remove(sender);
 			}
@@ -81,5 +83,4 @@ public class HushService extends Service implements MessageService, FilterServic
 		}
 		return m;
 	}
-
 }

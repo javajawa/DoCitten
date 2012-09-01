@@ -8,10 +8,12 @@ import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 /**
  * <p>Shouts 'HELPING!' whenever someone asks for help</p>
+ *
  * @author Benedict Harcourt / javajawa
  */
 public class HelpingService extends Service implements MessageService
 {
+
 	/**
 	 * <p>Regex to determine when someone is asking for help</p>
 	 */

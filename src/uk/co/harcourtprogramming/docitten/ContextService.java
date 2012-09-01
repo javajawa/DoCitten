@@ -19,6 +19,7 @@ import uk.co.harcourtprogramming.mewler.MessageTokeniser;
  * <p>Service for suppling context to users for when they join a channel</p>
  * <p>Intended for use for ping timeouts, dodgy networks, etc. Longer term
  * context should be handled by an IRC bouncer.</p>
+ *
  * @author Benedict Harcourt / javajawa
  */
 public class ContextService extends Service implements MessageService, FilterService
@@ -76,7 +77,7 @@ public class ContextService extends Service implements MessageService, FilterSer
 
 					for (int i = 0; i < hist.getLength(); ++i)
 						buffer.append(hist.get(i)).append('\n');
-					
+
 					m.reply(buffer.toString());
 				}
 				else
@@ -131,5 +132,4 @@ public class ContextService extends Service implements MessageService, FilterSer
 	{
 		// Nothing to see here. Move along, citizen!
 	}
-
 }

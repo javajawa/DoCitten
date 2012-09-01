@@ -12,10 +12,12 @@ import uk.co.harcourtprogramming.internetrelaycats.Service;
 /**
  * <p>Service that emulates some kitten-like behaviour in order to keep channels
  * relaxed and happy.</p>
+ *
  * @author Benedict Harcourt / javajawa
  */
 public class KittenService extends Service implements MessageService
 {
+
 	/**
 	 * <p>Words that resolve to the concept of 'kitten'</p>
 	 */
@@ -57,6 +59,7 @@ public class KittenService extends Service implements MessageService
 	/**
 	 * <p>Creates an instance of the kitten service using a specified entropy
 	 * source.</p>
+	 *
 	 * @param r Entropy source for this kitten
 	 */
 	public KittenService(Random r)
@@ -77,7 +80,8 @@ public class KittenService extends Service implements MessageService
 		}
 
 		// Stop DoCitten replying to itself as much
-		if (mess.equals("mew =^.^=")) return;
+		if (mess.equals("mew =^.^="))
+			return;
 
 		StringBuilder reply = new StringBuilder(100);
 
@@ -86,7 +90,7 @@ public class KittenService extends Service implements MessageService
 		while (kittenMatcher.find())
 			reply.append(mewl()).append(' ');
 
-		Matcher mewlsMatcher  = mewls .matcher(mess);
+		Matcher mewlsMatcher = mewls.matcher(mess);
 		while (mewlsMatcher.find())
 			reply.append(mewl()).append(' ');
 
@@ -114,11 +118,13 @@ public class KittenService extends Service implements MessageService
 	/**
 	 * <p>Get a string to be used as an action which indicates that the kitten
 	 * is paying attention to something that just happened.</p>
-	 * <p>The kitten may choose to attend in general, or pay attention to a given
-	 * specific user.</p>
+	 * <p>The kitten may choose to attend in general, or pay attention to a
+	 * given specific user.</p>
+	 *
 	 * @param user the user attention is given to. If null, "nice people" is
 	 * substituted.
-	 * @return how the kitten responds to the user, or null if it ignores the user
+	 * @return how the kitten responds to the user, or null if it ignores the
+	 * user
 	 */
 	private String attend(String user)
 	{
@@ -156,4 +162,3 @@ public class KittenService extends Service implements MessageService
 		// Nothing to see here. Move along, citizen!
 	}
 }
-

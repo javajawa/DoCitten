@@ -10,14 +10,15 @@ import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 
-
 /**
  * <p>Service which gives a unified interface for help massages for services in
  * DoCitten</p>
+ *
  * @author Benedict Harcourt / javajawa
  */
 public class HelpService extends Service implements MessageService
 {
+
 	/**
 	 * <p>Constant representing a new line character</p>
 	 */
@@ -31,14 +32,17 @@ public class HelpService extends Service implements MessageService
 
 	/**
 	 * <p>Stores a node in the {@link HelpService} system</p>
+	 *
 	 * @author Benedict Harcourt / javajawa
 	 */
 	public final static class HelpInfo
 	{
+
 		/**
 		 * <p>Container for sub-topics of this help item</p>
 		 * <p>The map is of the string used to identify the topic to the topic's
 		 * HelpInfo instance</p>
+		 *
 		 * @see #getChildren()
 		 * @see #toString()
 		 */
@@ -46,12 +50,14 @@ public class HelpService extends Service implements MessageService
 		/**
 		 * <p>The title of the topic to display at the top of the
 		 * {@link #toMessage() message}, and in any help listings</p>
+		 *
 		 * @see #getTitle()
 		 * @see #toString()
 		 */
 		private final String title;
 		/**
 		 * <p>The main content text of this help item.</p>
+		 *
 		 * @see #getDescription()
 		 * @see #toString()
 		 */
@@ -60,6 +66,7 @@ public class HelpService extends Service implements MessageService
 		/**
 		 * <p>Creates a new help object instance with a given title and content.
 		 * </p>
+		 *
 		 * @param title The title of this item (see {@link #title})
 		 * @param content The content for this item (see {@link #content})
 		 * @see #toString()
@@ -98,6 +105,7 @@ public class HelpService extends Service implements MessageService
 		 * </ul>
 		 * </p>
 		 * <p>Blank lines use {@link HelpService#DOUBLE_EOL}</p>
+		 *
 		 * @return The entire help item as a string
 		 * @see #title
 		 * @see #content
@@ -128,6 +136,7 @@ public class HelpService extends Service implements MessageService
 
 		/**
 		 * <p>Gets the {@link #title title} of this item</p>
+		 *
 		 * @return the {@link #title title} of this item
 		 * @see #title
 		 */
@@ -138,6 +147,7 @@ public class HelpService extends Service implements MessageService
 
 		/**
 		 * <p>Gets the {@link #content content} of this item</p>
+		 *
 		 * @return the {@link #content content} of this item
 		 * @see #content
 		 */
@@ -149,8 +159,11 @@ public class HelpService extends Service implements MessageService
 		/**
 		 * <p>Returns the sub-items of this item as a map of keywords to
 		 * {@link HelpInfo} objects</p>
+		 *
 		 * @return A map of all sub-items
-		 * @see #addChild(java.lang.String, uk.co.harcourtprogramming.docitten.HelpService.HelpInfo) addChild(String, HelpInfo)
+		 * @see #addChild(java.lang.String,
+		 * uk.co.harcourtprogramming.docitten.HelpService.HelpInfo)
+		 * addChild(String, HelpInfo)
 		 * @see #children
 		 */
 		public Map<String, HelpInfo> getChildren()
@@ -158,7 +171,6 @@ public class HelpService extends Service implements MessageService
 			return Collections.unmodifiableMap(children);
 		}
 	}
-
 	/**
 	 * <p>The root help item in this service</p>
 	 */
@@ -184,6 +196,7 @@ public class HelpService extends Service implements MessageService
 
 	/**
 	 * <p>Creates a help service using a custom root item</p>
+	 *
 	 * @param root the root item to use for this help service
 	 * @throws IllegalArgumentException if root is null
 	 */
@@ -199,10 +212,13 @@ public class HelpService extends Service implements MessageService
 	 * <p>Adds a {@link HelpInfo} instance as a child of the root help item</p>
 	 * <p>As well as wrapping root.addChild, this function will also log with
 	 * level info that the item was added</p>
+	 *
 	 * @param key
 	 * @param info
 	 * @return
-	 * @see HelpInfo#addChild(java.lang.String, uk.co.harcourtprogramming.docitten.HelpService.HelpInfo) HelpInfo.addChild
+	 * @see HelpInfo#addChild(java.lang.String,
+	 * uk.co.harcourtprogramming.docitten.HelpService.HelpInfo)
+	 * HelpInfo.addChild
 	 */
 	public final HelpInfo addHelp(String key, HelpInfo info)
 	{
@@ -220,6 +236,7 @@ public class HelpService extends Service implements MessageService
 	 * descend down to select the item.</p>
 	 * <p>If the item is found, it is outputted via {@link HelpInfo#toString()},
 	 * and sent directly back to the user.</p>
+	 *
 	 * @param m The message data
 	 */
 	@Override
@@ -242,12 +259,14 @@ public class HelpService extends Service implements MessageService
 		{
 			String topic = t.nextToken(' ');
 			if (currentNode.getChildren().containsKey(topic))
+			{
 				currentNode = currentNode.getChildren().get(topic);
 				if (currentNode == null)
 				{
 					m.reply(String.format("Unknown sub-topic: '%1$s'", topic));
 					return;
 				}
+			}
 			else
 			{
 				m.reply(String.format("Unknown sub-topic: '%1$s'", topic));
