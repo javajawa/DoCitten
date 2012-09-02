@@ -4,32 +4,39 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.junit.Assert.*;
+
 /**
- *
+ * <p>Tests the parsing of messages to find web links</p>
  */
 @RunWith(Parameterized.class)
-public class LinkServiceTest
+public class LinkFinderTest
 {
-	private static class LinkData
+
+	/**
+	 * <p>Storage class for the test data</p>
+	 */
+	public static class LinkData
 	{
+
 		/**
-		 *
+		 * <p>The emulated input line</p>
 		 */
 		public final String inputText;
 		/**
-		 * The set of links that should be found
+		 * <p>The set of links that should be found</p>
 		 */
 		public final Set<String> links;
 
 		/**
 		 * Create a link data instance
-		 * @param inputText
-		 * @param links
+		 *
+		 * @param inputText emulated input line
+		 * @param links list of links that should be found
 		 */
 		LinkData(String inputText, String... links)
 		{
@@ -37,11 +44,10 @@ public class LinkServiceTest
 			// TreeSet will force natural ordering
 			this.links = new TreeSet<String>(Arrays.asList(links));
 		}
-
 	}
 
 	/**
-	 * @return The parameter data for a paramterised test
+	 * @return The parameter data for a parameterised test
 	 */
 	@Parameterized.Parameters
 	public static Collection<Object[]> data()
@@ -67,22 +73,23 @@ public class LinkServiceTest
 			new Object[]{new LinkData("http://www.google.com", "http://www.google.com")}
 		});
 	}
-
 	/**
-	 * Parameter data for this test instance
+	 * <p>Parameter data for this test instance</p>
 	 */
 	private final LinkData ld;
+
 	/**
 	 * Create a LinkServiceTest with a given parameter
+	 *
 	 * @param ld the link data for this test
 	 */
-	public LinkServiceTest(LinkData ld)
+	public LinkFinderTest(LinkData ld)
 	{
 		this.ld = ld;
 	}
 
 	/**
-	 * Test of uris method, of class LinkService.
+	 * <p>Test of uris method, of class LinkService.</p>
 	 */
 	@Test
 	@SuppressWarnings("UseOfSystemOutOrSystemErr") // Additional assertion failure data
@@ -94,8 +101,7 @@ public class LinkServiceTest
 		{
 			assertEquals(ld.links.size(), result.size());
 			assertArrayEquals(ld.links.toArray(), result.toArray());
-		}
-		catch (AssertionError ex)
+		} catch (AssertionError ex)
 		{
 			System.out.println(ld.inputText + " >> " + Arrays.deepToString(result.toArray()));
 			System.out.println(ex.toString());
