@@ -3,11 +3,48 @@ package uk.co.harcourtprogramming.docitten.utility;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HtmlEntities
+/**
+ * <p>Utility class for decoding HTML character entities to unicode character
+ * points</p>
+ *
+ * @author Benedict Harcourt / javajawa
+ */
+public final class HtmlEntities
 {
-	private final static Map<String, Character> mappings =
-		new HashMap<String, Character>();
 
+	/**
+	 * <p>Map of the named entities to their unicode character points</p>
+	 */
+	private final static Map<String, Character> mappings =
+			new HashMap<String, Character>();
+
+	/**
+	 * <p>Private constructor for utility class</p>
+	 */
+	private HtmlEntities()
+	{
+		// Nothing to see here. Move along, citizen!
+	}
+
+	/**
+	 * <p>Replaces HTML entities in a string with their unicode character
+	 * equivalents</p>
+	 * @param data the string with entities
+	 * @return the decoding string
+	 */
+	public static String decode(final String data)
+	{
+		String intermediate = data;
+
+		for (Map.Entry<String, Character> e : mappings.entrySet())
+			intermediate = intermediate.replaceAll(e.getKey(), e.getValue().toString());
+
+		return intermediate;
+	}
+
+	/**
+	 * Initialises the map
+	 */
 	static
 	{
 		mappings.put("&quot;", '\u0022');
@@ -263,19 +300,5 @@ public class HtmlEntities
 		mappings.put("&clubs;", '\u2663');
 		mappings.put("&hearts;", '\u2665');
 		mappings.put("&diams;", '\u2666');
-	}
-
-	private HtmlEntities()
-	{
-	}
-
-	public static String decode(final String data)
-	{
-		String intermediate = data;
-
-		for (Map.Entry<String, Character> e : mappings.entrySet())
-			intermediate = intermediate.replaceAll(e.getKey(), e.getValue().toString());
-
-		return intermediate;
 	}
 }
