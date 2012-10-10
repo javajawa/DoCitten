@@ -8,6 +8,7 @@ import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
+import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 
 /**
  * <p>Service that emulates some kitten-like behaviour in order to keep channels
@@ -71,6 +72,36 @@ public class KittenService extends Service implements MessageService
 	public void handle(Message m)
 	{
 		final String mess = m.getMessage();
+
+		if (m.getChannel() == null || m.getMessage().startsWith(m.getNick()))
+		{
+			MessageTokeniser token = new MessageTokeniser(m.getMessage());
+			token.setConsumeWhitespace(true);
+
+			token.consume(m.getNick());
+			token.consume(":");
+
+			if (token.consume("play with"))
+			{
+				String nick = token.nextToken(' ');
+				String chan = m.getChannel();
+
+				if ("me".equals(nick))
+					nick = m.getSender();
+
+				if (chan == null)
+				{
+					if (token.consume("in"))
+						m.act(token.nextToken(' '), play(nick));
+					else
+						m.act(nick, play(nick));
+				}
+				else
+				{
+					m.act(play(nick));
+				}
+			}
+		}
 
 		if (m.isAction() && mess.toLowerCase().contains(m.getNick().toLowerCase()))
 		{
@@ -143,6 +174,26 @@ public class KittenService extends Service implements MessageService
 		}
 	}
 
+	/**
+	 * <p>Get a string to be used as an action which indicates that the kitten
+	 * is playing with someone.</p>
+	 *
+	 * @param user the user to play with. If null, "nice people" is
+	 * substituted.
+	 * @return how the kitten play with to the user
+	 */
+	private String play(String user)
+	{
+		switch (r.nextInt(6))
+		{
+			case 0:  return "paws at " + user;
+			case 1:  return "curls up by" + user;
+			case 2:  return "climbs onto " + user + "'s lap";
+			case 3:  return "rubs againsts " + user + "'s legs";
+			default: return "plays with " + user;
+		}
+	}
+
 	@Override
 	protected void startup(RelayCat r)
 	{
@@ -150,7 +201,7 @@ public class KittenService extends Service implements MessageService
 
 		if (!helpServices.isEmpty())
 		{
-			HelpService.HelpInfo help = new HelpService.HelpInfo("Kitten Service", "Kittens do not need your help. They do appreciate being looked after. But, there are plenty of other expendable humans to do that...");
+			HelpService.HelpInfo help = new HelpService.HelpInfo("Kitten Service", "Kittens do not need your help. They do appreciate being looked after. But, there are plenty of other expendable humans to do that...\n \nIf you find a user who looks like they coudl use cheering up, you can ask the kitten to play with them.\r\n  play with <nick> [in <channel>]");
 			helpServices.get(0).addHelp("kitten", help);
 			helpServices.get(0).addHelp("kittens", help);
 		}
