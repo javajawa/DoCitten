@@ -187,7 +187,7 @@ public class KittenService extends Service implements MessageService
 		switch (r.nextInt(6))
 		{
 			case 0:  return "paws at " + user;
-			case 1:  return "curls up by" + user;
+			case 1:  return "curls up by " + user;
 			case 2:  return "climbs onto " + user + "'s lap";
 			case 3:  return "rubs againsts " + user + "'s legs";
 			default: return "plays with " + user;
