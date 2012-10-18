@@ -55,6 +55,7 @@ public class Main
 			inst.addService(new KittenService());
 			inst.addService(new LinkService());
 			inst.addService(new GoHomeService(inst, args[1]));
+			inst.addService(new DiceService());
 			inst.addService(new HelpingService());
 			inst.addService(new ReminderService(inst));
 			inst.addService(new MOTDService(inst, new File("/etc/motd.dat"), new File("/etc/motd"), args[1]));
