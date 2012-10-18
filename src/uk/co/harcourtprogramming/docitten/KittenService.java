@@ -24,7 +24,7 @@ public class KittenService extends Service implements MessageService
 	 */
 	private static final Pattern kitten =
 		Pattern.compile(
-			"(?:^|\\s)(kitt+(?:y|i?e+[nh]?)s*|cat(?:\\s|$))",
+			"(?:^|\\s)(kitt+(?:y|i?e+[nh]?)s*|cats?(?:\\s|$)|tigg?er)",
 			Pattern.CASE_INSENSITIVE
 		);
 	/**
