@@ -8,6 +8,11 @@ JAVAC=javac
 JAR=jar
 JUNIT=/usr/share/java/junit4.jar
 
+JAVAVERSION=$(shell javac -version 2>&1 | head -n 1 | cud -d. -f 2)
+ifneq "$(JAVAVERSION)" "7"
+	false
+endif
+
 SRC=src
 TEST=test
 
