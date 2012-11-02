@@ -1,5 +1,6 @@
 package uk.co.harcourtprogramming.docitten;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -78,7 +79,15 @@ public class LinkService extends Service implements MessageService
 	@Override
 	protected void startup(RelayCat r)
 	{
-		// Nothing to see here. Move along, citizen!
+		List<HelpService> helpServices = r.getServicesByClass(HelpService.class);
+
+		if (!helpServices.isEmpty())
+		{
+			HelpService.HelpInfo help = new HelpService.HelpInfo(
+				"Link Service",
+				"The link service scans for links, then reports data about them\r\nFor normal web pages, the title and host (after redirects are resolved) are shown\r\nOther file types get the host, type, and size");
+			helpServices.get(0).addHelp("links", help);
+		}
 	}
 
 	@Override

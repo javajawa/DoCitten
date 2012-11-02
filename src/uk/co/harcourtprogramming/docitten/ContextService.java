@@ -1,7 +1,5 @@
 package uk.co.harcourtprogramming.docitten;
 
-import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +12,9 @@ import uk.co.harcourtprogramming.internetrelaycats.OutboundMessage;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 import uk.co.harcourtprogramming.mewler.MessageTokeniser;
+
+import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
 
 /**
  * <p>Service for suppling context to users for when they join a channel</p>
@@ -130,7 +131,7 @@ public class ContextService extends Service implements MessageService, FilterSer
 		{
 			HelpService.HelpInfo help = new HelpService.HelpInfo(
 				"Context Service",
-				"Get a report of the recent activity in a channel");
+				"Get a report of the recent activity in a channel\r\n \r\nIn a channel, use 'DoCitten: context', and you will be sent the context");
 			helpServices.get(0).addHelp("context", help);
 		}
 	}
