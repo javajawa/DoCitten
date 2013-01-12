@@ -191,7 +191,7 @@ public class MOTDService extends ExternalService implements MessageService
 					continue;
 
 				// If not a key=value line, ignore
-				// unless we're reading entended content
+				// unless we're reading extended content
 				int div = line.indexOf('=');
 				if (div == -1)
 				{
