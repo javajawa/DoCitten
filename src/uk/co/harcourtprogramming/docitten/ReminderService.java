@@ -226,7 +226,7 @@ public class ReminderService extends ExternalService implements MessageService
 		{
 			HelpService.HelpInfo help = new HelpService.HelpInfo("Reminder Service",
 				  "  add _time_ _message_    Not Yet Implemented\n"
-				+ "  note _note text_        Add a static note with the given textm\n"
+				+ "  note _note text_        Add a static note with the given text\n"
 				+ "  list                    List all notes and alarms\n"
 				+ "  remove _index_          Remove a note or alarm, by the index in the list");
 			helpServices.get(0).addHelp("reminder", help);

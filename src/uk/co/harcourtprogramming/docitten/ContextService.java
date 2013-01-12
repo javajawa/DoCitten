@@ -17,7 +17,7 @@ import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 
 /**
- * <p>Service for suppling context to users for when they join a channel</p>
+ * <p>Service for supplying context to users for when they join a channel</p>
  * <p>Intended for use for ping timeouts, dodgy networks, etc. Longer term
  * context should be handled by an IRC bouncer.</p>
  *
@@ -42,7 +42,7 @@ public class ContextService extends Service implements MessageService, FilterSer
 	 */
 	public ContextService()
 	{
-		// Nothing to seet here. Move along, citizen!
+		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override

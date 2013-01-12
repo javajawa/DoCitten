@@ -189,7 +189,7 @@ public class KittenService extends Service implements MessageService
 			case 0:  return "paws at " + user;
 			case 1:  return "curls up by " + user;
 			case 2:  return "climbs onto " + user + "'s lap";
-			case 3:  return "rubs againsts " + user + "'s legs";
+			case 3:  return "rubs against " + user + "'s legs";
 			default: return "plays with " + user;
 		}
 	}
@@ -201,7 +201,7 @@ public class KittenService extends Service implements MessageService
 
 		if (!helpServices.isEmpty())
 		{
-			HelpService.HelpInfo help = new HelpService.HelpInfo("Kitten Service", "Kittens do not need your help. They do appreciate being looked after. But, there are plenty of other expendable humans to do that...\n \nIf you find a user who looks like they coudl use cheering up, you can ask the kitten to play with them.\r\n  play with <nick> [in <channel>]");
+			HelpService.HelpInfo help = new HelpService.HelpInfo("Kitten Service", "Kittens do not need your help. They do appreciate being looked after. But, there are plenty of other expendable humans to do that...\n \nIf you find a user who looks like they could use cheering up, you can ask the kitten to play with them.\r\n  play with <nick> [in <channel>]");
 			helpServices.get(0).addHelp("kitten", help);
 			helpServices.get(0).addHelp("kittens", help);
 		}

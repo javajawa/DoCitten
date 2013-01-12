@@ -42,8 +42,8 @@ public class DiceService extends Service implements MessageService
 		if (!helpServices.isEmpty())
 		{
 			HelpService.HelpInfo help = new HelpService.HelpInfo("Dice Service", "DoCitten can be asked to roll dice\r\nDoCitten: roll [mode] <dice>[ <dice> ...]\r\nYou can try 'roll d6', or look at the subtopics for information .");
-			help.addChild("mode", new HelpService.HelpInfo("Dice Modes", "The Dice service can combine in one of three ways\r\n \r\nsum:     Dice values are added\r\nproduct: Dice are multipled together\r\nbase:    Dice are treated each as a digit in base n, when n is the number of sides on the dice."));
-			help.addChild("dice", new HelpService.HelpInfo("Dice Specification", "Dice are speificed in a simpe syntax: [number]d<sides>[d]\r\nFor example, you would ask for a six-sided dice to be rolled four times as '4d6'.\r\nThe final d converts the die to a doubling die."));
+			help.addChild("mode", new HelpService.HelpInfo("Dice Modes", "The Dice service can combine in one of three ways\r\n \r\nsum:     Dice values are added\r\nproduct: Dice are multiplied together\r\nbase:    Dice are treated each as a digit in base n, when n is the number of sides on the dice."));
+			help.addChild("dice", new HelpService.HelpInfo("Dice Specification", "Dice are specified in a simple syntax: [number]d<sides>[d]\r\nFor example, you would ask for a six-sided dice to be rolled four times as '4d6'.\r\nThe final d converts the die to a doubling die."));
 			helpServices.get(0).addHelp("dice", help);
 		}
 	}

@@ -53,7 +53,7 @@ public class LinkResolver extends Thread
 	 */
 	private final static int MAX_HOPS = 5;
 	/**
-	 * <p>Letters for binary prefixs</p>
+	 * <p>Letters for binary prefixes</p>
 	 * <p>kilo, mega, giga, terra, pera, exa, zetta, yotta, hella</p>
 	 * <p>Note: hella is my favourite proposal for 10^27. Also, Long.MAX_VALUE
 	 * is only about 8 EiB, so it'll be a little while before it gets used</p>
