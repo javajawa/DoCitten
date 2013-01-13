@@ -191,7 +191,9 @@ public class HelpService extends Service implements MessageService
 	public HelpService()
 	{
 		root = new HelpInfo("Help", "This kitten comes equipped with a help module.\nFor more information, try 'help help', or one of the other help options below");
-		root.addChild("help", new HelpInfo("Help Service", "The help service uses a recursive tree structure, and allows any DoCitten module to add help information."));
+		final HelpInfo help = new HelpInfo("Help Service", "The help service uses a recursive tree structure, and allows any DoCitten module to add help information."));
+		root.addChild("help", help);
+		help.addChild("help", help);
 		root.addChild("about", new HelpInfo("About DoCitten", "DoCitten was originally an irc bot for #doc, Imperial College Department of Computing's IRC channel\r\n \r\nDoCitten is from https://github.com/javajawa/DoCitten"));
 	}
 
