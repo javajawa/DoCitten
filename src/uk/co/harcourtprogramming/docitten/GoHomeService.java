@@ -54,18 +54,18 @@ public class GoHomeService extends ExternalService
 					{
 						case 40:
 							getInstance().message(channel,
-							  "Ladies and Gentlemen, your attention please: DoC Labs will be closing in 20 minutes");
+							  "Oi, you lot, listen up: DoC Labs will be closing in T minus 20 minutes");
 							Thread.sleep(60000); // Make sure we can't send this twice
 							break;
 						case 50:
 							getInstance().message(channel,
-							  "Ladies and Gentlemen, your attention please: DoC Labs will be closing in 10 minutes\n" +
-							  "A dry, twitty comment should go here!");
+							  "Oi, you lot, listen up: DoC Labs will be closing in T minus 10 minutes\n" +
+							  "GO HOME AND SLEEP AND STUFF!");
 							Thread.sleep(60000); // Make sure we can't send this twice
 							break;
 						case 55:
 							getInstance().message(channel,
-							  "Ladies and Gentlemen, your attention please: DoC Labs will be closing in 5 minutes\n" +
+							  "Oi, you lot, listen up: DoC Labs will be closing in T minus 5 minutes\n" +
 							  "Please save, commit and push your work, log off, and try not to get locked in!");
 							Thread.sleep(60000); // Make sure we can't send this twice
 							break;
