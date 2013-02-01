@@ -26,7 +26,7 @@ public class DiceService extends Service implements MessageService
 	 * <p>Pattern which matches all of the dice commands that this service
 	 * recognises</p>
 	 */
-	private final static Pattern dicePattern = Pattern.compile("roll(?<mode> (?:sum|product|base))?(?<dice>(?: [0-9]*d[0-9]+d?)+)", Pattern.CASE_INSENSITIVE);
+	private final static Pattern dicePattern = Pattern.compile("roll(?<mode> (?:sum|product|base|barrel))?(?<dice>(?: [0-9]*d[0-9]+d?)+)", Pattern.CASE_INSENSITIVE);
 
 	@Override
 	protected void shutdown()
@@ -55,6 +55,13 @@ public class DiceService extends Service implements MessageService
 		if (dmatch.find())
 		{
 			DiceMode mode    = DiceMode.parse(dmatch.group("mode"));
+
+			if (mode == DiceMode.barrel)
+			{
+				m.replyToAll("nnnawaarrwwwhhhwaarrwwwhhh");
+				return;
+			}
+
 			String[] dice    = dmatch.group("dice").trim().split(" ");
 
 			StringBuilder s = new StringBuilder(48 * dice.length);
@@ -203,7 +210,8 @@ public class DiceService extends Service implements MessageService
 		 * <p>Dice values are treated as a string in base n, where n is the
 		 * number of sides on the dice</p>
 		 */
-		BASE;
+		BASE,
+		BARREL;
 
 		/**
 		 * <p>Converts a string name of a DiceMode to the DiceMode value</p>
