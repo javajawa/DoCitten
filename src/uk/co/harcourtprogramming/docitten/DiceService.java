@@ -56,7 +56,7 @@ public class DiceService extends Service implements MessageService
 		{
 			DiceMode mode    = DiceMode.parse(dmatch.group("mode"));
 
-			if (mode == DiceMode.barrel)
+			if (mode == DiceMode.BARREL)
 			{
 				m.replyToAll("nnnawaarrwwwhhhwaarrwwwhhh");
 				return;
