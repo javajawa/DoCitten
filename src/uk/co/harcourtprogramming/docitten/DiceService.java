@@ -65,7 +65,7 @@ public class DiceService extends Service implements MessageService
 			String[] dice    = dmatch.group("dice").trim().split(" ");
 
 			StringBuilder s = new StringBuilder(48 * dice.length);
-			int total = -1;
+			long total = -1;
 
 			switch (mode)
 			{
@@ -77,7 +77,7 @@ public class DiceService extends Service implements MessageService
 			{
 				Die die = new Die(d);
 				int[] rolls = new int[die.count];
-				int roll    = die.roll(mode, rolls);
+				long roll   = die.roll(mode, rolls);
 
 				s.append("I got ").append(roll).append(" for ");
 				s.append(die).append(' ').append(Arrays.toString(rolls)).append('\n');
@@ -148,9 +148,9 @@ public class DiceService extends Service implements MessageService
 		 * @param rolls an array of ints, at least as long as {@link #count}
 		 * @return the total value of the rolls
 		 */
-		private int roll(DiceMode mode, int[] rolls)
+		private long roll(DiceMode mode, int[] rolls)
 		{
-			int result = 0;
+			long result = 0;
 			if (mode == DiceMode.PRODUCT)
 				result = 1;
 
