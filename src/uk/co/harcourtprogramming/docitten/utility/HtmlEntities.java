@@ -2,6 +2,8 @@ package uk.co.harcourtprogramming.docitten.utility;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>Utility class for decoding HTML character entities to unicode character
@@ -17,6 +19,9 @@ public final class HtmlEntities
 	 */
 	private final static Map<String, Character> mappings =
 			new HashMap<String, Character>();
+
+	private final static Pattern numbericCodePointPattern =
+			Pattern.compile("&#([0-9]+);");
 
 	/**
 	 * <p>Private constructor for utility class</p>
@@ -39,7 +44,17 @@ public final class HtmlEntities
 		for (Map.Entry<String, Character> e : mappings.entrySet())
 			intermediate = intermediate.replaceAll(e.getKey(), e.getValue().toString());
 
-		return intermediate;
+		final Matcher numericMatcher = numbericCodePointPattern.matcher(intermediate);
+		final StringBuffer result = new StringBuffer();
+
+		while (numericMatcher.find())
+		{
+			int uniChar = Integer.parseInt(numericMatcher.group(1));
+			numericMatcher.appendReplacement(result, Character.toString((char)uniChar));
+		}
+		numericMatcher.appendTail(result);
+
+		return result.toString();
 	}
 
 	/**
