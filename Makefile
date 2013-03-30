@@ -39,7 +39,7 @@ TESTS=$(patsubst $(TEST).%.java,%,$(subst /,.,$(TESTABLE)))
 package: $(PACKAGEJAR)
 compile: $(CLASS)
 test-build: $(TCLASS)
-test:
+test: test-build
 	java -cp $(TBUILD):$(TCP) org.junit.runner.JUnitCore $(TESTS)
 
 $(BUILD)/%.class : $(SRC)/%.java $(LIBS) $(BUILD)

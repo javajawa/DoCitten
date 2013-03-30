@@ -8,7 +8,7 @@ import uk.co.harcourtprogramming.internetrelaycats.Service;
 
 public class LinkRedirectionTest
 {
-	private final String uri = "http://www.harcourtprogramming.co.uk/redirect.php/1";
+	private final String uri = "http://www.harcourtprogramming.co.uk/services/http/redirect.php/1";
 	private final String title = "(Unresolved after 5 hops)";
 	private final String site = "harcourtprogramming.co.uk";
 	private final String expected = String.format("[%s] %s", site, title);
