@@ -32,7 +32,7 @@ public class LookupService extends Service implements MessageService
 		if (!t.consume(m.getNick() + ':') && m.getChannel() != null)
 			return;
 
-		if (!t.startsWith("lookup") && !t.startsWith("what is") && !t.startsWith("what are") && !t.startsWith("how do i"))
+		if (!t.startsWith("lookup") && !t.startsWith("what is") && !t.startsWith("what are") && !t.startsWith("how do i") && !t.startsWith("define"))
 			return;
 
 		t.consume("how do i");
