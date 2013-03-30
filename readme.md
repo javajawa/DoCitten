@@ -74,6 +74,9 @@ as channels to join.
 
 Joining using different logins, ports, with SSL, etc. are in the works.
 
+Some modules require command line properties to be set. Consult the
+documentation on any of the modules that you are using for more information.
+
 The program can be stopped by entering the line 'quit' via standard input.
 
 Bug Reporting
