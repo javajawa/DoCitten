@@ -21,7 +21,7 @@ public final class HtmlEntities
 			new HashMap<String, Character>();
 
 	private final static Pattern numbericCodePointPattern =
-			Pattern.compile("&#([0-9]+);");
+			Pattern.compile("&#(x?[0-9a-f]+);", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * <p>Private constructor for utility class</p>
@@ -49,11 +49,29 @@ public final class HtmlEntities
 
 		while (numericMatcher.find())
 		{
-			int uniChar = Integer.parseInt(numericMatcher.group(1));
-			numericMatcher.appendReplacement(result, Character.toString((char)uniChar));
+			String entity = numericMatcher.group(1);
+			final int radix;
+			if (entity.startsWith("x"))
+			{
+				entity = entity.substring(1);
+				radix = 16;
+			}
+			else
+			{
+				radix = 10;
+			}
+
+			try
+			{
+				int uniChar = Integer.parseInt(entity, radix);
+				numericMatcher.appendReplacement(result, Character.toString((char)uniChar));
+			}
+			catch (NumberFormatException ex)
+			{
+				numericMatcher.appendReplacement(result, numericMatcher.group(0));
+			}
 		}
 		numericMatcher.appendTail(result);
-
 		return result.toString();
 	}
 
