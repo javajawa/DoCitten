@@ -1,6 +1,8 @@
 package uk.co.harcourtprogramming.docitten;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
@@ -80,7 +82,20 @@ public class LookupWorker extends Thread
 		if (this.question.trim().isEmpty())
 			return;
 
-		final String uri = String.format("http://api.wolframalpha.com/v2/query?format=plaintext&appid=%s&reinterpret=true&input=%s", WOLFRAM_KEY, question);
+		final String uri;
+		try
+		{
+			uri = String.format(
+				"http://api.wolframalpha.com/v2/query?format=plaintext&appid=%s&reinterpret=true&input=%s",
+				WOLFRAM_KEY,
+				URLEncoder.encode(question, "UTF-8")
+			);
+		}
+		catch (UnsupportedEncodingException ex)
+		{
+			LOG.severe(ex, null);
+			return;
+		}
 
 		final DocumentBuilder domParser;
 		final Document document;
