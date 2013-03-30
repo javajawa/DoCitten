@@ -105,7 +105,7 @@ public class LookupWorker extends Thread
 		}
 		catch (javax.xml.parsers.ParserConfigurationException ex)
 		{
-			LOG.severe("Unable to create a document parser", ex);
+			LOG.severe(ex, "Unable to create a document parser");
 			return;
 		}
 
@@ -115,7 +115,7 @@ public class LookupWorker extends Thread
 		}
 		catch (IOException|org.xml.sax.SAXException ex)
 		{
-			LOG.warning("Error requesting {0}", uri, ex);
+			LOG.warning(ex, "Error requesting {0}", uri);
 			return;
 		}
 
