@@ -24,7 +24,7 @@ public final class HtmlEntities
 	 * <p>Pattern that matches all forms of an XML/HTML character entity</p>
 	 */
 	private final static Pattern numbericCodePointPattern =
-			Pattern.compile("&#?([0-9a-z]+);", Pattern.CASE_INSENSITIVE);
+			Pattern.compile("&(#?)([0-9a-z]+);", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * <p>Private constructor for utility class</p>
@@ -47,28 +47,36 @@ public final class HtmlEntities
 
 		while (numericMatcher.find())
 		{
-			String entity = numericMatcher.group(1);
-			final int radix;
-			if (entity.startsWith("x"))
-			{
-				entity = entity.substring(1);
-				radix = 16;
-			}
-			else
-			{
-				radix = 10;
-			}
+			String entity = numericMatcher.group(2);
 
-			try
+			if (numericMatcher.group(1).equalsIgnoreCase("#")) // Numeric entity
 			{
-				int uniChar = Integer.parseInt(entity, radix);
-				numericMatcher.appendReplacement(result, Character.toString((char)uniChar));
-			}
-			catch (NumberFormatException ex)
-			{
-				if (mappings.containsKey(numericMatcher.group(1)))
+				final int radix;
+				if (entity.startsWith("x"))
 				{
-					entity = mappings.get(numericMatcher.group(1)).toString();
+					entity = entity.substring(1);
+					radix = 16;
+				}
+				else
+				{
+					radix = 10;
+				}
+
+				try
+				{
+					int uniChar = Integer.parseInt(entity, radix);
+					numericMatcher.appendReplacement(result, Character.toString((char)uniChar));
+				}
+				catch (NumberFormatException ex)
+				{
+					numericMatcher.appendReplacement(result, numericMatcher.group(0));
+				}
+			}
+			else // HTML named entity
+			{
+				if (mappings.containsKey(entity))
+				{
+					entity = mappings.get(entity).toString();
 					numericMatcher.appendReplacement(result, entity);
 				}
 				else
