@@ -112,6 +112,7 @@ public class LookupWorker extends Thread
 				break;
 			mess.message(target, answers.item(i).getTextContent());
 		}
+		mess.message(target, "Via Wolfram|Alpha http://wolframalpha.com");
 	}
 }
 
