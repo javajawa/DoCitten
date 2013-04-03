@@ -120,14 +120,18 @@ public class LookupWorker extends Thread
 		}
 
 		final NodeList answers = document.getElementsByTagName("plaintext");
+		StringBuilder result = new StringBuilder();
 
 		for (int i = 0; i < answers.getLength(); ++i)
 		{
 			if (i == 3)
 				break;
+			result.append(answers.item(i).getTextContent()).append('\n');
+
 			mess.message(target, answers.item(i).getTextContent());
 		}
-		mess.message(target, "Via Wolfram|Alpha http://wolframalpha.com");
+		result.append("Via Wolfram|Alpha http://wolframalpha.com");
+		mess.message(target, result.toString());
 	}
 }
 
