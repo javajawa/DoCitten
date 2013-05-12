@@ -1,8 +1,8 @@
 package uk.co.harcourtprogramming.docitten;
 
 import java.util.Random;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
@@ -24,7 +24,7 @@ public class HelpingService extends Service implements MessageService
 	/**
 	 * <p>What to say when help is asked for</p>
 	 */
-	private final static String HELPING = "HELPING!!!";
+	protected final static String HELPING = "HELPING!!!";
 
 	/**
 	 * <p>Pattern to match two simple words with vowel.</p>
@@ -34,14 +34,19 @@ public class HelpingService extends Service implements MessageService
 	/**
 	 * <p>Random number generator for deciding whether to portmanteau</p>
 	 */
-	private final static Random rand = new Random();
+	private final Random rand;
 
 	/**
 	 * <p>Creates a Helping Service instance</p>
 	 */
 	public HelpingService()
 	{
-		// Nothing to see here. Move along, citizen!
+		this(new Random());
+	}
+
+	protected HelpingService(Random rand)
+	{
+		this.rand = rand;
 	}
 
 	@Override
@@ -51,8 +56,15 @@ public class HelpingService extends Service implements MessageService
 			m.replyToAll(HELPING);
 
 		Matcher ma = PORT_PATTERN.matcher(m.getMessage());
-		if (ma.matches() && rand.nextDouble() < 0.1)
-			m.replyToAll(ma.group(1) + ma.group(2));
+		if (ma.matches() && rand.nextDouble() < 0.2)
+		{
+			final String portmanteau = ma.group(1) + ma.group(2);
+			if (m.getMessage().contains(portmanteau))
+				return;
+
+			m.replyToAll(portmanteau);
+		}
+
 	}
 
 	@Override

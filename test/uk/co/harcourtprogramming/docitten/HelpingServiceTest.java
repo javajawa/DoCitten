@@ -2,12 +2,13 @@ package uk.co.harcourtprogramming.docitten;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Random;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import static org.junit.Assert.*;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.TestingRelayCat;
 
@@ -16,7 +17,14 @@ public class HelpingServiceTest
 {
 
 	private final static TestingRelayCat cat = new TestingRelayCat();
-	private final static HelpingService srv = new HelpingService();
+	private final static HelpingService srv = new HelpingService(new Random() {
+		private static final long serialVersionUID = 1L;
+		@Override
+		public double nextDouble()
+		{
+			return 0.0;
+		}
+	});
 
 	@BeforeClass
 	public static void createTestRelayCat()
@@ -34,22 +42,25 @@ public class HelpingServiceTest
 	public static Collection<Object[]> data()
 	{
 		return Arrays.asList(new Object[][] {
-			new Object[]{"help me", false},
-			new Object[]{"halp!", true},
-			new Object[]{"halp?", true},
-			new Object[]{"halp", true},
-			new Object[]{"i need halp", true},
-			new Object[]{"bob", false},
-			new Object[]{"Can I get some assistance with this?", true},
-			new Object[]{"Can I get some assistence with this?", true},
-			new Object[]{"hlp", true},
+			new String[]{"help me!", null},
+			new String[]{"halp!", HelpingService.HELPING},
+			new String[]{"halp?", HelpingService.HELPING},
+			new String[]{"halp", HelpingService.HELPING},
+			new String[]{"i need halp", HelpingService.HELPING},
+			new String[]{"bob", null},
+			new String[]{"Can I get some assistance with this?", HelpingService.HELPING},
+			new String[]{"Can I get some assistence with this?", HelpingService.HELPING},
+			new String[]{"hlp", HelpingService.HELPING},
+
+			new String[]{"happy kitteh", "hitteh"},
+			new String[]{"silly sally", null}
 		});
 	}
 
 	private final String input;
-	private final boolean output;
+	private final String output;
 
-	public HelpingServiceTest(String s, boolean help)
+	public HelpingServiceTest(String s, String help)
 	{
 		this.input = s;
 		this.output = help;
@@ -69,15 +80,15 @@ public class HelpingServiceTest
 		cat.inputMessage(user, channel, input);
 
 		Message reply = cat.getOutput();
-		if (!output)
+		if (output == null)
 		{
-			assertNull("Unexpected reply with " + input, reply);
+			assertNull("Unexpected reply to " + input, reply);
 			return;
 		}
 
 		assertNotNull("No reply was generared for " + input, reply);
 		assertEquals("Not sent back to channel", channel, reply.getChannel());
-		assertEquals("Not correct reply", HelpingService.HELPING, reply.getMessage());
+		assertEquals("Not correct reply for " + input, output, reply.getMessage());
 
 		assertNull("More than one message generated", cat.getOutput());
 	}
@@ -97,15 +108,15 @@ public class HelpingServiceTest
 		cat.inputMessage(user, channel, input);
 
 		Message reply = cat.getOutput();
-		if (!output)
+		if (output == null)
 		{
-			assertNull("Unexpected reply with " + input, reply);
+			assertNull("Unexpected reply to " + input, reply);
 			return;
 		}
 
 		assertNotNull("No reply was generared for " + input, reply);
 		assertEquals("Not sent back to user", user, reply.getChannel());
-		assertEquals("Not correct reply", HelpingService.HELPING, reply.getMessage());
+		assertEquals("Not correct reply for " + input, output, reply.getMessage());
 
 		assertNull("More than one message generated", cat.getOutput());
 	}
