@@ -53,7 +53,14 @@ public class HelpingServiceTest
 			new String[]{"hlp", HelpingService.HELPING},
 
 			new String[]{"happy kitteh", "hitteh"},
-			new String[]{"silly sally", null}
+			new String[]{"happy kitten :3", "hitten"},
+			new String[]{"silly sally", null},
+			new String[]{"cat and mouse", "couse"},
+			new String[]{"batman and robin", "bobin"},
+			new String[]{"Batman and robin", "Bobin"},
+			new String[]{"batman and Robin", "bobin"},
+			new String[]{"Batman and Robin", "Bobin"},
+			new String[]{"batman & robin", "bobin"},
 		});
 	}
 

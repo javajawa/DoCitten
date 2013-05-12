@@ -1,6 +1,7 @@
 package uk.co.harcourtprogramming.docitten;
 
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
@@ -29,7 +30,7 @@ public class HelpingService extends Service implements MessageService
 	/**
 	 * <p>Pattern to match two simple words with vowel.</p>
 	 */
-	private final static Pattern PORT_PATTERN = Pattern.compile("^([A-Z]?[b-df-hj-np-tv-z]+)[aeiou][a-z]* [A-Z]?[b-df-hj-np-tv-z]+([aeiou][a-z]*)[.\\?! ]?$");
+	private final static Pattern PORT_PATTERN = Pattern.compile("^(?<a>[A-Z]?[b-df-hj-np-tv-z]+)[aeiou][a-z]* (and |or |\\+ |& )?[A-Z]?[b-df-hj-np-tv-z]+(?<b>[aeiou][a-z]*)[.\\?! ]?( :[D\\)3])?$", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * <p>Random number generator for deciding whether to portmanteau</p>
@@ -58,7 +59,7 @@ public class HelpingService extends Service implements MessageService
 		Matcher ma = PORT_PATTERN.matcher(m.getMessage());
 		if (ma.matches() && rand.nextDouble() < 0.2)
 		{
-			final String portmanteau = ma.group(1) + ma.group(2);
+			final String portmanteau = ma.group("a") + ma.group("b");
 			if (m.getMessage().contains(portmanteau))
 				return;
 
