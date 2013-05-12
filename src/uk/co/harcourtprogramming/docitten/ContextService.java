@@ -1,5 +1,7 @@
 package uk.co.harcourtprogramming.docitten;
 
+import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -12,9 +14,6 @@ import uk.co.harcourtprogramming.internetrelaycats.OutboundMessage;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 import uk.co.harcourtprogramming.mewler.MessageTokeniser;
-
-import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
 
 /**
  * <p>Service for supplying context to users for when they join a channel</p>
@@ -29,8 +28,7 @@ public class ContextService extends Service implements MessageService, FilterSer
 	/**
 	 * <p>Storage for the history of attached channels</p>
 	 */
-	private final Map<String, ArrayBuffer<String>> channelHistories =
-		new HashMap<String, ArrayBuffer<String>>(10);
+	private final Map<String, ArrayBuffer<String>> channelHistories = new HashMap<>(10);
 	/**
 	 * <p>Instance of {@link Calendar} for generating timestamps on the stored
 	 * messages</p>
@@ -65,7 +63,7 @@ public class ContextService extends Service implements MessageService, FilterSer
 
 				if (!channelHistories.containsKey(m.getChannel()))
 				{
-					ArrayBuffer<String> buf = new ArrayBuffer<String>(10, "");
+					ArrayBuffer<String> buf = new ArrayBuffer<>(10, "");
 					buf.add(mess);
 					channelHistories.put(m.getChannel(), buf);
 				}
@@ -109,7 +107,7 @@ public class ContextService extends Service implements MessageService, FilterSer
 
 				if (!channelHistories.containsKey(m.getTarget()))
 				{
-					ArrayBuffer<String> buf = new ArrayBuffer<String>(10, "");
+					ArrayBuffer<String> buf = new ArrayBuffer<>(10, "");
 					buf.add(mess);
 					channelHistories.put(m.getTarget(), buf);
 				}
