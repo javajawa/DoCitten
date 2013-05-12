@@ -30,7 +30,7 @@ public class HelpingService extends Service implements MessageService
 	/**
 	 * <p>Pattern to match two simple words with vowel.</p>
 	 */
-	private final static Pattern PORT_PATTERN = Pattern.compile("^(?<a>[A-Z]?[b-df-hj-np-tv-z]+)[aeiou][a-z]* (and |or |\\+ |& )?[A-Z]?[b-df-hj-np-tv-z]+(?<b>[aeiou][a-z]*)[.\\?! ]?( :[D\\)3])?$", Pattern.CASE_INSENSITIVE);
+	private final static Pattern PORT_PATTERN = Pattern.compile("^(?<a>[A-Z]?[b-df-hj-np-tv-z]+)[aeiou][a-z]* (and |or |\\+ |& )?[A-Z]?[b-df-hj-np-tv-z]+(?<b>[aeiou][a-z]*)[.\\?! ]?( :[D\\)3])?$");
 
 	/**
 	 * <p>Random number generator for deciding whether to portmanteau</p>
