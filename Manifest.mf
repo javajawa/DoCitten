@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Class-Path: irc.jar mewler.jar
+Class-Path: irc.jar mewler.jar json_simple-1.1.jar
 Main-Class: uk.co.harcourtprogramming.docitten.Main
 
