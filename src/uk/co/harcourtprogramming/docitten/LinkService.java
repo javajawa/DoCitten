@@ -49,14 +49,11 @@ public class LinkService extends Service implements MessageService
 	@Override
 	public void handle(Message m)
 	{
-		Set<String> uris = uris(m.getMessage());
-		for (String uri : uris)
+		for (String uri : uris(m.getMessage()))
 		{
 			new LinkResolver(uri, m, m.getReplyToAllTarget()).start();
 		}
-
-		uris = spotifyUris(m.getMessage());
-		for (String uri : uris)
+		for (String uri : spotifyUris(m.getMessage()))
 		{
 			new SpotifyLinkResolver(uri, m, m.getReplyToAllTarget()).start();
 		}
