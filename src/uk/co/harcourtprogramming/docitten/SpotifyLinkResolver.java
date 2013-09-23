@@ -1,16 +1,16 @@
 package uk.co.harcourtprogramming.docitten;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.regex.Pattern;
-import uk.co.harcourtprogramming.docitten.utility.HtmlEntities;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.logging.LogDecorator;
 
@@ -21,11 +21,10 @@ import uk.co.harcourtprogramming.logging.LogDecorator;
  */
 public class SpotifyLinkResolver extends Thread
 {
-
 	/**
 	 * <p>Thread group for running link resolvers in</p>
 	 */
-	private final static ThreadGroup THREAD_GROUP = new ThreadGroup("LinkResolvers")
+	private final static ThreadGroup THREAD_GROUP = new ThreadGroup("SpotifyResolvers")
 	{
 		@Override
 		public void uncaughtException(Thread t, Throwable e)
@@ -42,36 +41,9 @@ public class SpotifyLinkResolver extends Thread
 	 * <p>Max time to wait for any one hop before giving up</p>
 	 */
 	private final static int TIMEOUT = 2000;
-	/**
-	 * <p>The maximum number of redirects to follow</p>
-	 */
-	private final static int MAX_HOPS = 5;
-	/**
-	 * <p>Letters for binary prefixes</p>
-	 * <p>kilo, mega, giga, terra, pera, exa, zetta, yotta, hella</p>
-	 * <p>Note: hella is my favourite proposal for 10^27. Also, Long.MAX_VALUE
-	 * is only about 8 EiB, so it'll be a little while before it gets used</p>
-	 */
-	private final static String UNIT_PREFIX = "kMGTPEZYH";
-	/**
-	 * <p>ln(ratio between any two prefixes)</p>
-	 */
-	private final static double UNIT_SIZE = Math.log(1024);
 
-	/**
-	 * <p>Converts a byte count into a 1dp figure of &lt;kMG...&gt;iB
-	 * (uses base 1024)</p>
-	 *
-	 * @param bytes the number of bytes
-	 * @return formatted value
-	 */
-	private static String humanReadableByteCount(long bytes)
-	{
-		if (bytes < 1024)
-			return bytes + " B";
-		int exp = (int)(Math.log(bytes) / UNIT_SIZE);
-		return String.format("%.1f %siB", bytes / Math.pow(1024, exp), UNIT_PREFIX.charAt(exp - 1));
-	}
+	private final static JSONParser parser = new JSONParser();
+
 	/**
 	 * <p>The original URI that we are retrieving</p>
 	 */
@@ -156,6 +128,7 @@ public class SpotifyLinkResolver extends Thread
 	 * @throws RuntimeException on any IO error (caught in {@link #THREAD_GROUP
 	 * the thread group})
 	 */
+	@SuppressWarnings("unchecked")
 	private void fetchData(URL url)
 	{
 		try
@@ -166,94 +139,70 @@ public class SpotifyLinkResolver extends Thread
 			conn.setInstanceFollowRedirects(false);
 			conn.connect();
 
-			BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			final Reader r = new InputStreamReader(conn.getInputStream());
+			final JSONObject spotify;
+			final JSONObject info;
+			final JSONObject data;
+			final String type;
 
-			mess.message(target, r.readLine());
+			try
+			{
+				synchronized (parser)
+				{
+					spotify = (JSONObject)parser.parse(r);
+				}
+			}
+			catch (ParseException ex)
+			{
+				LOG.warning(ex, "Can not parse spotify response for {0}", baseURI);
+				return;
+			}
+
+			if (spotify.get("info") == null)
+			{
+				LOG.warning("No info block on Spotify JSON response");
+				return;
+			}
+
+			info = (JSONObject)spotify.get("info");
+			type = (String)info.get("type");
+			data = (JSONObject)spotify.get(type);
+
+			if (data == null)
+			{
+				LOG.warning("No data block on Spotify JSON response");
+				return;
+			}
+
+			StringBuilder response = new StringBuilder(128);
+			Iterable<JSONObject> it;
+			JSONObject inner;
+			switch (type)
+			{
+				case "track":
+					response.append(data.get("name"));
+					it = (Iterable<JSONObject>)data.get("artists");
+					for (JSONObject artist : it)
+					{
+						response.append(" - ").append(((JSONObject)artist).get("name"));
+					}
+					inner = (JSONObject)data.get("album");
+					if (inner != null)
+					{
+						response
+							.append(" - ")
+							.append(inner.get("name"))
+							.append(" (")
+							.append(inner.get("released"))
+							.append(')');
+					}
+			}
+
+			mess.message(target, response.toString());
 
 			r.close();
 		}
 		catch (IOException ex)
-		{
-			throw new RuntimeException(ex);
-		}
-	}
-
-	/**
-	 * <p>Searches for a &lt;title&gt; element in a stream</p>
-	 * @param stream source data
-	 * @return the title, or "[No Title Set]" is none is found
-	 * @throws IOException
-	 */
-	private String getTitle(InputStream stream) throws IOException
-	{
-		BufferedReader pageData =
-			new BufferedReader(new InputStreamReader(stream));
-
-		String line;
-
-		boolean reading = false;
-		int titleTagLength = "<title>".length();
-
-		String title = "[No Title Set]";
-
-		while (true)
-		{
-			line = pageData.readLine();
-			if (line == null)
-				break;
-
-			if (line.contains("<title>"))
-			{
-				reading = true;
-				line = line.substring(line.indexOf("<title>") + titleTagLength);
-				title = "";
-			}
-			if (line.contains("<TITLE>"))
-			{
-				reading = true;
-				line = line.substring(line.indexOf("<TITLE>") + titleTagLength);
-				title = "";
-			}
-
-			if (reading && line.contains("</title>"))
-			{
-				title += line.substring(0, line.indexOf("</title>"));
-				break;
-			}
-			if (reading && line.contains("</TITLE>"))
-			{
-				title += line.substring(0, line.indexOf("</TITLE>"));
-				break;
-			}
-
-			if (line.contains("</head>") || line.contains("<body>")
-			 || line.contains("</HEAD>") || line.contains("<BODY>"))
-				break;
-
-			if (reading)
-				title += line;
-		}
-
-		pageData.close();
-
-		return HtmlEntities.decode(title.trim().replaceAll("\\s\\s+", " "));
-	}
-
-	/**
-	 * <p>Wrapper for {@link URI#resolve(java.lang.String) URI.resolve} for use
-	 * with {@link URL URL} objects</p>
-	 * @param curr base URL
-	 * @param location relative or absolute location to resolve
-	 * @return the resolved URL
-	 * @throws RuntimeException if any URL is malformed
-	 */
-	private URL resolveLocation(URL curr, String location)
-	{
-		try
-		{
-			return URI.create(curr.toExternalForm()).resolve(location).toURL();
-		}
-		catch (MalformedURLException ex)
 		{
 			throw new RuntimeException(ex);
 		}
