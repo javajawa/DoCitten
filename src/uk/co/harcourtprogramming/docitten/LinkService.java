@@ -17,7 +17,6 @@ import uk.co.harcourtprogramming.internetrelaycats.Service;
  */
 public class LinkService extends Service implements MessageService
 {
-
 	/**
 	 * <p>Links are detected using this regex</p>
 	 * <p>The regex works from detecting a limited subset of the top-level and
@@ -72,7 +71,7 @@ public class LinkService extends Service implements MessageService
 	public static Set<String> uris(String message)
 	{
 		// TreeSet is strongly ordered
-		final Set<String> r = new TreeSet<String>();
+		final Set<String> r = new TreeSet<>();
 
 		Matcher m = uriPattern.matcher(message);
 		while (m.find())
@@ -94,7 +93,7 @@ public class LinkService extends Service implements MessageService
 	public static Set<String> spotifyUris(String message)
 	{
 		// TreeSet is strongly ordered
-		final Set<String> r = new TreeSet<String>();
+		final Set<String> r = new TreeSet<>();
 
 		Matcher m = spotifyUriPattern.matcher(message);
 		while (m.find())
