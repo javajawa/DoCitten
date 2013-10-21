@@ -33,6 +33,16 @@ public class HelpingService extends Service implements MessageService
 	private final static Pattern PORT_PATTERN = Pattern.compile("^(?<a>[A-Z]?[b-df-hj-np-tv-z]+)[aeiou][a-z]* (and |or |\\+ |& )?[A-Z]?[b-df-hj-np-tv-z]+(?<b>[aeiou][a-z]*)[.\\?! ]?( :[D\\)3])?$", Pattern.CASE_INSENSITIVE);
 
 	/**
+	 * <p>Pattern to match 'The Greater Good'</p>
+	 */
+	private final static Pattern GG_PATTERN = Pattern.compile("[^\\w]the greater good[^\\w]", Pattern.CASE_INSENSITIVE);
+
+	/**
+	 * <p>Fixed reply to strings containing 'the greater good'</p>
+	 */
+	private final static String GG = "The Greater Good!!";
+
+	/**
 	 * <p>Random number generator for deciding whether to portmanteau</p>
 	 */
 	private final Random rand;
@@ -55,6 +65,9 @@ public class HelpingService extends Service implements MessageService
 	{
 		if (HELP_PATTERN.matcher(m.getMessage()).find())
 			m.replyToAll(HELPING);
+
+		if (GG_PATTERN.matcher(m.getMessage()).find())
+			m.replyToAll(GG);
 
 		Matcher ma = PORT_PATTERN.matcher(m.getMessage());
 		if (ma.matches() && rand.nextDouble() < 0.2)
