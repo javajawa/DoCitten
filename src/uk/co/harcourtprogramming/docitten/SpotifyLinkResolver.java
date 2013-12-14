@@ -1,7 +1,6 @@
 package uk.co.harcourtprogramming.docitten;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
@@ -128,7 +127,6 @@ public class SpotifyLinkResolver extends Thread
 	 * @throws RuntimeException on any IO error (caught in {@link #THREAD_GROUP
 	 * the thread group})
 	 */
-	@SuppressWarnings("unchecked")
 	private void fetchData(URL url)
 	{
 		try
@@ -158,15 +156,16 @@ public class SpotifyLinkResolver extends Thread
 				return;
 			}
 
-			if (spotify.get("info") == null)
+			info = spotify.getObject("info");
+
+			if (info == null)
 			{
 				LOG.warning("No info block on Spotify JSON response");
 				return;
 			}
 
-			info = (JSONObject)spotify.get("info");
-			type = (String)info.get("type");
-			data = (JSONObject)spotify.get(type);
+			type = info.getString("type");
+			data = spotify.getObject(type);
 
 			if (data == null)
 			{
@@ -181,12 +180,12 @@ public class SpotifyLinkResolver extends Thread
 			{
 				case "track":
 					response.append(data.get("name"));
-					it = (Iterable<JSONObject>)data.get("artists");
+					it = data.getArrayIterator("artists");
 					for (JSONObject artist : it)
 					{
-						response.append(" - ").append(((JSONObject)artist).get("name"));
+						response.append(" - ").append(artist.get("name"));
 					}
-					inner = (JSONObject)data.get("album");
+					inner = data.getObject("album");
 					if (inner != null)
 					{
 						response
