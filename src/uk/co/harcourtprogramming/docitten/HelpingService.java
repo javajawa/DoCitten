@@ -34,7 +34,7 @@ public class HelpingService extends Service implements MessageService
 	/**
 	 * <p>Pattern to match 'The Greater Good'</p>
 	 */
-	private final static Pattern GG_PATTERN = Pattern.compile("[^\\w]the greater good[^\\w]", Pattern.CASE_INSENSITIVE);
+	private final static Pattern GG_PATTERN = Pattern.compile("(^|[^\\w])the greater good([^\\w]|$)", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * <p>Fixed reply to strings containing 'the greater good'</p>
