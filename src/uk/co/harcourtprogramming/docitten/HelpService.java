@@ -46,7 +46,7 @@ public class HelpService extends Service implements MessageService
 		 * @see #getChildren()
 		 * @see #toString()
 		 */
-		private final Map<String, HelpInfo> children = new TreeMap<String, HelpInfo>();
+		private final Map<String, HelpInfo> children = new TreeMap<>();
 		/**
 		 * <p>The title of the topic to display at the top of the
 		 * {@link #toString() message}, and in any help listings</p>
@@ -120,7 +120,9 @@ public class HelpService extends Service implements MessageService
 			s.append(content);
 
 			if (children.isEmpty())
+			{
 				s.append(EOL);
+			}
 			else
 			{
 				s.append(DOUBLE_EOL).append("Sub-Topics").append(EOL);
@@ -206,7 +208,9 @@ public class HelpService extends Service implements MessageService
 	public HelpService(HelpInfo root)
 	{
 		if (root == null)
+		{
 			throw new IllegalArgumentException("Root help item can not be null");
+		}
 
 		this.root = root;
 	}
@@ -251,10 +255,14 @@ public class HelpService extends Service implements MessageService
 
 		// Check that the bot is actually being addressed in some way
 		if (!t.consume(m.getNick() + ':') && m.getChannel() != null)
+		{
 			return;
+		}
 
 		if (!t.consume("help"))
+		{
 			return;
+		}
 
 		HelpInfo currentNode = root;
 
