@@ -6,6 +6,8 @@ import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 
+import static java.lang.System.currentTimeMillis;
+
 /**
  * <p>Class that gives warnings for people to leave the laboratories before the
  * doors automatically lock</p>
@@ -46,7 +48,7 @@ public class GoHomeService extends ExternalService
 		{
 			try
 			{
-				c.setTimeInMillis(System.currentTimeMillis());
+				c.setTimeInMillis(currentTimeMillis());
 
 				if (c.get(Calendar.HOUR_OF_DAY) == 22)
 				{
