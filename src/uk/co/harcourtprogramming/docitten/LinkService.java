@@ -35,8 +35,57 @@ public class LinkService extends Service implements MessageService
 	private final static Pattern protocolPattern =
 		Pattern.compile("https?://[^\\s\\])]+", Pattern.CASE_INSENSITIVE);
 
+	/**
+	 * <p>Pattern matcheer for spotify: uris</p>
+	 */
 	private final static Pattern spotifyUriPattern =
 		Pattern.compile("spotify:[:a-z0-9]+", Pattern.CASE_INSENSITIVE);
+
+	/**
+	 * <p>Finds and returns all matched URIs in a given string (message)</p>
+	 *
+	 * @param message the message to scan for links
+	 * @return the list of links that are found (may by empty, but not null)
+	 */
+	public static Set<String> uris(String message)
+	{
+		// TreeSet is strongly ordered
+		final Set<String> r = new TreeSet<>();
+
+		Matcher m = uriPattern.matcher(message);
+		while (m.find())
+		{
+			r.add(m.group(1));
+		}
+
+		m = protocolPattern.matcher(message);
+		while (m.find())
+		{
+			r.add(m.group());
+		}
+
+		return r;
+	}
+
+	/**
+	 * <p>Finds and returns all matched URIs in a given string (message)</p>
+	 *
+	 * @param message the message to scan for links
+	 * @return the list of links that are found (may by empty, but not null)
+	 */
+		public static Set<String> spotifyUris(String message)
+		{
+			// TreeSet is strongly ordered
+			final Set<String> r = new TreeSet<>();
+
+			Matcher m = spotifyUriPattern.matcher(message);
+			while (m.find())
+			{
+				r.add(m.group());
+			}
+
+			return r;
+		}
 
 	/**
 	 * <p>Create a link service instance</p>
@@ -57,46 +106,6 @@ public class LinkService extends Service implements MessageService
 		{
 			new SpotifyLinkResolver(uri, m, m.getReplyToAllTarget()).start();
 		}
-	}
-
-	/**
-	 * <p>Finds and returns all matched URIs in a given string (message)</p>
-	 *
-	 * @param message the message to scan for links
-	 * @return the list of links that are found (may by empty, but not null)
-	 */
-	public static Set<String> uris(String message)
-	{
-		// TreeSet is strongly ordered
-		final Set<String> r = new TreeSet<>();
-
-		Matcher m = uriPattern.matcher(message);
-		while (m.find())
-			r.add(m.group(1));
-
-		m = protocolPattern.matcher(message);
-		while (m.find())
-			r.add(m.group());
-
-		return r;
-	}
-
-	/**
-	 * <p>Finds and returns all matched URIs in a given string (message)</p>
-	 *
-	 * @param message the message to scan for links
-	 * @return the list of links that are found (may by empty, but not null)
-	 */
-	public static Set<String> spotifyUris(String message)
-	{
-		// TreeSet is strongly ordered
-		final Set<String> r = new TreeSet<>();
-
-		Matcher m = spotifyUriPattern.matcher(message);
-		while (m.find())
-			r.add(m.group());
-
-		return r;
 	}
 
 	@Override
