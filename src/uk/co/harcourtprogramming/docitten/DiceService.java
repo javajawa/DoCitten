@@ -19,14 +19,169 @@ import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 public class DiceService extends Service implements MessageService
 {
 	/**
-	 * <p>Random number generator for dice rolls
-	 */
-	private final Random r = new Random();
-	/**
 	 * <p>Pattern which matches all of the dice commands that this service
 	 * recognises</p>
 	 */
 	private final static Pattern dicePattern = Pattern.compile("roll(?<mode> (?:sum|product|base|barrel))?(?<dice>(?: [0-9]*d[0-9]+d?)+)", Pattern.CASE_INSENSITIVE);
+
+	/**
+	 * <p>Object describing a set of similar dice to be rolled</p>
+	 */
+	private final class Die
+	{
+		/**
+		 * <p>The number of times this dice is to be rolled</p>
+		 */
+		final int count;
+		/**
+		 * <p>The number of sides (faces) each die has</p>
+		 */
+		final int sides;
+		/**
+		 * <p>Whether the sides are numbered carindally, or as powers of two</p>
+		 */
+		final boolean doubling;
+
+		/**
+		 * <p>Creates a new Die object based on a specification string</p>
+		 * @param spec A string of the form [0-9]*d[0-9]+d?
+		 */
+		private Die(String spec)
+		{
+			MessageTokeniser t = new MessageTokeniser(spec);
+			t.setConsumeWhitespace(true);
+
+			String c = t.nextToken('d').trim();
+			if ("".equalsIgnoreCase(c))
+			{
+				this.count = 1;
+			}
+			else
+			{
+				this.count = Integer.parseInt(c);
+			}
+
+			t.consume("d");
+
+			this.doubling = ('d' == t.charAt(t.length() - 1));
+
+			c = t.nextToken('d');
+			this.sides = Integer.parseInt(c);
+		}
+
+		/**
+		 * <p>Rolls these dice</p>
+		 * @param mode how the individual rolls are combined
+		 * @param rolls an array of ints, at least as long as {@link #count}
+		 * @return the total value of the rolls
+		 */
+		private long roll(DiceMode mode, int[] rolls)
+		{
+			long result = 0;
+			if (mode == DiceMode.PRODUCT)
+			{
+				result = 1;
+			}
+
+			for (int i = 0; i < count; ++i)
+			{
+				int roll = r.nextInt(this.sides);
+
+				if (mode != DiceMode.BASE)
+				{
+					roll += 1;
+				}
+
+				if (this.doubling)
+				{
+					roll = (int)Math.pow(2, roll);
+				}
+
+				if (rolls != null)
+				{
+					rolls[i] = roll;
+				}
+
+				switch (mode)
+				{
+					case SUM:
+						result += roll; break;
+					case PRODUCT:
+						result *= roll; break;
+					case BASE:
+						result *= this.sides;
+						result += roll;
+						break;
+				}
+			}
+
+			return result;
+		}
+
+		@Override
+		public String toString()
+		{
+			if (doubling)
+			{
+				return String.format("%d %d-sided doubling dice", count, sides);
+			}
+			else
+			{
+				return String.format("%d %d-sided dice", count, sides);
+			}
+		}
+	}
+
+	/**
+	 * <p>Different modes for combining individual die rolls</p>
+	 */
+	private enum DiceMode
+	{
+		/**
+		 * <p>Dice values are added together</p>
+		 */
+		SUM,
+		/**
+		 * <p>Dice values are multiplied together</p>
+		 */
+		PRODUCT,
+		/**
+		 * <p>Dice values are treated as a string in base n, where n is the
+		 * number of sides on the dice</p>
+		 */
+		BASE,
+		/**
+		 * <p>Perofrms a barrel roll. Haha. Ha.</p>
+		 */
+		BARREL;
+
+		/**
+		 * <p>Converts a string name of a DiceMode to the DiceMode value</p>
+		 * @param s The String to convert
+		 * @return The mode, or SUM if no match was found
+		 */
+		public static DiceMode parse(String s)
+		{
+			if (s == null)
+			{
+				return SUM;
+			}
+
+			try
+			{
+				return DiceMode.valueOf(s.trim().toUpperCase());
+			}
+			catch (IllegalArgumentException ex)
+			{
+				return SUM;
+			}
+		}
+	}
+
+	/**
+	 * <p>Random number generator for dice rolls
+	 */
+	private final Random r = new Random();
 
 	@Override
 	protected void shutdown()
@@ -101,135 +256,4 @@ public class DiceService extends Service implements MessageService
 		}
 	}
 
-	/**
-	 * <p>A class that represents a matched group of similar dice.</p>
-	 */
-	private final class Die
-	{
-		/**
-		 * <p>The number of times this dice is to be rolled</p>
-		 */
-		final int count;
-		/**
-		 * <p>The number of sides (faces) each die has</p>
-		 */
-		final int sides;
-		/**
-		 * <p>Whether the sides are numbered carindally, or as powers of two</p>
-		 */
-		final boolean doubling;
-
-		/**
-		 * <p>Creates a new Die object based on a specification string</p>
-		 * @param spec A string of the form [0-9]*d[0-9]+d?
-		 */
-		private Die(String spec)
-		{
-			MessageTokeniser t = new MessageTokeniser(spec);
-			t.setConsumeWhitespace(true);
-
-			String c = t.nextToken('d').trim();
-			if ("".equalsIgnoreCase(c))
-				this.count = 1;
-			else
-				this.count = Integer.parseInt(c);
-
-			t.consume("d");
-
-			this.doubling = ('d' == t.charAt(t.length() - 1));
-
-			c = t.nextToken('d');
-			this.sides = Integer.parseInt(c);
-		}
-
-		/**
-		 * <p>Rolls these dice</p>
-		 * @param mode how the individual rolls are combined
-		 * @param rolls an array of ints, at least as long as {@link #count}
-		 * @return the total value of the rolls
-		 */
-		private long roll(DiceMode mode, int[] rolls)
-		{
-			long result = 0;
-			if (mode == DiceMode.PRODUCT)
-				result = 1;
-
-			for (int i = 0; i < count; ++i)
-			{
-				int roll = r.nextInt(this.sides);
-
-				if (mode != DiceMode.BASE)
-					roll += 1;
-
-				if (this.doubling)
-					roll = (int)Math.pow(2, roll);
-
-				if (rolls != null)
-					rolls[i] = roll;
-
-				switch (mode)
-				{
-					case SUM:
-						result += roll; break;
-					case PRODUCT:
-						result *= roll; break;
-					case BASE:
-						result *= this.sides;
-						result += roll;
-						break;
-				}
-			}
-
-			return result;
-		}
-
-		@Override
-		public String toString()
-		{
-			if (doubling)
-				return String.format("%d %d-sided doubling dice", count, sides);
-			else
-				return String.format("%d %d-sided dice", count, sides);
-		}
-	}
-
-	/**
-	 * <p>Different modes for combining individual die rolls</p>
-	 */
-	private enum DiceMode
-	{
-		/**
-		 * <p>Dice values are added together</p>
-		 */
-		SUM,
-		/**
-		 * <p>Dice values are multiplied together</p>
-		 */
-		PRODUCT,
-		/**
-		 * <p>Dice values are treated as a string in base n, where n is the
-		 * number of sides on the dice</p>
-		 */
-		BASE,
-		BARREL;
-
-		/**
-		 * <p>Converts a string name of a DiceMode to the DiceMode value</p>
-		 * @param s The String to convert
-		 * @return The mode, or SUM if no match was found
-		 */
-		public static DiceMode parse(String s)
-		{
-			if (s == null)
-				return SUM;
-			try
-			{
-				return DiceMode.valueOf(s.trim().toUpperCase());
-			}
-			catch (IllegalArgumentException ex)
-			{
-				return SUM;
-			}
-		}
-	}
 }
