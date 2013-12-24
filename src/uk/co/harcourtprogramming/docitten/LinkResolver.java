@@ -74,7 +74,10 @@ public class LinkResolver extends Thread
 	private static String humanReadableByteCount(long bytes)
 	{
 		if (bytes < 1024)
+		{
 			return bytes + " B";
+		}
+
 		int exp = (int)(Math.log(bytes) / UNIT_SIZE);
 		return String.format("%.1f %siB", bytes / Math.pow(1024, exp), UNIT_PREFIX.charAt(exp - 1));
 	}
@@ -104,9 +107,13 @@ public class LinkResolver extends Thread
 	{
 		super(THREAD_GROUP, "LinkResolver [" + baseURI + ']');
 		if (!PROTOCOL.matcher(baseURI).matches())
+		{
 			this.baseURI = URI.create("http://" + baseURI);
+		}
 		else
+		{
 			this.baseURI = URI.create(baseURI);
+		}
 
 		this.mess = mess;
 		this.target = target;
@@ -170,7 +177,9 @@ public class LinkResolver extends Thread
 				case HttpURLConnection.HTTP_MULT_CHOICE:
 				case HttpURLConnection.HTTP_SEE_OTHER:
 					if (conn.getHeaderField("Location") == null)
+					{
 						return;
+					}
 
 					curr = resolveLocation(curr, conn.getHeaderField("Location"));
 					break;
@@ -182,10 +191,14 @@ public class LinkResolver extends Thread
 			conn.disconnect();
 
 			if (interrupted())
+			{
 				return;
+			}
 
 			if (resolved || (++hops == MAX_HOPS))
+			{
 				break;
+			}
 		}
 
 		if (hops == MAX_HOPS)
@@ -244,7 +257,9 @@ public class LinkResolver extends Thread
 
 			String mime = conn.getContentType();
 			if (mime == null)
+			{
 				mime = "";
+			}
 
 			mime = mime.split(";")[0];
 
@@ -294,7 +309,9 @@ public class LinkResolver extends Thread
 		{
 			line = pageData.readLine();
 			if (line == null)
+			{
 				break;
+			}
 
 			if (line.contains("<title>"))
 			{
@@ -322,10 +339,14 @@ public class LinkResolver extends Thread
 
 			if (line.contains("</head>") || line.contains("<body>")
 			 || line.contains("</HEAD>") || line.contains("<BODY>"))
+			{
 				break;
+			}
 
 			if (reading)
+			{
 				title += line;
+			}
 		}
 
 		pageData.close();
