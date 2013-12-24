@@ -8,7 +8,7 @@ JAVAC=javac
 JAR=jar
 JUNIT=/usr/share/java/junit4.jar
 
-JAVAVERSION=$(shell javac -version 2>&1 | head -n 1 | cut -d. -f 2)
+JAVAVERSION=$(shell $(JAVAC) -version 2>&1 | head -n 1 | cut -d. -f 2)
 ifneq "$(JAVAVERSION)" "7"
 	echo "Requires Java 7"
 	false
