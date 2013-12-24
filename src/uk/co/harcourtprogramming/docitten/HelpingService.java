@@ -1,7 +1,6 @@
 package uk.co.harcourtprogramming.docitten;
 
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
@@ -64,7 +63,9 @@ public class HelpingService extends Service implements MessageService
 	public void handle(Message m)
 	{
 		if (HELP_PATTERN.matcher(m.getMessage()).find())
+		{
 			m.replyToAll(HELPING);
+		}
 
 		if (GG_PATTERN.matcher(m.getMessage()).find())
 			m.replyToAll(GG);
@@ -74,7 +75,9 @@ public class HelpingService extends Service implements MessageService
 		{
 			final String portmanteau = ma.group("a") + ma.group("b");
 			if (m.getMessage().contains(portmanteau))
+			{
 				return;
+			}
 
 			m.replyToAll(portmanteau);
 		}
