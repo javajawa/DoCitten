@@ -1,7 +1,5 @@
 package uk.co.harcourtprogramming.docitten;
 
-import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +12,9 @@ import uk.co.harcourtprogramming.internetrelaycats.OutboundMessage;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
 import uk.co.harcourtprogramming.mewler.MessageTokeniser;
+
+import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
 
 /**
  * <p>Service for supplying context to users for when they join a channel</p>
@@ -51,7 +52,9 @@ public class ContextService extends Service implements MessageService, FilterSer
 		t.setConsumeWhitespace(true);
 
 		if (m.getChannel() == null)
+		{
 			return;
+		}
 
 		// Check that the bot is being asked for context in a channel
 		if (!t.consume(m.getNick() + ": context"))
@@ -83,7 +86,9 @@ public class ContextService extends Service implements MessageService, FilterSer
 					StringBuilder buffer = new StringBuilder(50 * hist.getLength());
 
 					for (int i = 0; i < hist.getLength(); ++i)
+					{
 						buffer.append(hist.get(i)).append('\n');
+					}
 
 					m.reply(buffer.toString());
 				}
