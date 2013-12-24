@@ -29,7 +29,7 @@ public class LogService extends Service implements MessageService, FilterService
 	/**
 	 * <p>Map of output files of the current logs</p>
 	 */
-	private final Map<String, FileWriter> logs = new HashMap<String, FileWriter>();
+	private final Map<String, FileWriter> logs = new HashMap<>(8);
 	/**
 	 * <p>
 	 */
@@ -46,7 +46,9 @@ public class LogService extends Service implements MessageService, FilterService
 		if ((dir.canWrite() && dir.isDirectory()) || !dir.exists())
 		{
 			if (!dir.exists())
+			{
 				dir.mkdir();
+			}
 
 			this.dir = dir;
 		}
