@@ -93,7 +93,9 @@ public class LookupWorker extends Thread
 	public void run()
 	{
 		if (this.question.trim().isEmpty())
+		{
 			return;
+		}
 
 		final String uri;
 		try
@@ -122,14 +124,13 @@ public class LookupWorker extends Thread
 		}
 
 		final NodeList answers = document.getElementsByTagName("plaintext");
-		StringBuilder result = new StringBuilder();
+		StringBuilder result = new StringBuilder(1024);
 
-		for (int i = 0; i < answers.getLength(); ++i)
+		for (int i = 0; i < answers.getLength() && i < 4; ++i)
 		{
-			if (i == 3)
-				break;
 			result.append(answers.item(i).getTextContent()).append('\n');
 		}
+
 		result.append("Via Wolfram|Alpha http://wolframalpha.com");
 		mess.message(target, result.toString());
 	}
