@@ -87,14 +87,20 @@ public class KittenService extends Service implements MessageService
 				String chan = m.getChannel();
 
 				if ("me".equals(nick))
+				{
 					nick = m.getSender();
+				}
 
 				if (chan == null)
 				{
 					if (token.consume("in"))
+					{
 						m.act(token.nextToken(' '), play(nick));
+					}
 					else
+					{
 						m.act(nick, play(nick));
+					}
 				}
 				else
 				{
@@ -107,23 +113,31 @@ public class KittenService extends Service implements MessageService
 		{
 			Matcher attentionMatcher = attention.matcher(mess);
 			if (attentionMatcher.find())
+			{
 				m.act(attend(m.getSender()));
+			}
 		}
 
 		// Stop DoCitten replying to itself as much
 		if (mess.equals("mew =^.^="))
+		{
 			return;
+		}
 
 		StringBuilder reply = new StringBuilder(100);
 
 		// Find things we need to mewl at
 		Matcher kittenMatcher = kitten.matcher(mess);
 		while (kittenMatcher.find())
+		{
 			reply.append(mewl()).append(' ');
+		}
 
 		Matcher mewlsMatcher = mewls.matcher(mess);
 		while (mewlsMatcher.find())
+		{
 			reply.append(mewl()).append(' ');
+		}
 
 		if (reply.length() != 0)
 		{
@@ -160,7 +174,10 @@ public class KittenService extends Service implements MessageService
 	private String attend(String user)
 	{
 		if (user == null)
+		{
 			user = "nice people";
+		}
+
 		switch (r.nextInt(9))
 		{
 			case 0: return "purrs";
