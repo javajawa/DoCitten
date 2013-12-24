@@ -22,7 +22,7 @@ public class HushService extends Service implements MessageService, FilterServic
 	 * <p>A list of all channels and users in which DoCitten has been told to be
 	 * quiet</p>
 	 */
-	private final Set<String> hushedTargets = new HashSet<String>();
+	private final Set<String> hushedTargets = new HashSet<>();
 
 	/**
 	 * <p>Creates a new HushService instance</p>
@@ -54,7 +54,9 @@ public class HushService extends Service implements MessageService, FilterServic
 		if (m.getChannel() != null)
 		{
 			if (!tokeniser.startsWith(m.getNick()))
+			{
 				return;
+			}
 
 			tokeniser.consume(m.getNick());
 			tokeniser.consume(":");
@@ -87,7 +89,9 @@ public class HushService extends Service implements MessageService, FilterServic
 		synchronized (hushedTargets)
 		{
 			if (hushedTargets.contains(m.getTarget()))
+			{
 				return null;
+			}
 		}
 		return m;
 	}
