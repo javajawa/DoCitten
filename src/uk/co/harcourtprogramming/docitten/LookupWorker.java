@@ -3,8 +3,9 @@ package uk.co.harcourtprogramming.docitten;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
@@ -40,7 +41,19 @@ public class LookupWorker extends Thread
 	 */
 	private final static String WOLFRAM_KEY = System.getProperty("Lookup.WolframKey");
 
-	private final static DocumentBuilderFactory domParserFactory = DocumentBuilderFactory.newInstance();
+	private final static DocumentBuilder domParser;
+
+	static
+	{
+		try
+		{
+			domParser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		}
+		catch (ParserConfigurationException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+	}
 
 	/**
 	 * <p>The question that was asked</p>
@@ -97,18 +110,7 @@ public class LookupWorker extends Thread
 			return;
 		}
 
-		final DocumentBuilder domParser;
 		final Document document;
-		try
-		{
-			domParser = domParserFactory.newDocumentBuilder();
-		}
-		catch (javax.xml.parsers.ParserConfigurationException ex)
-		{
-			LOG.severe(ex, "Unable to create a document parser");
-			return;
-		}
-
 		try
 		{
 			document = domParser.parse(uri);
