@@ -37,10 +37,10 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Compiling
 ---------
 
-First, make sure that the submodule is initialised. This can be done be cloning
+First, make sure that the submodules are initialised. This can be done be cloning
 with --recursive, or initialising/updating the sub-repo with:
 
-    git submodule update --init lib/irc
+    git submodule update --init --recursive
 
 The project can be make from the command line using
 make
@@ -53,8 +53,9 @@ make
 
 It can also be imported into an IDE of your choice.
 Two projects will likely need to be created - one at the root of the working
-tree (DoCitten), and one in ```lib/irc``` (InternetRelayCats).
-In both cases, Netbeans Java Project with existing sources project wizard
+tree (DoCitten), and one in ```lib/irc``` (InternetRelayCats), and yet
+another in ```lib/irc/lib/mewler```.
+In all cases, Netbeans Java Project with existing sources project wizard
 will correctly create the projects with
 
 - ```src/``` listed as a source folder
@@ -62,7 +63,8 @@ will correctly create the projects with
 
 Note that you will to tell the IDE that DoCitten needs InternetRelayCats as a
 library, and the DoCitten's test packages rely both of InternetRelayCats main
-code _and_ test packages
+code _and_ test packages. You will also need to tell the IDE that DoCitten and
+InternetRelayCats both need Mewler in turn.
 
 Running
 -------
