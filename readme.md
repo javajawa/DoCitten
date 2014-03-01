@@ -4,7 +4,7 @@ DoCitten
 License
 -------
 
-DoCitten is licensed under a BSD 3-Clause Lincense
+DoCitten is licensed under a BSD 3-Clause License
 
 Copyright (c) 2011-12, Harcourt Programming
 All rights reserved.
