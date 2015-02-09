@@ -1,37 +1,77 @@
 package uk.co.harcourtprogramming.docitten;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.errors.AmbiguousObjectException;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.RevisionSyntaxException;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.util.StringUtils;
+
+import uk.co.harcourtprogramming.docitten.utility.GitRepoTracker;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
+import uk.co.harcourtprogramming.internetrelaycats.Message;
+import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
+import uk.co.harcourtprogramming.mewler.MessageTokeniser;
 
-public class DistroService extends ExternalService {
-
-	public DistroService(InternetRelayCat inst) {
+public class DistroService extends ExternalService implements MessageService {
+	/**
+	 * An OS distro root directory, eg "/vol/linux/ubuntu"
+	 */
+	private File root;
+	
+	/**
+	 * Collection of known distro repos at last check
+	 */
+	private Collection<File> distros = Collections.emptyList();
+	
+	/**
+	 * Map of repos that we're tracking, indexed by name returned from getDistroName()
+	 */
+	private Map<String, GitRepoTracker> tracking = new Hashtable<>();
+	
+	/**
+	 * Channel we're reporting to
+	 */
+	private String channel;
+	
+	public DistroService(InternetRelayCat inst, File root, String channel) {
 		super(inst);
-		// TODO Auto-generated constructor stub
+		this.root = root;
+		this.channel = channel;
+		try {
+			this.checkNewDistros();
+			this.watchDistro(this.getDefaultDistro());
+		} catch (Exception e) {
+			this.log(Level.WARNING, "Could not initialise distro watcher", e);
+		}
 	}
 
+	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-
+		while (true) {
+			checkUpdates();
+			try {
+				Thread.sleep(300000);
+			} catch (InterruptedException e) {
+			}
+		}
 	}
 
 	@Override
 	protected void shutdown() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -44,69 +84,159 @@ public class DistroService extends ExternalService {
 				"The distro service broadcasts configuration updates to the "
 				+ "standard DoC Ubuntu distribution. The distro config repo is "
 				+ "checked for changes every 5 minutes.");
+			help.addChild("list", new HelpService.HelpInfo("Lists monitored distributions", ""));
+			help.addChild("available", new HelpService.HelpInfo("Lists distributions available to monitor", ""));
+			help.addChild("latest", new HelpService.HelpInfo("Broadcast latest update for a given distribution", "Usage: distro latest <distro>"));
+			help.addChild("start", new HelpService.HelpInfo("Start monitoring a distribution", "Usage: distro start <distro>"));
+			help.addChild("stop", new HelpService.HelpInfo("Stop monitoring a distribution", "Usage: distro stop <distro>"));
 			helpServices.get(0).addHelp("distro", help);
 		}
 	}
 	
-	private class Distro {
-		private Git git;
-		private ObjectId head;
-		private String name;
-		
-		/**
-		 * 
-		 * @param f The git repository of the distro to represent
-		 * @throws IOException 
-		 */
-		public Distro(File f, String name) throws IOException {
-			this.git = Git.open(f);
-			this.name = name;
-			this.updateHead();
-		}
-		
-		/**
-		 * Updates the distro to point to the newest HEAD, and returns the old HEAD Object
-		 * @return
-		 * @throws IOException 
-		 * @throws IncorrectObjectTypeException 
-		 * @throws AmbiguousObjectException 
-		 * @throws RevisionSyntaxException 
-		 */
-		private ObjectId updateHead() throws RevisionSyntaxException, AmbiguousObjectException, IncorrectObjectTypeException, IOException {
-			ObjectId oldHead = this.head;
+	/**
+	 * Add a distro to the watch list
+	 * @throws IOException If the requested distro is not found or readable etc.
+	 */
+	private void watchDistro(File distro) throws IOException {
+		String name = this.getDistroName(distro);
+		GitRepoTracker git = new GitRepoTracker(distro, name);
+		tracking.put(name, git);
+	}
+	
+	/**
+	 * Fetches semantically 'latest' distro available
+	 * @returns Distro directory
+	 */
+	private File getDefaultDistro() {
+		float greatest = 0;
+		File defDistro = null; 
+		for (File distro : this.distros) {
 			try {
-				this.head = this.git.getRepository().resolve("HEAD");
+				float curr = Float.parseFloat(distro.getName());
+				if (curr > greatest) {
+					greatest = curr;
+					defDistro = distro;
+				}
 			} catch (Exception e) {
-				// FIXME: I don't know what to do here.
 			}
-			return oldHead;
+		}
+		return defDistro;
+	}
+	
+	private void checkUpdates() {
+		try {
+			Collection<File> newDistros = checkNewDistros();
+			if (!newDistros.isEmpty()) {
+				StringBuilder sb = new StringBuilder("Discovered a new CSG distribution: ");
+				sb.append(this.distrosToString(newDistros, ", "));
+				this.getInstance().message(this.channel, sb.toString());
+			}
+		} catch (Exception e) {
+			this.log(Level.WARNING, "Could not check for new distros", e);
 		}
 		
-		public Iterable<RevCommit> fetchUpdates() {
-			Iterable<RevCommit> ret;
+		for (GitRepoTracker repo : this.tracking.values()) {
 			try {
-				ObjectId oldHead = this.updateHead();
-				ret = this.git.log().addRange(oldHead, this.head).call();
+				for (String update : repo.fetchStringUpdates()) {
+					StringBuilder sb = new StringBuilder(100);
+					sb.append("CSG updated ").append(repo.getName()).append(": ");
+					sb.append(update);
+					this.getInstance().message(this.channel, sb.toString());
+				}
 			} catch (Exception e) {
-				ret = new ArrayList<RevCommit>();
+				this.log(Level.WARNING, "Could not check distro gitlog", e);
 			}
-			return ret;
+		}
+	}
+	
+	private Collection<File> checkNewDistros() throws Exception {
+		File[] repoArr = this.root.listFiles(new FileFilter() {
+			@Override public boolean accept(File pathname) {
+				return new File(pathname, ".git").isDirectory();
+			}
+		});
+		
+		if (repoArr.length == 0) {
+			throw new Exception("No distros located in " + this.root);
 		}
 		
-		public String commitToString(RevCommit c) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("CSG updated ").append(this.name).append(" configuration: ");
-			sb.append(c.getShortMessage());
-			return sb.toString();
+		List<File> repoList = Arrays.asList(repoArr);
+		List<File> newRepos = new LinkedList<>(repoList);
+				
+		newRepos.removeAll(this.distros);
+		this.distros = repoList;
+		return newRepos;
+	}
+	
+	private String getDistroName(File distro) {
+		return distro.getParentFile().getName() + "/" + distro.getName();
+	}
+	
+	private Collection<String> distrosToStrings(Collection<File> distros) {
+		Collection<String> strs = new ArrayList<>(distros.size());
+		for (File distro : distros) {
+			strs.add(this.getDistroName(distro));
 		}
+		return strs;
+	}
+	
+	private String distrosToString(Collection<File> distros, String sep) {
+		Collection<String> strs = this.distrosToStrings(distros);
+		return StringUtils.join(strs, sep);
+	}
+
+	@Override
+	public void handle(Message m) {
+		MessageTokeniser t = new MessageTokeniser(m.getMessage());
+		t.setConsumeWhitespace(true);
 		
-		public Iterable<String> fetchStringUpdates() {
-			Iterable<RevCommit> upds = this.fetchUpdates();
-			List<String> strs = new LinkedList<String>();
-			for (RevCommit c : upds) {
-				strs.add(this.commitToString(c));
+		// Check that the bot is actually being addressed in some way
+		if (!t.consume(m.getNick() + ':') && m.getChannel() != null)
+			return;
+		// Check the command was 'distro'
+		if (!t.consume("distro"))
+			return;
+		
+		if (t.consume("list")) {
+			m.reply(StringUtils.join(this.tracking.keySet(), " "));
+		} else if (t.consume("available")) {
+			m.reply(this.distrosToString(this.distros, " "));
+		} else if (t.consume("latest")) {
+			String distro = t.nextToken();
+			try {
+				GitRepoTracker git = this.tracking.get(distro);
+				for (String s : git.fetchStringUpdates("HEAD^")) {
+					m.replyToAll(s);
+				}
+			} catch (Exception e) {
+				m.reply("Failed");
 			}
-			return strs;
+		} else if (t.consume("start")) {
+			String distro = t.nextToken();
+
+			try {
+				Path root = this.root.toPath();
+				Path distroP = root.getParent().resolve(distro);
+				Path abs = distroP.toRealPath();
+				if (abs.startsWith(root)) {
+					this.watchDistro(abs.toFile());
+					m.reply("OK");
+				} else {
+					throw new Exception("Location outside of root requested");
+				}
+			} catch (Exception e) {
+				m.reply("Failed");
+				log(Level.INFO, "Distro failed to add "+distro, e);
+			}
+		} else if (t.consume("stop")) {
+			String distro = t.nextToken();
+			try {
+				if (this.tracking.remove(distro) != null) {
+					m.reply("OK");
+					return;
+				}
+			} catch (NullPointerException e) {}
+			m.reply("Failed");
 		}
 	}
 }
