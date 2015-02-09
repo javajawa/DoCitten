@@ -206,7 +206,7 @@ public class DistroService extends ExternalService implements MessageService {
 			try {
 				GitRepoTracker git = this.tracking.get(distro);
 				for (String s : git.fetchStringUpdates("HEAD^")) {
-					m.replyToAll(s);
+					m.replyToAll(s, true);
 				}
 			} catch (Exception e) {
 				m.reply("Failed");
