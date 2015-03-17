@@ -27,6 +27,11 @@ public class ContextService extends Service implements MessageService, FilterSer
 {
 
 	/**
+	 * <p>Occasional interjection when asked for context</p>
+	 */
+	private final static String CBD = "Context be damned!";
+
+	/**
 	 * <p>Storage for the history of attached channels</p>
 	 */
 	private final Map<String, ArrayBuffer<String>> channelHistories = new HashMap<>(10);
