@@ -38,6 +38,11 @@ public class ContextService extends Service implements MessageService, FilterSer
 	private final Random r = new Random();
 
 	/**
+	 * <p>Percentage chance of damning context when it is requested</p>
+	 */
+	private final Int OBJECTION_PERCENT = 10;
+
+	/**
 	 * <p>Storage for the history of attached channels</p>
 	 */
 	private final Map<String, ArrayBuffer<String>> channelHistories = new HashMap<>(10);
