@@ -112,6 +112,12 @@ public class ContextService extends Service implements MessageService, FilterSer
 				{
 					m.reply("No context available for this channel.");
 				}
+
+				// occasionally object (but only after answering the request)
+				if (r.nextInt(100) < OBJECTION_PERCENT)
+				{
+					m.replyToAll(CBD);
+				}
 			}
 		}
 	}
