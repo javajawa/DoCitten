@@ -179,7 +179,7 @@ public class DiceService extends Service implements MessageService
 	}
 
 	/**
-	 * <p>Random number generator for dice rolls
+	 * <p>Random number generator for dice rolls</p>
 	 */
 	private final Random r = new Random();
 
