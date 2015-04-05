@@ -40,7 +40,7 @@ public class ContextService extends Service implements MessageService, FilterSer
 	/**
 	 * <p>Percentage chance of damning context when it is requested</p>
 	 */
-	private final Int OBJECTION_PERCENT = 10;
+	private final int OBJECTION_PERCENT = 10;
 
 	/**
 	 * <p>Storage for the history of attached channels</p>
