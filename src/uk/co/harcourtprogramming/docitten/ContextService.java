@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import uk.co.harcourtprogramming.docitten.utility.ArrayBuffer;
 import uk.co.harcourtprogramming.internetrelaycats.FilterService;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
@@ -25,6 +26,21 @@ import static java.lang.System.currentTimeMillis;
  */
 public class ContextService extends Service implements MessageService, FilterService
 {
+
+	/**
+	 * <p>Occasional interjection when asked for context</p>
+	 */
+	private final static String CBD = "Context be damned!";
+
+	/**
+	 * <p>Random number generator for deciding whether to damn context</p>
+	 */
+	private final Random r = new Random();
+
+	/**
+	 * <p>Percentage chance of damning context when it is requested</p>
+	 */
+	private final int OBJECTION_PERCENT = 10;
 
 	/**
 	 * <p>Storage for the history of attached channels</p>
@@ -95,6 +111,12 @@ public class ContextService extends Service implements MessageService, FilterSer
 				else
 				{
 					m.reply("No context available for this channel.");
+				}
+
+				// occasionally object (but only after answering the request)
+				if (r.nextInt(100) < OBJECTION_PERCENT)
+				{
+					m.replyToAll(CBD);
 				}
 			}
 		}
