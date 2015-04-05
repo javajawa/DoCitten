@@ -50,7 +50,8 @@ public class HelpingServiceTest
 			new String[]{"bob", null},
 			new String[]{"Can I get some assistance with this?", HelpingService.HELPING},
 			new String[]{"Can I get some assistence with this?", HelpingService.HELPING},
-			new String[]{"hlp", HelpingService.HELPING},
+			new String[]{"hlp", null},
+			new String[]{"hp", null},
 
 			new String[]{"happy kitteh", "hitteh"},
 			new String[]{"happy kitten :3", "hitten"},
