@@ -70,6 +70,14 @@ public class Main
 
 		while ( true )
 		{
+			try
+			{
+				Thread.sleep( 2000 );
+			}
+			catch ( InterruptedException ignore )
+			{
+			}
+
 			String s = in.readLine();
 			if ("quit".equalsIgnoreCase(s)) break;
 		}
