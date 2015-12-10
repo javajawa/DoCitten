@@ -31,22 +31,22 @@ public class DistroService extends ExternalService implements MessageService {
 	 * An OS distro root directory, eg "/vol/linux/ubuntu"
 	 */
 	private File root;
-	
+
 	/**
 	 * Collection of known distro repos at last check
 	 */
 	private Collection<File> distros = Collections.emptyList();
-	
+
 	/**
 	 * Map of repos that we're tracking, indexed by name returned from getDistroName()
 	 */
 	private Map<String, GitRepoTracker> tracking = new Hashtable<>();
-	
+
 	/**
 	 * Channel we're reporting to
 	 */
 	private String channel;
-	
+
 	public DistroService(InternetRelayCat inst, File root, String channel) {
 		super(inst);
 		this.root = root;
@@ -92,7 +92,7 @@ public class DistroService extends ExternalService implements MessageService {
 			helpServices.get(0).addHelp("distro", help);
 		}
 	}
-	
+
 	/**
 	 * Add a distro to the watch list
 	 * @throws IOException If the requested distro is not found or readable etc.
@@ -102,7 +102,7 @@ public class DistroService extends ExternalService implements MessageService {
 		GitRepoTracker git = new GitRepoTracker(distro, name);
 		tracking.put(name, git);
 	}
-	
+
 	/**
 	 * Fetches semantically 'latest' distro available
 	 * @returns Distro directory
@@ -122,7 +122,7 @@ public class DistroService extends ExternalService implements MessageService {
 		}
 		return defDistro;
 	}
-	
+
 	private void checkUpdates() {
 		try {
 			Collection<File> newDistros = checkNewDistros();
@@ -134,7 +134,7 @@ public class DistroService extends ExternalService implements MessageService {
 		} catch (Exception e) {
 			this.log(Level.WARNING, "Could not check for new distros", e);
 		}
-		
+
 		for (GitRepoTracker repo : this.tracking.values()) {
 			try {
 				for (String update : repo.fetchStringUpdates()) {
@@ -148,30 +148,30 @@ public class DistroService extends ExternalService implements MessageService {
 			}
 		}
 	}
-	
+
 	private Collection<File> checkNewDistros() throws Exception {
 		File[] repoArr = this.root.listFiles(new FileFilter() {
 			@Override public boolean accept(File pathname) {
 				return new File(pathname, ".git").isDirectory();
 			}
 		});
-		
+
 		if (repoArr.length == 0) {
 			throw new Exception("No distros located in " + this.root);
 		}
-		
+
 		List<File> repoList = Arrays.asList(repoArr);
 		List<File> newRepos = new LinkedList<>(repoList);
-				
+
 		newRepos.removeAll(this.distros);
 		this.distros = repoList;
 		return newRepos;
 	}
-	
+
 	private String getDistroName(File distro) {
 		return distro.getParentFile().getName() + "/" + distro.getName();
 	}
-	
+
 	private Collection<String> distrosToStrings(Collection<File> distros) {
 		Collection<String> strs = new ArrayList<>(distros.size());
 		for (File distro : distros) {
@@ -179,7 +179,7 @@ public class DistroService extends ExternalService implements MessageService {
 		}
 		return strs;
 	}
-	
+
 	private String distrosToString(Collection<File> distros, String sep) {
 		Collection<String> strs = this.distrosToStrings(distros);
 		return StringUtils.join(strs, sep);
@@ -189,14 +189,14 @@ public class DistroService extends ExternalService implements MessageService {
 	public void handle(Message m) {
 		MessageTokeniser t = new MessageTokeniser(m.getMessage());
 		t.setConsumeWhitespace(true);
-		
+
 		// Check that the bot is actually being addressed in some way
 		if (!t.consume(m.getNick() + ':') && m.getChannel() != null)
 			return;
 		// Check the command was 'distro'
 		if (!t.consume("distro"))
 			return;
-		
+
 		if (t.consume("list")) {
 			m.reply(StringUtils.join(this.tracking.keySet(), " "));
 		} else if (t.consume("available")) {
