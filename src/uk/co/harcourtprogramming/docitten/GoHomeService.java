@@ -50,7 +50,7 @@ public class GoHomeService extends ExternalService
 			{
 				c.setTimeInMillis(currentTimeMillis());
 
-				if (c.get(Calendar.HOUR_OF_DAY) == 22)
+				if (c.get(Calendar.HOUR_OF_DAY) == 23)
 				{
 					switch (c.get(Calendar.MINUTE))
 					{
