@@ -31,6 +31,12 @@ public class LinkRedirectionTest
 		}
 
 		@Override
+		public void setTopic(String target, String topic)
+		{
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
+
+		@Override
 		public void join(String channel)
 		{
 			throw new UnsupportedOperationException("Not supported yet.");
