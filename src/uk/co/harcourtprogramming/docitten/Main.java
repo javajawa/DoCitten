@@ -54,14 +54,14 @@ public class Main
 
 			inst.addService(new KittenService());
 			inst.addService(new LinkService());
-//			inst.addService(new GoHomeService(inst, args[1]));
+			inst.addService(new GoHomeService(inst, args[1]));
 			inst.addService(new DiceService());
 			inst.addService(new HelpingService());
 			inst.addService(new LookupService());
 			inst.addService(new ReminderService(inst));
 			inst.addService(new CatPicOfTheDayService(inst));
-//			inst.addService(new MOTDService(inst, new File("/etc/motd.dat"), new File("/etc/motd"), args[1]));
-//			inst.addService(new DistroService(inst, new File("/vol/linux/ubuntu"), args[1]));
+			inst.addService(new MOTDService(inst, new File("/etc/motd.dat"), new File("/etc/motd"), args[1]));
+			inst.addService(new DistroService(inst, new File("/vol/linux/ubuntu"), args[1]));
 		}
 		catch (Throwable ex)
 		{
