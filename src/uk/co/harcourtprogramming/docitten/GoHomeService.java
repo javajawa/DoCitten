@@ -54,9 +54,9 @@ public class GoHomeService extends ExternalService
 				{
 					switch (c.get(Calendar.MINUTE))
 					{
-						case 40:
+						case 30:
 							getInstance().message(channel,
-							  "Attention denizens of #doc: DoC Labs will be closing in 20 minutes");
+							  "Attention denizens of #doc: DoC Labs will be closing in 30 minutes");
 							Thread.sleep(60000); // Make sure we can't send this twice
 							break;
 						case 50:
@@ -67,7 +67,7 @@ public class GoHomeService extends ExternalService
 							break;
 						case 55:
 							getInstance().message(channel,
-							  "Attention denizens of #doc: DoC Labs will be closing in 5 minutes\n" +
+							  "Attention denizens of #doc: DoC Labs will be closing in 5 minutes. " +
 							  "Go home and sleep and stuff!");
 							Thread.sleep(60000); // Make sure we can't send this twice
 							break;
