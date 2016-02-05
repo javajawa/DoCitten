@@ -59,7 +59,7 @@ public class CatPicOfTheDayService extends ExternalService implements MessageSer
 	 */
 	private final static String SERVICE_NAME = "catpic";
 
-	private final static String API_KEY = "";
+	private final static String API_KEY = "NTI2MTU";
 
 	private final static String CHANNEL = "#doc";
 
@@ -203,9 +203,9 @@ public class CatPicOfTheDayService extends ExternalService implements MessageSer
 		{
 			tokeniser.consume( "remove" );
 
-			synchronized ( queue )
+			synchronized (queue )
 			{
-				if ( queue.remove( tokeniser.toString() ) )
+				if (queue.remove(tokeniser.toString()))
 				{
 					m.reply( "java.util.List.remove returned true" );
 				}
@@ -227,7 +227,7 @@ public class CatPicOfTheDayService extends ExternalService implements MessageSer
 		{
 			while (u.find())
 			{
-				if (queue.add( u.group(1)))
+				if (!queue.contains(u.group(1)) && queue.add(u.group(1)))
 				{
 					m.reply(u.group(1) + " added");
 				}
@@ -235,9 +235,9 @@ public class CatPicOfTheDayService extends ExternalService implements MessageSer
 
 			while (p.find())
 			{
-				if (queue.add(p.group(1)))
+				if (!queue.contains(u.group(0)) && queue.add(p.group(0)))
 				{
-					m.reply(p.group(1) + " added");
+					m.reply(p.group(0) + " added");
 				}
 			}
 		}
