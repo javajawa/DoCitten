@@ -5,3 +5,19 @@ before_install:
   - git submodule update --init --recursive
 
 script: make test
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "dWMZVb7TO9pZ2OADFfiv18/63kUpaLWlM7dqi+GrLfkTSBNJ1skLpiH0gQfOjLh4rThRob3tuj9Yh5TVaE8tXplmimLsZSEw03H7NY1ObrIUI0BveY/vPOfja4f07Lx5t9Q4kxVDmX8o2vnxm1XsYAAuZgYCSkXr0qxy1T2AgbY="
+
+addons:
+  coverity_scan:
+    project:
+      name: "edgemaster/DoCitten"
+      description: "<Your project description here>"
+    notification_email: grand.edgemaster@gmail.com
+    build_command_prepend: "git submodule update --init --recursive"
+    build_command:   "make"
+    branch_pattern: coverity_scan
