@@ -87,7 +87,17 @@ public class LinkRedirectionTest
 
 		LinkResolver r = new LinkResolver(uri, cat, nick);
 
-		r.run();
+		try
+		{
+			r.run();
+		}
+		catch( RuntimeException ex )
+		{
+			if ( ex.getCause() instanceof javax.net.ssl.SSLException )
+			{
+				org.junit.Assume.assumeTrue( false );
+			}
+		}
 
 		assertNotNull(target);
 		assertEquals(nick, target);
