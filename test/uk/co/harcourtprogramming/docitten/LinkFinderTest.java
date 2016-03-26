@@ -95,13 +95,17 @@ public class LinkFinderTest
 	@SuppressWarnings("UseOfSystemOutOrSystemErr") // Additional assertion failure data
 	public void testUris()
 	{
-		Set<String> result = LinkService.uris(ld.inputText);
+		Set<String> result = new TreeSet<>();
+		result.addAll( LinkService.uris(ld.inputText) );
+		result.addAll( LinkService.spotifyUris(ld.inputText) );
+		result.addAll( LinkService.giphyUris(ld.inputText) );
 
 		try
 		{
-			assertEquals(ld.links.size(), result.size());
-			assertArrayEquals(ld.links.toArray(), result.toArray());
-		} catch (AssertionError ex)
+			assertEquals("Number of urls for " + ld.inputText + " not correct", ld.links.size(), result.size());
+			assertArrayEquals("Mismatch for urls for " + ld.inputText, ld.links.toArray(), result.toArray());
+		}
+		catch (AssertionError ex)
 		{
 			System.out.println(ld.inputText + " >> " + Arrays.deepToString(result.toArray()));
 			System.out.println(ex.toString());
