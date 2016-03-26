@@ -152,7 +152,7 @@ public class LinkService extends Service implements MessageService
 		{
 			HelpService.HelpInfo help = new HelpService.HelpInfo(
 				"Link Service",
-				"The link service scans for links, then reports data about them\r\nFor normal web pages, the title and host (after redirects are resolved) are shown\r\nOther file types get the host, type, and size");
+				"The link service scans for links, then reports data about them\r\nFor normal web pages, the title and host (after redirects are resolved) are shown\r\nOther file types get the host, type, and size\r\n \r\nThe following protocols are supported:\r\n  http(s):// - General Web Pages\r\n  spotify: - Information about Spotify media\r\n  giphy: - Search for gifs");
 			helpServices.get(0).addHelp("links", help);
 		}
 	}
