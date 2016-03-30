@@ -46,7 +46,7 @@ public class CatPicOfTheDayService extends ExternalService implements MessageSer
 	 * protocol is present (otherwise http:// will be prefixed)</p>
 	 */
 	private final static Pattern protocolPattern =
-		Pattern.compile("https?://[^\\s\\])]+", Pattern.CASE_INSENSITIVE);
+		Pattern.compile("https?://[^\\s\\])\"]+", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * <p>Name of the service, for analysing commands</p>

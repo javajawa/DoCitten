@@ -33,7 +33,7 @@ public class LinkService extends Service implements MessageService
 	 * protocol is present (otherwise http:// will be prefixed)</p>
 	 */
 	private final static Pattern protocolPattern =
-		Pattern.compile("https?://[^\\s\\])]+", Pattern.CASE_INSENSITIVE);
+		Pattern.compile("https?://[^\\s\\])\"]+", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * <p>Pattern matcher for spotify: uris</p>
