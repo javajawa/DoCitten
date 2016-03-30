@@ -113,12 +113,12 @@ public class CatPicOfTheDayService extends ExternalService implements MessageSer
 	@SuppressWarnings("SleepWhileInLoop")
 	public void run()
 	{
-		final TimeZone utc = TimeZone.getTimeZone("UTC");
-		final Calendar now = Calendar.getInstance( utc );
+		final TimeZone tz = TimeZone.getDefault();
+		final Calendar now = Calendar.getInstance( tz );
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Date nowDate;
 
-		df.setTimeZone( utc );
+		df.setTimeZone( tz );
 
 		try
 		{
