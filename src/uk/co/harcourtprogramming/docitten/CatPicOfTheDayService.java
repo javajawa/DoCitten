@@ -1,33 +1,27 @@
 package uk.co.harcourtprogramming.docitten;
 
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Date;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.LinkedList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Message;
 import uk.co.harcourtprogramming.internetrelaycats.MessageService;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.mewler.MessageTokeniser;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 /**
  * <p>Service for create todo list and reminders</p>
