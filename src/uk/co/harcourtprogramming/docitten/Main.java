@@ -23,12 +23,14 @@ public class Main
 	 */
 	public final static String nick = "DoCitten";
 
-	private final static Logger rootLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).getParent();
+	private final static Logger LOG = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).getParent();
+
 	/**
 	 * <p>Runs DoCitten, waiting for 'quit' as a line of stdin before closing</p>
 	 * @param args the command line arguments to the program
 	 * @throws IOException if there's an error reading from stdin
 	 */
+	@SuppressWarnings( "UseOfSystemOutOrSystemErr" )
 	public static void main(String[] args) throws IOException
 	{
 		if (args.length < 2)
@@ -37,8 +39,8 @@ public class Main
 			System.exit(-1);
 		}
 
-		rootLogger.getHandlers()[0].setFormatter(new LogFormatter());
-		rootLogger.setLevel(Level.FINE);
+		LOG.getHandlers()[0].setFormatter(new LogFormatter());
+		LOG.setLevel(Level.FINE);
 
 		final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		final List<String> channels = asList(copyOfRange(args, 1, args.length));
