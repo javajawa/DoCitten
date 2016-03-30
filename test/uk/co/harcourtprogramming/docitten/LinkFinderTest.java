@@ -70,7 +70,17 @@ public class LinkFinderTest
 			new Object[]{new LinkData("  github.com", "github.com")},
 			new Object[]{new LinkData("[github.com]", "github.com")},
 			new Object[]{new LinkData("example.com:8080", "example.com:8080")},
-			new Object[]{new LinkData("http://www.google.com", "http://www.google.com")}
+			new Object[]{new LinkData("http://www.google.com", "http://www.google.com")},
+			new Object[]{new LinkData("gif:cat", "cat")},
+			new Object[]{new LinkData("giphy:cat", "cat")},
+			new Object[]{new LinkData("gif:\"blood sword\"", "blood sword")},
+			new Object[]{new LinkData("gif:\"blood\" \"sword\"", "blood")},
+			new Object[]{new LinkData("gif:???")},
+			new Object[]{new LinkData("gif:\"???\"", "???")},
+			new Object[]{new LinkData("gif:google.com", "google")}, // This is a bit of a weird one...
+			new Object[]{new LinkData("google.com www", "google.com", "www")},
+			new Object[]{new LinkData("gif: cat")},
+			new Object[]{new LinkData("gif:cat giphy:dog", "cat", "dog")}
 		});
 	}
 	/**
@@ -95,13 +105,17 @@ public class LinkFinderTest
 	@SuppressWarnings("UseOfSystemOutOrSystemErr") // Additional assertion failure data
 	public void testUris()
 	{
-		Set<String> result = LinkService.uris(ld.inputText);
+		Set<String> result = new TreeSet<>();
+		result.addAll( LinkService.uris(ld.inputText) );
+		result.addAll( LinkService.spotifyUris(ld.inputText) );
+		result.addAll( LinkService.giphyUris(ld.inputText) );
 
 		try
 		{
-			assertEquals(ld.links.size(), result.size());
-			assertArrayEquals(ld.links.toArray(), result.toArray());
-		} catch (AssertionError ex)
+			assertEquals("Number of urls for " + ld.inputText + " not correct", ld.links.size(), result.size());
+			assertArrayEquals("Mismatch for urls for " + ld.inputText, ld.links.toArray(), result.toArray());
+		}
+		catch (AssertionError ex)
 		{
 			System.out.println(ld.inputText + " >> " + Arrays.deepToString(result.toArray()));
 			System.out.println(ex.toString());

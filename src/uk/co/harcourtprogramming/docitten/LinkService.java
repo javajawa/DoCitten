@@ -36,10 +36,16 @@ public class LinkService extends Service implements MessageService
 		Pattern.compile("https?://[^\\s\\])]+", Pattern.CASE_INSENSITIVE);
 
 	/**
-	 * <p>Pattern matcheer for spotify: uris</p>
+	 * <p>Pattern matcher for spotify: uris</p>
 	 */
 	private final static Pattern spotifyUriPattern =
 		Pattern.compile("spotify:[:a-z0-9]+", Pattern.CASE_INSENSITIVE);
+
+	/**
+	 * <p>Pattern matcher for giphy search psuedo-uris</p>
+	 */
+	private final static Pattern giphyUriPattern =
+		Pattern.compile("(gif|giphy):([:a-zA-Z0-9]+|\"[^\"]+\")", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * <p>Finds and returns all matched URIs in a given string (message)</p>
@@ -73,19 +79,44 @@ public class LinkService extends Service implements MessageService
 	 * @param message the message to scan for links
 	 * @return the list of links that are found (may by empty, but not null)
 	 */
-		public static Set<String> spotifyUris(String message)
+	public static Set<String> spotifyUris(String message)
+	{
+		// TreeSet is strongly ordered
+		final Set<String> r = new TreeSet<>();
+
+		Matcher m = spotifyUriPattern.matcher(message);
+		while (m.find())
 		{
-			// TreeSet is strongly ordered
-			final Set<String> r = new TreeSet<>();
-
-			Matcher m = spotifyUriPattern.matcher(message);
-			while (m.find())
-			{
-				r.add(m.group());
-			}
-
-			return r;
+			r.add(m.group());
 		}
+
+		return r;
+	}
+
+	/**
+	 * <p>Finds and returns all matched URIs in a given string (message)</p>
+	 *
+	 * @param message the message to scan for links
+	 * @return the list of links that are found (may by empty, but not null)
+	 */
+	public static Set<String> giphyUris(String message)
+	{
+		// TreeSet is strongly ordered
+		final Set<String> r = new TreeSet<>();
+
+		Matcher m = giphyUriPattern.matcher(message);
+		String matched;
+
+		while (m.find())
+		{
+			matched = m.group( 2 );
+			matched = matched.replaceAll("^\"|\"$", "");
+
+			r.add(matched);
+		}
+
+		return r;
+	}
 
 	/**
 	 * <p>Create a link service instance</p>
@@ -106,6 +137,10 @@ public class LinkService extends Service implements MessageService
 		{
 			new SpotifyLinkResolver(uri, m, m.getReplyToAllTarget()).start();
 		}
+		for (String uri : giphyUris(m.getMessage()))
+		{
+			new GiphyLinkResolver(uri, m, m.getReplyToAllTarget()).start();
+		}
 	}
 
 	@Override
@@ -117,7 +152,7 @@ public class LinkService extends Service implements MessageService
 		{
 			HelpService.HelpInfo help = new HelpService.HelpInfo(
 				"Link Service",
-				"The link service scans for links, then reports data about them\r\nFor normal web pages, the title and host (after redirects are resolved) are shown\r\nOther file types get the host, type, and size");
+				"The link service scans for links, then reports data about them\r\nFor normal web pages, the title and host (after redirects are resolved) are shown\r\nOther file types get the host, type, and size\r\n \r\nThe following protocols are supported:\r\n  http(s):// - General Web Pages\r\n  spotify: - Information about Spotify media\r\n  giphy: - Search for gifs");
 			helpServices.get(0).addHelp("links", help);
 		}
 	}
