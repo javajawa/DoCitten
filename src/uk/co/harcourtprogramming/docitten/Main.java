@@ -50,7 +50,7 @@ public class Main
 			inst.addService(new HelpService());
 			inst.addService(new HushService());
 			inst.addService(new ContextService());
-			inst.addService(new LogService(new File("/var/log/docitten")));
+			inst.addService(new LogService(new File("/home/docitten/logs")));
 
 			inst.addService(new KittenService());
 			inst.addService(new LinkService());
