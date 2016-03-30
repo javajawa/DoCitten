@@ -4,13 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import static java.util.Arrays.asList;
-import static java.util.Arrays.copyOfRange;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
 import uk.co.harcourtprogramming.logging.LogFormatter;
+
+import static java.util.Arrays.asList;
+import static java.util.Arrays.copyOfRange;
 
 /**
  * <p>Utility class for main function for DoCitten</p>
