@@ -178,7 +178,7 @@ public class MOTDService extends ExternalService implements MessageService
 		Message curr = null;
 		boolean content = false;
 
-		final LinkedList<Message> stack = new LinkedList<Message>();
+		final LinkedList<Message> stack = new LinkedList<>();
 
 		try
 		{
