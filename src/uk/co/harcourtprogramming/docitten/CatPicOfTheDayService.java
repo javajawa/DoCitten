@@ -62,17 +62,30 @@ public class CatPicOfTheDayService extends ExternalService implements MessageSer
 	 */
 	private final Deque<String> queue = new LinkedList<>();
 
-	private final Calendar lastUpdated = Calendar.getInstance( TimeZone.getTimeZone("UTC") );
+	private final TimeZone tz;
+	private final Calendar lastUpdated;
 
 	/**
 	 * <p>Creates a new ReminderService instance</p>
 	 *
 	 * @param inst the IRC interface to attach to
 	 */
-	public CatPicOfTheDayService(final InternetRelayCat inst)
+	public CatPicOfTheDayService(InternetRelayCat inst)
+	{
+		this(inst, TimeZone.getDefault());
+	}
+
+	/**
+	 * <p>Creates a new ReminderService instance</p>
+	 *
+	 * @param inst the IRC interface to attach to
+	 */
+	public CatPicOfTheDayService(InternetRelayCat inst, TimeZone tz)
 	{
 		super(inst);
 
+		this.tz = tz;
+		lastUpdated = Calendar.getInstance( tz );
 		lastUpdated.setTime( new Date() );
 	}
 
@@ -107,7 +120,6 @@ public class CatPicOfTheDayService extends ExternalService implements MessageSer
 	@SuppressWarnings("SleepWhileInLoop")
 	public void run()
 	{
-		final TimeZone tz = TimeZone.getDefault();
 		final Calendar now = Calendar.getInstance( tz );
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Date nowDate;
