@@ -113,9 +113,13 @@ public class MOTDService extends ExternalService implements MessageService
 		super(inst);
 
 		if (!data_file.canRead())
+		{
 			throw new RuntimeException(new FileNotFoundException("MOTD data file not found"));
+		}
 		if (!motd_file.canRead())
+		{
 			throw new RuntimeException(new FileNotFoundException("MOTD file not found"));
+		}
 
 		this.channel = channel;
 		this.data_file = data_file;
@@ -186,13 +190,17 @@ public class MOTDService extends ExternalService implements MessageService
 
 				// Ingore commented lines
 				if (line.charAt(0) == '#')
+				{
 					continue;
+				}
 
 				// Start of a new message
 				if (line.equals("[Message]"))
 				{
 					if (curr != null)
+					{
 						stack.push(curr);
+					}
 
 					curr = new Message();
 					content = false;
@@ -201,7 +209,9 @@ public class MOTDService extends ExternalService implements MessageService
 
 				// We have not encountered a [Message] line
 				if (curr == null)
+				{
 					continue;
+				}
 
 				// If not a key=value line, ignore
 				// unless we're reading extended content
@@ -209,7 +219,9 @@ public class MOTDService extends ExternalService implements MessageService
 				if (div == -1)
 				{
 					if (content)
+					{
 						curr.content += line;
+					}
 
 					continue;
 				}
@@ -270,7 +282,10 @@ public class MOTDService extends ExternalService implements MessageService
 		{
 			try
 			{
-				in.close();
+				if ( in != null )
+				{
+					in.close();
+				}
 			}
 			catch (IOException ex)
 			{
@@ -278,14 +293,18 @@ public class MOTDService extends ExternalService implements MessageService
 		}
 
 		if (curr != null)
+		{
 			stack.push(curr);
+		}
 
 		lastModified = data_file.lastModified();
 
 		if (initial)
 		{
 			if (stack.size() > 0)
+			{
 				lastId = stack.getLast().id;
+			}
 
 			return; // Don't output on initial pass
 		}
@@ -309,10 +328,15 @@ public class MOTDService extends ExternalService implements MessageService
 
 		// Check that the bot is actually being addressed in some way
 		if (!t.consume(m.getNick() + ':') && m.getChannel() != null)
+		{
 			return;
+		}
+
 		// Check the command was 'motd' with no other parameters
 		if (!t.consume("motd") || !t.isEmpty())
+		{
 			return;
+		}
 
 		try
 		{
@@ -320,7 +344,9 @@ public class MOTDService extends ExternalService implements MessageService
 			StringBuilder s = new StringBuilder(1000);
 
 			while (r.ready())
+			{
 				s.append(r.readLine()).append('\n');
+			}
 
 			m.reply(s.toString());
 		}
