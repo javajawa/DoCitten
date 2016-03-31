@@ -12,6 +12,7 @@ load HelpService
 load HushService
 
 load LogService /var/log/docitten
+load MOTDService /etc/motd.dat /etc/motd #doc
 load ContextService
 load KittenService
 load LinkService
@@ -26,5 +27,4 @@ load CatPicOfTheDayService
 # This is because they expect non-String paramters to their
 # constructors
 #
-# load MOTDService /etc/motd.dat /etc/motd
 # load DistroService /vol/linux/ubuntu

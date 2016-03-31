@@ -125,6 +125,19 @@ public class MOTDService extends ExternalService implements MessageService
 	}
 
 	/**
+	 * <p>Creates an MOTD Service</p>
+	 *
+	 * @param inst the InternetRelayCat instance this service will be used with
+	 * @param data_file the motd.dat file to watch
+	 * @param motd_file the motd file to use in response to commands
+	 * @param channel the channel (or user) to post new entries to
+	 */
+	public MOTDService(InternetRelayCat inst, String data_file, String motd_file, String channel)
+	{
+		this(inst, new File(data_file), new File(motd_file), channel);
+	}
+
+	/**
 	 * <p>Runs the MOTD Service</p>
 	 */
 	@Override
