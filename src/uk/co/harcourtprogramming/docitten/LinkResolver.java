@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.regex.Pattern;
+import javax.net.ssl.SSLHandshakeException;
 import uk.co.harcourtprogramming.docitten.utility.HtmlEntities;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.logging.LogDecorator;
@@ -154,6 +155,24 @@ public class LinkResolver extends Thread
 			{
 				LOG.fine("Host {0} not found [lookup of {1}]", curr.getHost(), baseURI.toString());
 				return;
+			}
+			catch (SSLHandshakeException ex)
+			{
+				final Throwable inner = ex.getCause();
+
+				if (inner instanceof java.security.cert.CertificateException)
+				{
+					LOG.fine("No cerficiate {0} not found [lookup of {1}]", curr.getHost(), baseURI.toString());
+					return;
+				}
+
+				if (inner instanceof java.io.EOFException)
+				{
+					LOG.fine("Error connecting to {0} [lookup of {1}] {2}", curr.getHost(), baseURI.toString(), inner.getMessage());
+					return;
+				}
+
+				throw new RuntimeException(ex);
 			}
 			catch (IOException ex)
 			{
