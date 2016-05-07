@@ -182,6 +182,7 @@ public class CatPicOfTheDayService extends ExternalService implements MessageSer
 
 		if ( tokeniser.startsWith( "next" ) )
 		{
+			log(Level.FINER, "Processing message - next");
 			lastUpdated.set( Calendar.YEAR, 1971 );
 			synchronized( this )
 			{
@@ -192,13 +193,15 @@ public class CatPicOfTheDayService extends ExternalService implements MessageSer
 
 		if ( tokeniser.startsWith( "suggest" ) )
 		{
+			log(Level.FINER, "Processing message - suggest");
 			m.replyToAll( getApiCat() );
 			return;
 		}
 
 		if ( tokeniser.startsWith( "queue" ) )
 		{
-			m.reply( "Current queue lengtth: " + queue.size() );
+			log(Level.FINER, "Processing message - queue");
+			m.reply( "Current queue length: " + queue.size() );
 			for ( String s : queue )
 			{
 				m.reply( s );
@@ -207,16 +210,19 @@ public class CatPicOfTheDayService extends ExternalService implements MessageSer
 
 		if ( tokeniser.startsWith( "remove" ) )
 		{
+			log(Level.FINER, "Processing message - remove");
 			tokeniser.consume( "remove" );
 
-			synchronized (queue )
+			synchronized (queue)
 			{
 				if (queue.remove(tokeniser.toString()))
 				{
+					log(Level.FINER, "removed {0}", tokeniser.toString());
 					m.reply( "java.util.List.remove returned true" );
 				}
 				else
 				{
+					log(Level.FINER, "could not removed {0}", tokeniser.toString());
 					m.reply( "java.util.List.remove returned false" );
 				}
 			}
@@ -241,7 +247,7 @@ public class CatPicOfTheDayService extends ExternalService implements MessageSer
 
 			while (p.find())
 			{
-				if (!queue.contains(u.group(0)) && queue.add(p.group(0)))
+				if (!queue.contains(p.group(0)) && queue.add(p.group(0)))
 				{
 					m.reply(p.group(0) + " added");
 				}
