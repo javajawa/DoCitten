@@ -2,14 +2,15 @@ package uk.co.harcourtprogramming.docitten;
 
 import java.util.List;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
+
+import static org.junit.Assert.*;
 
 public class GiphySearchTest
 {
 	private final String uri = "funny cat";
-	private final String expected = "http://giphy.com/embed/QgcQLZa6glP2w";
+	private final String expected = "http://giphy.com/embed/ivelTBasMg67S";
 
 	private String target = null;
 	private String message = null;
