@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +116,7 @@ public class DistroService extends ExternalService implements MessageService {
 					greatest = curr;
 					defDistro = distro;
 				}
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 			}
 		}
 		return defDistro;
@@ -215,10 +214,10 @@ public class DistroService extends ExternalService implements MessageService {
 			String distro = t.nextToken();
 
 			try {
-				Path root = this.root.toPath();
-				Path distroP = root.getParent().resolve(distro);
+				Path rootPath = this.root.toPath();
+				Path distroP = rootPath.getParent().resolve(distro);
 				Path abs = distroP.toRealPath();
-				if (abs.startsWith(root)) {
+				if (abs.startsWith(rootPath)) {
 					this.watchDistro(abs.toFile());
 					m.reply("OK");
 				} else {
