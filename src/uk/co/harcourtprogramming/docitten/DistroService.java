@@ -26,17 +26,17 @@ public class DistroService extends ExternalService implements MessageService {
 	/**
 	 * An OS distro root directory, eg "/vol/linux/ubuntu"
 	 */
-	private File root;
+	private final File root;
 
 	/**
 	 * Collection of known distro repos at last check
 	 */
-	private Collection<File> distros = Collections.emptyList();
+	private final Collection<File> distros = Collections.emptyList();
 
 	/**
 	 * Map of repos that we're tracking, indexed by name returned from getDistroName()
 	 */
-	private Map<String, GitRepoTracker> tracking = new ConcurrentHashMap<>(6);
+	private final Map<String, GitRepoTracker> tracking = new ConcurrentHashMap<>(6);
 
 	/**
 	 * Channel we're reporting to
@@ -159,8 +159,9 @@ public class DistroService extends ExternalService implements MessageService {
 		List<File> repoList = Arrays.asList(repoArr);
 		List<File> newRepos = new LinkedList<>(repoList);
 
+		distros.addAll(repoList);
 		newRepos.removeAll(this.distros);
-		this.distros = repoList;
+
 		return newRepos;
 	}
 
