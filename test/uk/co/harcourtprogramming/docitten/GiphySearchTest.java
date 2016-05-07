@@ -2,9 +2,10 @@ package uk.co.harcourtprogramming.docitten;
 
 import java.util.List;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import uk.co.harcourtprogramming.internetrelaycats.RelayCat;
 import uk.co.harcourtprogramming.internetrelaycats.Service;
+
+import static org.junit.Assert.*;
 
 public class GiphySearchTest
 {
