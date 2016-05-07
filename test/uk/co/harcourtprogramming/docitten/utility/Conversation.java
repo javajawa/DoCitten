@@ -19,6 +19,7 @@ public class Conversation implements Iterable<Conversation.Line>
 {
 	public static final int SEND = 0;
 	public static final int RECIEVE = 1;
+	public static final int WAIT = 2;
 
 	/**
 	 * <p>The name of this conversation</p>
@@ -49,6 +50,13 @@ public class Conversation implements Iterable<Conversation.Line>
 	public Conversation recieve(String source, String target, String line)
 	{
 		this.links.add(new Line(RECIEVE, source, target, line));
+
+		return this;
+	}
+
+	public Conversation wait(int millis)
+	{
+		this.links.add(new Line(WAIT, null, null, Integer.toString(millis)));
 
 		return this;
 	}
