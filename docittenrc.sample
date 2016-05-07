@@ -11,7 +11,7 @@ join #doc
 load HelpService
 load HushService
 
-load LogService /var/log/docitten
+load LogService ~docitten/log
 load MOTDService /etc/motd.dat /etc/motd #doc
 load ContextService
 load KittenService
