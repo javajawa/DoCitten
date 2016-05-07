@@ -8,15 +8,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-
 import org.eclipse.jgit.util.StringUtils;
-
 import uk.co.harcourtprogramming.docitten.utility.GitRepoTracker;
 import uk.co.harcourtprogramming.internetrelaycats.ExternalService;
 import uk.co.harcourtprogramming.internetrelaycats.InternetRelayCat;
@@ -39,7 +36,7 @@ public class DistroService extends ExternalService implements MessageService {
 	/**
 	 * Map of repos that we're tracking, indexed by name returned from getDistroName()
 	 */
-	private Map<String, GitRepoTracker> tracking = new Hashtable<>();
+	private Map<String, GitRepoTracker> tracking = new ConcurrentHashMap<>(6);
 
 	/**
 	 * Channel we're reporting to
