@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 public class GiphySearchTest
 {
 	private final String uri = "funny cat";
-	private final String expected = "http://giphy.com/embed/QgcQLZa6glP2w";
+	private final String expected = "http://giphy.com/embed/ivelTBasMg67S";
 
 	private String target = null;
 	private String message = null;

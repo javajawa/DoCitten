@@ -3,6 +3,7 @@ package uk.co.harcourtprogramming.docitten;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -42,7 +43,7 @@ public class GiphyLinkResolver extends Thread
 	 */
 	private final static int TIMEOUT = 2000;
 
-	private final static JSONParser parser = new JSONParser();
+	private final static JSONParser PARSER = new JSONParser();
 
 	/**
 	 * <p>The original URI that we are retrieving</p>
@@ -62,7 +63,7 @@ public class GiphyLinkResolver extends Thread
 	 * which will attempt to send information to a IRC end point via a RelayCat
 	 * instance</p>
 	 *
-	 * @param baseURI the link we're following
+	 * @param search the link we're following
 	 * @param mess IRC connection that the query came from
 	 * @param target IRC user/channel that the query came from
 	 */
@@ -70,10 +71,17 @@ public class GiphyLinkResolver extends Thread
 	{
 		super(THREAD_GROUP, "LinkResolver [Giphy: " + search + ']');
 
-		this.baseURI = URI.create(
-			"http://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&rating=pg-13&limit=1&q=" +
-			URLEncoder.encode(search)
-		);
+		final String encodedSearch;
+		try
+		{
+			encodedSearch = URLEncoder.encode(search, "UTF-8");
+		}
+		catch (UnsupportedEncodingException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+		
+		this.baseURI = URI.create("http://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&rating=pg-13&limit=1&q=" + encodedSearch);
 		this.mess = mess;
 		this.target = target;
 		setDaemon(true);
@@ -147,9 +155,9 @@ public class GiphyLinkResolver extends Thread
 
 			try
 			{
-				synchronized (parser)
+				synchronized (PARSER)
 				{
-					giphy = (JSONObject)parser.parse(r);
+					giphy = (JSONObject)PARSER.parse(r);
 				}
 			}
 			catch (ParseException ex)

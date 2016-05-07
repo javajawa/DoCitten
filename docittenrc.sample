@@ -1,0 +1,25 @@
+# Set up out nick
+nick DoCitten
+
+# Connect to the server
+connect ssl irc.esper.net 6697
+
+# Join the channel
+join #doc
+
+# Core services needed by others
+load HelpService
+load HushService
+
+load LogService ~docitten/log
+load MOTDService /etc/motd.dat /etc/motd #doc
+load ContextService
+load KittenService
+load LinkService
+load GoHomeService #doc
+load DiceService
+load HelpingService
+load LookupService
+load ReminderService
+load CatPicOfTheDayService
+load DistroService /vol/linux/ubuntu

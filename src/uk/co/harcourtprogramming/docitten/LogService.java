@@ -58,6 +58,11 @@ public class LogService extends Service implements MessageService, FilterService
 		}
 	}
 
+	public LogService(String dir)
+	{
+		this(new File(dir));
+	}
+	
 	@Override
 	public synchronized void handle(Message m)
 	{

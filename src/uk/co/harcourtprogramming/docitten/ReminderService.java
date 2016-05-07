@@ -75,23 +75,32 @@ public class ReminderService extends ExternalService implements MessageService
 			public int compare(AbstractReminder o1, AbstractReminder o2)
 			{
 				if (o1 == o2)
+				{
 					return 0;
+				}
 
 				if (o1 instanceof Note)
 				{
 					if (o2 instanceof Note)
+					{
 						return ((Long)o1.setTimestamp).compareTo(o2.setTimestamp);
+					}
 
 					return -1;
 				}
+
 				if (o2 instanceof Note)
+				{
 					return 1;
+				}
 
 				final Reminder r1 = (Reminder)o1;
 				final Reminder r2 = (Reminder)o2;
 
 				if (r1.sendTimestamp == r2.sendTimestamp)
+				{
 					return ((Long)o1.setTimestamp).compareTo(o2.setTimestamp);
+				}
 
 				return ((Long)r1.sendTimestamp).compareTo(r2.sendTimestamp);
 			}
@@ -100,13 +109,11 @@ public class ReminderService extends ExternalService implements MessageService
 	/**
 	 * <p>Notes and reminders, catalogued by user</p>
 	 */
-	private final Map<String, SortedSet<AbstractReminder>> userReminders =
-			new TreeMap<String, SortedSet<AbstractReminder>>();
+	private final Map<String, SortedSet<AbstractReminder>> userReminders = new TreeMap<>();
 	/**
 	 * <p>All the reminders, ordered by when they need to be sent out</p>
 	 */
-	private final SortedSet<Reminder> globalReminders =
-			new TreeSet<Reminder>(reminderOrderer);
+	private final SortedSet<Reminder> globalReminders = new TreeSet<>(reminderOrderer);
 
 	/**
 	 * <p>Base class for all reminders stored by the ReminderService</p>
@@ -257,6 +264,9 @@ public class ReminderService extends ExternalService implements MessageService
 					// that happened in the past
 					for (Reminder r : globalReminders.headSet(new Reminder()))
 					{
+						globalReminders.remove(r);
+						userReminders.get(r.nick).remove(r);
+
 						this.getInstance().message(r.nick, r.data);
 					}
 				}
@@ -276,10 +286,14 @@ public class ReminderService extends ExternalService implements MessageService
 		tokeniser.setConsumeWhitespace(true);
 
 		if (!tokeniser.consume(m.getNick() + ':') && m.getChannel() != null)
+		{
 			return;
+		}
 
 		if (!tokeniser.consume(SERVICE_NAME))
+		{
 			return;
+		}
 
 		Commands c;
 		try
@@ -335,7 +349,7 @@ public class ReminderService extends ExternalService implements MessageService
 		{
 			if (!userReminders.containsKey(m.getSender()))
 			{
-				TreeSet<AbstractReminder> newUserSet = new TreeSet<AbstractReminder>(reminderOrderer);
+				TreeSet<AbstractReminder> newUserSet = new TreeSet<>(reminderOrderer);
 				newUserSet.add(newNote);
 				userReminders.put(m.getSender(), newUserSet);
 			}
@@ -365,7 +379,7 @@ public class ReminderService extends ExternalService implements MessageService
 			SortedSet<AbstractReminder> userSet;
 			if (!userReminders.containsKey(m.getSender()))
 			{
-				userSet = new TreeSet<AbstractReminder>();
+				userSet = new TreeSet<>();
 			}
 			else
 			{
@@ -426,11 +440,15 @@ public class ReminderService extends ExternalService implements MessageService
 			AbstractReminder toRemove = null;
 
 			while (--index >= 0)
+			{
 				toRemove = it.next();
+			}
 
 			reminders.remove(toRemove);
 			if (toRemove instanceof Reminder)
+			{
 				globalReminders.remove((Reminder)toRemove);
+			}
 
 			m.reply("Reminder removed.");
 		}
