@@ -22,9 +22,4 @@ load HelpingService
 load LookupService
 load ReminderService
 load CatPicOfTheDayService
-
-# These services are currently not dynamically loadable
-# This is because they expect non-String paramters to their
-# constructors
-#
-# load DistroService /vol/linux/ubuntu
+load DistroService /vol/linux/ubuntu
