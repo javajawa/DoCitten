@@ -13,4 +13,3 @@ install: ""
 after_success:
   - mvn clean
   - mvn cobertura:cobertura coveralls:report
-  - find . -name coverage.xml
