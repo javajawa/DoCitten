@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class DistroService extends ExternalService implements MessageService
 	/**
 	 * Collection of known distro repos at last check
 	 */
-	private final Collection<File> distros = Collections.emptyList();
+	private final Collection<File> distros = new ArrayList<>(6);
 
 	/**
 	 * Map of repos that we're tracking, indexed by name returned from
