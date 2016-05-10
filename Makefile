@@ -9,8 +9,8 @@ JAR=jar
 JUNIT=/usr/share/java/junit4.jar
 
 JAVAVERSION=$(shell $(JAVAC) -version 2>&1 | head -n 1 | cut -d. -f 2)
-ifneq "$(JAVAVERSION)" "7"
-$(error Requires Java 7)
+ifneq ($(shell test $(JAVAVERSION) -ge 7; echo $$?),0)
+  $(error Requires Java >= 7)
 endif
 
 SRC=src
