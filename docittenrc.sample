@@ -22,4 +22,4 @@ load HelpingService
 load LookupService
 load ReminderService
 load CatPicOfTheDayService
-load DistroService /vol/linux/ubuntu
+load DistroService /vol/linux/ubuntu #doc
