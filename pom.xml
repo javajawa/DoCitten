@@ -10,4 +10,21 @@
     <module>pom-docitten.xml</module>
     <module>lib/irc</module>
   </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eluder.coveralls</groupId>
+        <artifactId>coveralls-maven-plugin</artifactId>
+        <version>4.1.0</version>
+        <configuration>
+          <repoToken>${env.coveralls_token}</repoToken>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 </project>
