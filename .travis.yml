@@ -8,5 +8,7 @@ jdk:
 before_install:
   - git submodule update --init --recursive
 
+install: ""
+
 after_success:
   - mvn clean cobertura:cobertura coveralls:report
