@@ -336,14 +336,14 @@ public class LinkResolver extends Thread
 			{
 				reading = true;
 				line = line.substring(line.indexOf("<title") + titleTagLength);
-				line = line.substring(line.indexof(">") + 1);
+				line = line.substring(line.indexOf(">") + 1);
 				title = "";
 			}
 			if (line.contains("<TITLE"))
 			{
 				reading = true;
 				line = line.substring(line.indexOf("<TITLE") + titleTagLength);
-				line = line.substring(line.indexof(">") + 1);
+				line = line.substring(line.indexOf(">") + 1);
 				title = "";
 			}
 
