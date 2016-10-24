@@ -324,6 +324,17 @@ public class LinkResolver extends Thread
 
 		String title = "[No Title Set]";
 
+		// Variables to be used in tag parsing.
+		// TODO: move tag parsing to own function
+		int nextQuotePosition;
+		int nextSingleQuotePosition;
+		int nextDoubleQuotePosition;
+		int nextCloseTagPosition;
+		int escapeCount;
+		String nextLine;
+		char quoteToMatch;
+
+		endofdata:
 		while (true)
 		{
 			line = pageData.readLine();
@@ -332,19 +343,126 @@ public class LinkResolver extends Thread
 				break;
 			}
 
-			if (line.contains("<title"))
+			// If this line contains a title tag (but not both <title and <TITLE)
+			if (line.contains("<title") ^ line.contains("<TITLE"))
 			{
-				reading = true;
-				line = line.substring(line.indexOf("<title") + titleTagLength);
-				line = line.substring(line.indexOf(">") + 1);
-				title = "";
-			}
-			if (line.contains("<TITLE"))
-			{
-				reading = true;
-				line = line.substring(line.indexOf("<TITLE") + titleTagLength);
-				line = line.substring(line.indexOf(">") + 1);
-				title = "";
+				// Find where the title tag is. Math.max is used as the
+				// tag which does not exist will return -1.
+				nextCloseTagPosition = Math.max(
+					line.indexOf("<TITLE"),
+					line.indexOf("<title")
+				);
+
+				// Consume all data up to the start of the title tag
+				line = line.substring(nextCloseTagPosition + titleTagLength);
+
+				// Whilst we are in the tag itself, we keep processing until
+				// the end is found.
+				while (true)
+				{
+					// First, make sure we have any kind of end tag to match
+					while (line.indexOf(">") == -1)
+					{
+						nextLine = pageData.readLine();
+
+						// If at the end of stream, stop searching for data
+						if (nextLine == null)
+						{
+							break endofdata;
+						}
+
+						line = line + pageData.readLine();
+					}
+
+					// We look for quotes and end tag candidates
+					nextSingleQuotePosition = line.indexOf("\"");
+					nextDoubleQuotePosition = line.indexOf("\'");
+					nextCloseTagPosition = line.indexOf(">");
+
+					if (nextSingleQuotePosition == -1)
+					{
+						nextSingleQuotePosition = line.length() + 1;
+					}
+					if (nextDoubleQuotePosition == -1)
+					{
+						nextDoubleQuotePosition = line.length() + 1;
+					}
+
+					// If the closing tag is first, we're done -- the quote are
+					// from something else.
+					if (
+						nextCloseTagPosition < nextSingleQuotePosition &&
+						nextCloseTagPosition < nextDoubleQuotePosition
+					)
+					{
+						break;
+					}
+
+					// Reset the variables
+					nextQuotePosition = Math.min(nextSingleQuotePosition, nextDoubleQuotePosition);
+					escapeCount = 0;
+
+					// Count the number of escaping slashes
+					while ("\\".equals(line.substring(nextQuotePosition-escapeCount, 1)))
+					{
+						++escapeCount;
+					}
+
+					// Drop the (now processed) part of the string
+					line = line.substring(nextQuotePosition+1);
+
+					// If this quote is not escaped, then we need to find the
+					// matching closing quote
+					if ((escapeCount % 2 == 0))
+					{
+						quoteToMatch = nextSingleQuotePosition < nextDoubleQuotePosition ? '\'' : '"';
+
+						// Search until we find a match
+						while (true)
+						{
+							// Find the next candidate matching quote
+							while (line.indexOf(quoteToMatch) == -1)
+							{
+								nextLine = pageData.readLine();
+
+								// If at the end of stream, stop searching for data
+								if (nextLine == null)
+								{
+									break endofdata;
+								}
+
+								line = line + pageData.readLine();
+							}
+
+							nextQuotePosition = line.indexOf(quoteToMatch);
+							escapeCount = 0;
+
+							// Count the number of escaping slashes
+							while ("\\".equals(line.substring(nextQuotePosition-escapeCount, 1)))
+							{
+								++escapeCount;
+							}
+
+							// Drop the (now processed) data
+							line = line.substring(nextQuotePosition+1);
+
+							// If this is not an escaped quote, we found the
+							// closing quote, and can go back to searching
+							// for the end of the tag.
+							if ((escapeCount % 2) == 0)
+							{
+								break;
+							}
+						}
+					}
+				}
+
+				if ( nextCloseTagPosition > -1 )
+				{
+					reading = true;
+					line = line.substring(nextCloseTagPosition + 1);
+					title = "";
+				}
 			}
 
 			if (reading && line.contains("</title>"))
@@ -358,8 +476,8 @@ public class LinkResolver extends Thread
 				break;
 			}
 
-			if (line.contains("</head>") || line.contains("<body>")
-			 || line.contains("</HEAD>") || line.contains("<BODY>"))
+			if (line.contains("</head>") || line.contains("<body")
+			 || line.contains("</HEAD>") || line.contains("<BODY"))
 			{
 				break;
 			}
