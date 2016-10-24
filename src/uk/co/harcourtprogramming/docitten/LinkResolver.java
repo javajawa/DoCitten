@@ -320,7 +320,7 @@ public class LinkResolver extends Thread
 		String line;
 
 		boolean reading = false;
-		int titleTagLength = "<title>".length();
+		int titleTagLength = "<title".length();
 
 		String title = "[No Title Set]";
 
@@ -332,16 +332,18 @@ public class LinkResolver extends Thread
 				break;
 			}
 
-			if (line.contains("<title>"))
+			if (line.contains("<title"))
 			{
 				reading = true;
-				line = line.substring(line.indexOf("<title>") + titleTagLength);
+				line = line.substring(line.indexOf("<title") + titleTagLength);
+				line = line.substring(line.indexof(">") + 1);
 				title = "";
 			}
-			if (line.contains("<TITLE>"))
+			if (line.contains("<TITLE"))
 			{
 				reading = true;
-				line = line.substring(line.indexOf("<TITLE>") + titleTagLength);
+				line = line.substring(line.indexOf("<TITLE") + titleTagLength);
+				line = line.substring(line.indexof(">") + 1);
 				title = "";
 			}
 
