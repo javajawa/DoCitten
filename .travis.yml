@@ -3,6 +3,7 @@ sudo: false
 
 before_install:
   - git submodule update --init --recursive
+  - touch java-check
 
 script: make test
 
