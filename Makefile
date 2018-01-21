@@ -1,5 +1,5 @@
 .PHONY: package compile clean test-build test
-.DEFAULT: package
+.DEFAULT_GOAL: package
 
 SPACE:=
 SPACE+=
@@ -7,11 +7,6 @@ SPACE+=
 JAVAC=javac
 JAR=jar
 JUNIT=/usr/share/java/junit4.jar
-
-JAVAVERSION=$(shell $(JAVAC) -version 2>&1 | head -n 1 | cut -d. -f 2)
-ifneq ($(shell test $(JAVAVERSION) -ge 7; echo $$?),0)
-  $(error Requires Java >= 7)
-endif
 
 SRC=src
 TEST=test
@@ -41,10 +36,14 @@ test-build: $(TCLASS)
 test: test-build
 	java -cp $(TBUILD):$(TCP) org.junit.runner.JUnitCore $(TESTS)
 
-$(BUILD)/%.class : $(SRC)/%.java $(LIBS) $(BUILD)
+java-check:
+	./java-major-version 7 $(JAVAC)
+	touch $@
+
+$(BUILD)/%.class : $(SRC)/%.java $(LIBS) $(BUILD) java-check
 	$(JAVAC) -classpath $(CP) -d $(BUILD) $<
 
-$(TBUILD)/%.class : $(TEST)/%.java $(LIBS) compile $(TBUILD)
+$(TBUILD)/%.class : $(TEST)/%.java $(LIBS) compile $(TBUILD) java-check
 	$(JAVAC) -classpath $(TCP) -d $(TBUILD) $<
 
 $(PACKAGEJAR): $(BUILD) $(PACKAGE) $(CLASS) $(LIBS) Manifest.mf
