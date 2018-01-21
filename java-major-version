@@ -5,6 +5,8 @@ JAVAC=${2:-${JAVAC:-javac}}
 ${JAVAC} -version 2>&1 | {
 	read -r NAME VERSION
 
+	printf "Current java (%s) version: %s\n" "$NAME" "$VERSION" >&2
+
 	VERSION=${VERSION#\"}
 	VERSION=${VERSION#1.}
 	VERSION=${VERSION%%.*}
